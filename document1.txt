@@ -1,0 +1,42 @@
+#include <iostream>
+#include <cmath>
+
+// 函数用于执行除法，可能引发除以零异常
+double Calculator::multiply(double variable1, double variable2)
+{
+	return variable1 * variable2;
+}
+
+double Calculator::divide(double variable1, double variable2)
+{
+	double result;
+	result = variable1 / variable2;
+	return result;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
