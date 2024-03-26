@@ -75,6 +75,7 @@ public:
     QWidget *pageProject;
     QVBoxLayout *verticalLayout_2;
     QTreeView *projectTreeView;
+    QTreeView *requirementView;
     QTreeWidget *treeClassView;
     QProgressBar *progressBar;
     QWidget *pageRunDebug;
@@ -259,6 +260,11 @@ public:
         projectTreeView->setObjectName(QStringLiteral("projectTreeView"));
 
         verticalLayout_2->addWidget(projectTreeView);
+
+        requirementView = new QTreeView(pageProject);
+        requirementView->setObjectName(QStringLiteral("requirementView"));
+
+        verticalLayout_2->addWidget(requirementView);
 
         treeClassView = new QTreeWidget(pageProject);
         QIcon icon17;

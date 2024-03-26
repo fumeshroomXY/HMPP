@@ -4,6 +4,7 @@
 #include <QTextEdit>
 #include <QObject>
 #include <faultpromptdialog.h>
+#include <QVector>
 
 QT_BEGIN_NAMESPACE
 class QPaintEvent;
@@ -15,6 +16,18 @@ QT_END_NAMESPACE
 class LineNumberArea;
 class CustomButton;
 
+
+//记录文档中的伪码需求注释节点
+struct RequireNote{
+    QString note = "";
+    int startLine = -1;
+    int endLine = -1;
+    QString filePath;
+    QVector<RequireNote *> children;
+
+    RequireNote(QString note, int start, int end, QString file) : note(note),
+        startLine(start), endLine(end), filePath(file){}
+};
 
 class MdiChild : public QTextEdit
 {
@@ -31,6 +44,10 @@ public:
     QString userFriendlyCurrentFile();    //提取文件名
     QString currentFile() { return curFile; }   //返回当前文件路径
 
+    QVector<RequireNote*> getRequireNotes() {return requireNotes ;}
+
+
+    //和绘制行号有关的代码
     int getFirstVisibleBlockId();
     void lineNumberAreaPaintEvent(QPaintEvent *event);
     int lineNumberAreaWidth();
@@ -60,15 +77,22 @@ private slots:
     void updateLineNumberArea(int /*slider_pos*/);
     void updateLineNumberArea();
 
-
-
     void showFaultPromptDialog();
 
     void fixButtonHovered();
     void fixButtonClicked();
     void clearPreview();
 
+    void highlightMatch();
+
+
+    //更新需求括号的匹配
+    void updateMatch();
+
 private:
+    //更新需求节点
+    void updateRequireNotes(int start, int end, RequireNote* node);
+
     bool maybeSave();   //是否需要保存
     void setCurrentFile(const QString &fileName);   //设置当前文件
     QString strippedName(const QString &fullFileName);
@@ -85,6 +109,13 @@ private:
     bool faultflag = true;
     bool fixedfalg = false;
 
+    bool matchLeftParenthesis(QTextBlock currentBlock, int index, int numRightParentheses, int &matchLineNumber, int &matchPosition);
+    bool matchRightParenthesis(QTextBlock currentBlock, int index, int numLeftParentheses, int &matchLineNumber, int &matchPosition);
+    void createParenthesisSelection(int pos);
+
+    //需求伪码注释节点列表，只保留了一级需求，即父节点
+    QVector<RequireNote *> requireNotes;
+
 
     QTextCharFormat previewFormat = [](){
         QTextCharFormat format;
@@ -98,6 +129,9 @@ private:
         format.setForeground(Qt::black);
         return format;
     }();
+
+
+
 
 signals:
     void showProblemTab(int);

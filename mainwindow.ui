@@ -41,6 +41,9 @@
          <widget class="QTreeView" name="projectTreeView"/>
         </item>
         <item>
+         <widget class="QTreeView" name="requirementView"/>
+        </item>
+        <item>
          <widget class="QTreeWidget" name="treeClassView">
           <column>
            <property name="text">

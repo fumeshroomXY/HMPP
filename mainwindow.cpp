@@ -75,22 +75,41 @@ MainWindow::MainWindow()
 
     errordlg = new QErrorMessage(this);
 
-    model.setColumnCount(1);
-    model.setHeaderData(0, Qt::Horizontal, " Projects");
 
-    ui->projectTreeView->setModel(&model);
+    //项目栏Model初始化设置
+    projectModel.setColumnCount(1);
+    projectModel.setHeaderData(0, Qt::Horizontal, " Projects");
+
+    ui->projectTreeView->setModel(&projectModel);
 
     // 设置项不可编辑
     ui->projectTreeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     // 获取QHeaderView
-    QHeaderView *header = ui->projectTreeView->header();
+    QHeaderView *projectHeader = ui->projectTreeView->header();
 
     // 设置Header的样式
 //    QString styleSheet = "QHeaderView::section { background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
 //                         "stop:0 #E0E0E0, stop:1 #F0F0F0); border: 1px solid gray; }";
 //    header->setStyleSheet(styleSheet);
 
-    header->setStyleSheet("QHeaderView::section { background-color: rgb(242, 242, 242); border: 1px solid gray; }");
+    projectHeader->setStyleSheet("QHeaderView::section { background-color: rgb(242, 242, 242); border: 1px solid gray; }");
+
+    //需求栏Model初始化设置
+    requirementModel.setColumnCount(1);
+    requirementModel.setHeaderData(0, Qt::Horizontal, " Requirements");
+
+    ui->requirementView->setModel(&requirementModel);
+    ui->requirementView->expandAll();   //自动展开所有项
+
+    // 设置项不可编辑
+    ui->requirementView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    // 获取QHeaderView
+    QHeaderView *requirementHeader = ui->requirementView->header();
+
+    // 设置Header的样式
+    requirementHeader->setStyleSheet("QHeaderView::section { background-color: rgb(242, 242, 242); border: 1px solid gray; }");
+
+
 
     appDir = QDir(QCoreApplication::applicationDirPath());  //保存项目工作目录
     appDir.cdUp();
@@ -99,6 +118,20 @@ MainWindow::MainWindow()
     connect(ui->testCreateClassAct, &QAction::triggered, this, &MainWindow::createNewClass);
 
     connect(ui->projectTreeView, &QTreeView::doubleClicked, this, &MainWindow::doubleClickedProjectTree);
+
+    // 连接每个QTextEdit的textChanged()信号到槽函数
+    connect(ui->mdiArea, &QMdiArea::subWindowActivated, [this](QMdiSubWindow *subWindow) {
+        if (subWindow) {
+            QTextEdit *textEdit = subWindow->findChild<QTextEdit *>();
+            if (textEdit) {
+                connect(textEdit, &QTextEdit::textChanged, [this]() {
+                    // 在这里可以向主窗口的其他子部件发送信号或执行其他操作
+                    updateRequirementModel();
+                });
+            }
+        }
+    });
+    connect(ui->mdiArea, &QMdiArea::subWindowActivated, this, &MainWindow::updateRequirementModel);
 }
 
 MainWindow::~MainWindow()
@@ -110,14 +143,19 @@ void MainWindow::doubleClickedProjectTree(const QModelIndex &index)
 {
     // 处理双击事件，打开对应文件
     //QStandardItem* item = model.itemFromIndex(index);
-    QString filePath = model.data(index, Qt::ToolTipRole).toString();
-    QString fileName = model.data(index, Qt::DisplayRole).toString();
+    QString filePath = projectModel.data(index, Qt::ToolTipRole).toString();
+    QString fileName = projectModel.data(index, Qt::DisplayRole).toString();
     QFileInfo fileInfo(fileName);
     QString suf = fileInfo.suffix().toLower();
     if(suf == "h" || suf == "txt" || suf == "cpp"){
         openFile(filePath);
         qDebug() << "file opened:" << filePath;
     }
+}
+
+void MainWindow::updateRequireNotes(MdiChild *child)
+{
+    //先在projectTree中找到child对应的文件
 }
 
 void MainWindow::setPage1()
@@ -207,7 +245,7 @@ void MainWindow::createProject()
 
 
     //创建一个新项目后修改model
-    QStandardItem *parentItem = model.invisibleRootItem();
+    QStandardItem *parentItem = projectModel.invisibleRootItem();
     QStandardItem* itemProject = new QStandardItem;
     itemProject->setData(newPro->projectName, Qt::DisplayRole);
     itemProject->setData(newPro->projectPath, Qt::ToolTipRole);
@@ -276,7 +314,7 @@ bool MainWindow::addFileToProject(const projectTree *pro, QString fileName)
 
             // Close the file
             file.close();
-            QModelIndexList matchedIndexes = model.match(model.index(0, 0),   //找到和项目路径相同的model中的index
+            QModelIndexList matchedIndexes = projectModel.match(projectModel.index(0, 0),   //找到和项目路径相同的model中的index
                                              Qt::ToolTipRole, QVariant::fromValue(pro->projectPath), 1, Qt::MatchExactly);
             QModelIndex index = matchedIndexes.at(0);
 
@@ -291,16 +329,16 @@ bool MainWindow::addFileToProject(const projectTree *pro, QString fileName)
             if(fileInfo.suffix().toLower() == "cpp"){  //区分要添加的文件是cpp还是h
                 itemNewFile->setData(QIcon(resFilePath + "/cpp.svg"), Qt::DecorationRole);
                 QModelIndex sourceIndex = index.child(2, 0);
-                QStandardItem* parent = model.itemFromIndex(sourceIndex);
+                QStandardItem* parent = projectModel.itemFromIndex(sourceIndex);
                 parent->appendRow(itemNewFile);
             }else if(fileInfo.suffix().toLower() == "h"){
                 itemNewFile->setData(QIcon(resFilePath + "/header.svg"), Qt::DecorationRole);
                 QModelIndex headerIndex = index.child(1, 0);
-                QStandardItem* parent = model.itemFromIndex(headerIndex);
+                QStandardItem* parent = projectModel.itemFromIndex(headerIndex);
                 parent->appendRow(itemNewFile);
             }
 
-            model.sort(0);  //model第一列排序
+            projectModel.sort(0);  //model第一列排序
             return true;
         }else{
             qDebug() << "Failed to create the file at:" << filePath;
@@ -309,10 +347,10 @@ bool MainWindow::addFileToProject(const projectTree *pro, QString fileName)
     }
 }
 
-void MainWindow::updateModelView()
+void MainWindow::updateProjectModel()
 {
     if(projects.isEmpty()) return;
-    QStandardItem *parentItem = model.invisibleRootItem();
+    QStandardItem *parentItem = projectModel.invisibleRootItem();
     foreach(projectTree* pro, projects){
         QStandardItem* itemProject = new QStandardItem;
         itemProject->setData(pro->projectName, Qt::DisplayRole);
@@ -341,6 +379,34 @@ void MainWindow::updateModelView()
             itemSources->appendRow(itemSourceFile);
         }
     }
+}
+
+void MainWindow::updateRequirementModel()
+{
+    requirementModel.clear();
+    //ui->requirementView->expandAll();   //自动展开所有项
+
+    QVector<RequireNote*> requirements = activeMdiChild()->getRequireNotes();
+    if(requirements.empty()) return;
+    QStandardItem *parentItem = requirementModel.invisibleRootItem();
+    for(auto level1 : requirements){   //最多三级需求，需求节点深度最大为3
+        QStandardItem* itemLevel1 = new QStandardItem;
+        itemLevel1->setData(level1->note, Qt::DisplayRole);
+        parentItem->appendRow(itemLevel1);
+        for(auto level2: level1->children){
+            QStandardItem* itemLevel2 = new QStandardItem;
+            itemLevel2->setData(level2->note, Qt::DisplayRole);
+            itemLevel1->appendRow(itemLevel2);
+            for(auto level3: level2->children){
+                QStandardItem* itemLevel3 = new QStandardItem;
+                itemLevel3->setData(level3->note, Qt::DisplayRole);
+                itemLevel2->appendRow(itemLevel3);
+            }
+        }
+    }
+    requirementModel.setHeaderData(0, Qt::Horizontal, " Requirements");
+    ui->requirementView->expandAll();
+
 }
 
 void MainWindow::setToolBarLayout()

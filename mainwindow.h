@@ -9,6 +9,7 @@
 #include <QDir>
 
 class MdiChild;
+struct RequireNote;
 QT_BEGIN_NAMESPACE
 class QAction;
 class QMenu;
@@ -59,7 +60,7 @@ public:
 
     bool addFileToProject(const projectTree* pro, QString fileName);
 
-    void updateModelView();
+    void updateProjectModel();
 
     void initCMakeFile(const projectTree *pro);
 
@@ -97,6 +98,11 @@ private slots:
     void showProgramOutput(int);
     void lineEditPrompt();
     void doubleClickedProjectTree(const QModelIndex &index);
+
+    void updateRequireNotes(MdiChild* child);
+    void updateRequirementModel();
+
+
 private:
     enum { MaxRecentFiles = 5 };
 
@@ -126,7 +132,9 @@ private:
 
     QList<projectTree*> projects;
 
-    QStandardItemModel model;
+    QStandardItemModel projectModel;
+
+    QStandardItemModel requirementModel;
 
     QErrorMessage *errordlg;
 

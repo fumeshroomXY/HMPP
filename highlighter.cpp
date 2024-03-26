@@ -2,6 +2,29 @@
 #include <QDebug>
 #include <QTextDocument>
 
+const QString startStr = ">>>";
+const QString endStr = "<<<";
+
+TextBlockData::TextBlockData()
+{
+    // Nothing to do
+}
+
+QVector<ParenthesisInfo *> TextBlockData::parentheses()
+{
+    return m_parentheses;
+}
+
+void TextBlockData::insert(ParenthesisInfo *info)
+{
+    int i = 0;
+    while (i < m_parentheses.size() &&
+        info->position > m_parentheses.at(i)->position)
+        ++i;
+
+    m_parentheses.insert(i, info);
+}
+
 //! [0]
 Highlighter::Highlighter(QTextDocument *parent)
     : QSyntaxHighlighter(parent)
@@ -148,6 +171,32 @@ void Highlighter::highlightBlock(const QString &text)  //After a QSyntaxHighligh
             faultIndex = faultRegExp.indexIn(text, faultIndex + length);
         }
     }
+
+    //匹配双尖括号
+    TextBlockData *data = new TextBlockData;
+
+    int leftPos = text.indexOf(startStr);
+    while (leftPos != -1) {
+        ParenthesisInfo *info = new ParenthesisInfo;
+        info->character = startStr;
+        info->position = leftPos;
+
+        data->insert(info);
+        leftPos = text.indexOf(startStr, leftPos + startStr.size());
+    }
+
+    int rightPos = text.indexOf(endStr);
+    while (rightPos != -1) {
+        ParenthesisInfo *info = new ParenthesisInfo;
+        info->character = endStr;
+        info->position = rightPos;
+
+        data->insert(info);
+
+        rightPos = text.indexOf(endStr, rightPos + endStr.size());
+    }
+
+    setCurrentBlockUserData(data);
 
 }
 //! [11]
