@@ -98,10 +98,11 @@ private slots:
     void showProgramOutput(int);
     void lineEditPrompt();
     void doubleClickedProjectTree(const QModelIndex &index);
+    void doubleClickedRequirementView(const QModelIndex &index);
 
     void updateRequireNotes(MdiChild* child);
     void updateRequirementModel();
-
+    void completeRequirement(const QModelIndex &index);
 
 private:
     enum { MaxRecentFiles = 5 };

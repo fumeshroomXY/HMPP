@@ -44,6 +44,7 @@ void MdiChild::newFile()
     static int sequenceNumber = 1;
 
     isUntitled = true;    //新建的文档没有被保存过
+    //新建文件，curFile存的不是文件的完整路径，所以不推荐直接新建文件，最好是先新建项目
     curFile = tr("document%1.txt").arg(sequenceNumber++);  //当前文件命名
     setWindowTitle(curFile + "[*]");
 
@@ -62,6 +63,8 @@ bool MdiChild::loadFile(const QString &fileName)
         return false;
     }
 
+    curFile = QFileInfo(fileName).canonicalFilePath();    //可以去除路径中的符号链接，"."和".."等符号
+
     QTextStream in(&file);
     QApplication::setOverrideCursor(Qt::WaitCursor);   //设置鼠标状态为等待状态
     setPlainText(in.readAll());    //读取文件全部内容，并添加到编辑器中
@@ -77,6 +80,8 @@ bool MdiChild::loadFile(const QString &fileName)
 
 bool MdiChild::save()
 {
+
+    //当关闭为保存文件时，程序会崩溃
     if (isUntitled) {
         return saveAs();
     } else {
@@ -523,6 +528,7 @@ void MdiChild::highlightMatch()
 
 void MdiChild::updateMatch()
 {
+    qDebug() << "updateMatch";
     QTextBlock currentBlock = document()->begin();
     while(currentBlock.isValid()){
         TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
@@ -546,6 +552,7 @@ void MdiChild::updateMatch()
     }
     requireNotes.clear();
     updateRequireNotes(-1, document()->lineCount(), nullptr);
+
 }
 
 void MdiChild::updateRequireNotes(int startLine, int endLine, RequireNote* node)
@@ -569,14 +576,16 @@ void MdiChild::updateRequireNotes(int startLine, int endLine, RequireNote* node)
             //endLine = info->matchLineNumber;
             QString content = currentBlock.text();
             content = content.mid(content.indexOf(startStr) + startStr.length());  //找到括号后描述的需求说明
+
             RequireNote* newNode = new RequireNote(content, i, info->matchLineNumber, curFile);
             //if(newNode->startLine > node->startLine && newNode->endLine < node->endLine){
             if(node){
                 node->children.append(newNode);
             }else{
-                requireNotes.append(newNode);
-            }
+                newNode->isRoot = true;  //根节点，顶级需求
 
+            }
+            requireNotes.append(newNode);
             updateRequireNotes(i, info->matchLineNumber, newNode);
             i = info->matchLineNumber;
             //}
@@ -666,5 +675,50 @@ void MdiChild::createParenthesisSelection(int pos)
     selections.append(selection);
 
     setExtraSelections(selections);
+}
+
+void MdiChild::changeRequirementToNote(int lineNumber)
+{
+    qDebug() << "changeRequirementToNote";
+    QTextBlock currentBlock = document()->findBlockByLineNumber(lineNumber);
+    TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
+    int end;
+    if(data){
+        QVector<ParenthesisInfo *> infos = data->parentheses();  //这里先考虑每行只可以有一个匹配符的情况
+        if(infos.empty()) {
+            return;
+        };
+        ParenthesisInfo *info = infos.at(0);
+        end = info->matchLineNumber;
+    }
+
+    for(auto req : requireNotes){
+        //qDebug() << "Line:" << req->startLine;
+        if(req->startLine >= lineNumber && req->endLine <= end){
+            qDebug() << "Line:" << req->startLine;
+            QTextBlock block = document()->findBlockByLineNumber(req->startLine);  //将>>>替换为//
+            QTextCursor cursor(document());
+            cursor.setPosition(block.position());
+            QString text = block.text();
+            int index = text.indexOf(startStr);
+            if(index != -1){
+                cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::MoveAnchor, index);
+                cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, startStr.length());
+                cursor.insertText("//");
+            }
+
+            block = document()->findBlockByLineNumber(req->endLine);  //将<<<替换为
+            cursor.setPosition(block.position());
+            text = block.text();
+            index = text.indexOf(endStr);
+            if(index != -1){
+                cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::MoveAnchor, index);
+                cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, endStr.length());
+                cursor.insertText("");
+
+            }
+        }
+    }
+
 }
 

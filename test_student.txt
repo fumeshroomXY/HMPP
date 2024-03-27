@@ -116,10 +116,10 @@ void initialize(StringList<Student> students)
 >>>level 3 requirement
 <<<
 
->>>level 3 requirement
-<<<
+          >>>level 3 requirement
+     <<<
 
->>>level 3 requirement
+         >>>level 3 requirement
 <<<
 
 

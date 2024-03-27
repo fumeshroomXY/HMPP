@@ -23,6 +23,7 @@ struct RequireNote{
     int startLine = -1;
     int endLine = -1;
     QString filePath;
+    bool isRoot = false;   //是否是根节点，即顶级需求
     QVector<RequireNote *> children;
 
     RequireNote(QString note, int start, int end, QString file) : note(note),
@@ -56,6 +57,9 @@ public:
     int faultLineNumber = -1;
 
     int getLineHeight();
+
+    //将需求伪码改为注释
+    void changeRequirementToNote(int lineNumber);
 
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;   //关闭事件
@@ -112,6 +116,8 @@ private:
     bool matchLeftParenthesis(QTextBlock currentBlock, int index, int numRightParentheses, int &matchLineNumber, int &matchPosition);
     bool matchRightParenthesis(QTextBlock currentBlock, int index, int numLeftParentheses, int &matchLineNumber, int &matchPosition);
     void createParenthesisSelection(int pos);
+
+
 
     //需求伪码注释节点列表，只保留了一级需求，即父节点
     QVector<RequireNote *> requireNotes;

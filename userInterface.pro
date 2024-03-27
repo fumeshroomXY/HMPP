@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     highlighter.cpp \
     screenfactor.cpp \
     faultpromptdialog.cpp \
-    faultlinehighlighter.cpp
+    faultlinehighlighter.cpp \
+    requirementtreeview.cpp
 
 HEADERS  += mainwindow.h \
     mdichild.h \
@@ -35,7 +36,8 @@ HEADERS  += mainwindow.h \
     highlighter.h \
     screenfactor.h \
     faultpromptdialog.h \
-    faultlinehighlighter.h
+    faultlinehighlighter.h \
+    requirementtreeview.h
 
 RESOURCES += \
     ui_images.qrc

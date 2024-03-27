@@ -11,6 +11,7 @@ INPUT(
 ./debug\screenfactor.o
 ./debug\faultpromptdialog.o
 ./debug\faultlinehighlighter.o
+./debug\requirementtreeview.o
 ./debug\qrc_ui_images.o
 ./debug\moc_mainwindow.o
 ./debug\moc_mdichild.o
@@ -23,4 +24,5 @@ INPUT(
 ./debug\moc_screenfactor.o
 ./debug\moc_faultpromptdialog.o
 ./debug\moc_faultlinehighlighter.o
+./debug\moc_requirementtreeview.o
 );

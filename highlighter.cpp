@@ -63,15 +63,15 @@ Highlighter::Highlighter(QTextDocument *parent)
 //! [2]
 
 //! [3]
-    singleLineCommentFormat.setForeground(Qt::red);
+    singleLineCommentFormat.setForeground(Qt::darkGreen);
     rule.pattern = QRegExp("//[^\n]*");
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
 
-    multiLineCommentFormat.setForeground(Qt::red);
+    multiLineCommentFormat.setForeground(Qt::darkGreen);
 //! [3]
     //单行伪码需求
-    singleLineRequireFormat.setForeground(Qt::darkGreen);
+    singleLineRequireFormat.setForeground(Qt::red);
     rule.pattern = QRegExp("(>>>[^\n]*)|(<<<)");
     rule.format = singleLineRequireFormat;
     highlightingRules.append(rule);

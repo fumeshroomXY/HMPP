@@ -37,6 +37,7 @@
 #include <QtWidgets/QTreeWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
+#include "requirementtreeview.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -75,7 +76,7 @@ public:
     QWidget *pageProject;
     QVBoxLayout *verticalLayout_2;
     QTreeView *projectTreeView;
-    QTreeView *requirementView;
+    RequirementTreeView *requirementView;
     QTreeWidget *treeClassView;
     QProgressBar *progressBar;
     QWidget *pageRunDebug;
@@ -261,7 +262,7 @@ public:
 
         verticalLayout_2->addWidget(projectTreeView);
 
-        requirementView = new QTreeView(pageProject);
+        requirementView = new RequirementTreeView(pageProject);
         requirementView->setObjectName(QStringLiteral("requirementView"));
 
         verticalLayout_2->addWidget(requirementView);

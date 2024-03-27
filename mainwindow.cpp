@@ -109,7 +109,7 @@ MainWindow::MainWindow()
     // 设置Header的样式
     requirementHeader->setStyleSheet("QHeaderView::section { background-color: rgb(242, 242, 242); border: 1px solid gray; }");
 
-
+    connect(ui->requirementView, &RequirementTreeView::complete, this, &MainWindow::completeRequirement);
 
     appDir = QDir(QCoreApplication::applicationDirPath());  //保存项目工作目录
     appDir.cdUp();
@@ -118,6 +118,7 @@ MainWindow::MainWindow()
     connect(ui->testCreateClassAct, &QAction::triggered, this, &MainWindow::createNewClass);
 
     connect(ui->projectTreeView, &QTreeView::doubleClicked, this, &MainWindow::doubleClickedProjectTree);
+    connect(ui->requirementView, &QTreeView::doubleClicked, this, &MainWindow::doubleClickedRequirementView);
 
     // 连接每个QTextEdit的textChanged()信号到槽函数
     connect(ui->mdiArea, &QMdiArea::subWindowActivated, [this](QMdiSubWindow *subWindow) {
@@ -383,23 +384,31 @@ void MainWindow::updateProjectModel()
 
 void MainWindow::updateRequirementModel()
 {
-    requirementModel.clear();
+
     //ui->requirementView->expandAll();   //自动展开所有项
 
+    //这里只获取了当前一个文件的requirements
     QVector<RequireNote*> requirements = activeMdiChild()->getRequireNotes();
-    if(requirements.empty()) return;
+    if(requirements.empty()){
+        return;
+    }
+    requirementModel.clear();
     QStandardItem *parentItem = requirementModel.invisibleRootItem();
     for(auto level1 : requirements){   //最多三级需求，需求节点深度最大为3
+        if(!level1->isRoot) continue;   //如果不是顶级需求，即根节点，直接跳过
         QStandardItem* itemLevel1 = new QStandardItem;
         itemLevel1->setData(level1->note, Qt::DisplayRole);
+        itemLevel1->setData(level1->filePath + ":line" + QString::number(level1->startLine), Qt::ToolTipRole);
         parentItem->appendRow(itemLevel1);
         for(auto level2: level1->children){
             QStandardItem* itemLevel2 = new QStandardItem;
             itemLevel2->setData(level2->note, Qt::DisplayRole);
+            itemLevel2->setData(level2->filePath + ":line" + QString::number(level2->startLine), Qt::ToolTipRole);
             itemLevel1->appendRow(itemLevel2);
             for(auto level3: level2->children){
                 QStandardItem* itemLevel3 = new QStandardItem;
                 itemLevel3->setData(level3->note, Qt::DisplayRole);
+                itemLevel3->setData(level3->filePath + ":line" + QString::number(level3->startLine), Qt::ToolTipRole);
                 itemLevel2->appendRow(itemLevel3);
             }
         }
@@ -407,6 +416,52 @@ void MainWindow::updateRequirementModel()
     requirementModel.setHeaderData(0, Qt::Horizontal, " Requirements");
     ui->requirementView->expandAll();
 
+}
+
+void MainWindow::doubleClickedRequirementView(const QModelIndex &index)
+{
+    // 处理双击事件，打开对应文件
+    //QStandardItem* item = model.itemFromIndex(index);
+    QString pos = requirementModel.data(index, Qt::ToolTipRole).toString();
+    QString filePath = pos.left(pos.indexOf(":line"));
+    int lineNumber = pos.mid((pos.indexOf(":line")) + QString(":line").length()).toInt();
+    QFileInfo fileInfo(filePath);
+    //openFile(filePath);
+}
+
+void MainWindow::completeRequirement(const QModelIndex &index)
+{
+    qDebug() << "completeRequirement";
+    QStandardItem *item = requirementModel.itemFromIndex(index);  // 获取 QModelIndex 对应的项
+    if (item) {
+        //获取文件位置以及行号
+        QString pos = item->data(Qt::ToolTipRole).toString();
+        QString filePath = pos.left(pos.indexOf(":line"));
+        int lineNumber = pos.mid((pos.indexOf(":line")) + QString(":line").length()).toInt();
+
+        bool hasChildren = item->hasChildren();  // 判断该项是否有子项
+        if (hasChildren) {   //提示信息
+            int ret = QMessageBox::warning(this, tr("Complete the Requirement?"),
+                                           tr("This requirement includes some sub-requirements. \n"
+                                              "If you click Apply, all sub-requirements it includes will also be completed. \n"
+                                              "Are you sure you want to click Apply?"), QMessageBox::Apply, QMessageBox::Cancel);
+            if(ret == QMessageBox::Apply){
+                if(openFile(filePath)){
+                    MdiChild* child = activeMdiChild();
+                    child->changeRequirementToNote(lineNumber);
+                }
+            }else if(ret == QMessageBox::Cancel){
+                return;
+            }
+        } else {
+            if(openFile(filePath)){
+                MdiChild* child = activeMdiChild();
+                child->changeRequirementToNote(lineNumber);
+            }
+        }
+    } else {
+        // 无效的 QModelIndex，对应的项不存在
+    }
 }
 
 void MainWindow::setToolBarLayout()
@@ -531,6 +586,7 @@ void MainWindow::setRecentFilesVisible(bool visible)
     recentFileSubMenuAct->setVisible(visible);
     recentFileSeparator->setVisible(visible);
 }
+
 
 void MainWindow::updateRecentFileActions()
 {
