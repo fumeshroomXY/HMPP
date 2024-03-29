@@ -27,3 +27,16 @@ RequirementTreeView::~RequirementTreeView()
 {
 
 }
+
+void RequirementTreeView::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    QModelIndex index = indexAt(event->pos());
+    if (index.isValid()) {
+        if (isExpanded(index)) {
+            expand(index);
+        }else{
+            collapse(index);
+        }
+    }
+    QTreeView::mouseDoubleClickEvent(event);
+}

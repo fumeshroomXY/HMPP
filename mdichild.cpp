@@ -11,6 +11,7 @@ MdiChild::MdiChild(QWidget *parent): QTextEdit(parent)
     isUntitled = true;
 
     lineNumberArea = new LineNumberArea(this);
+    foldingWidget = new FoldingWidget(this);
     faultPrompt = new FaultPromptDialog(this);
     button = new CustomButton(this);
     button->setVisible(false);
@@ -18,7 +19,9 @@ MdiChild::MdiChild(QWidget *parent): QTextEdit(parent)
     connect(document(), SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
     //connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(faultLinePaint()));
     //connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(updateLineNumberArea(QRect,int)));
-    connect(this, &QTextEdit::cursorPositionChanged, this, highlightCurrentLine);
+
+    //高亮光标所在行
+    //connect(this, &QTextEdit::cursorPositionChanged, this, highlightCurrentLine);
 
     connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(updateLineNumberArea/*_2*/(int)));
     connect(this, SIGNAL(textChanged()), this, SLOT(updateLineNumberArea()));
@@ -36,6 +39,7 @@ MdiChild::MdiChild(QWidget *parent): QTextEdit(parent)
 //    connect(faultPrompt, &FaultPromptDialog::leftSignal, this, &MdiChild::clearPreview);
 
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightMatch()));
+    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(autoCompleteMatch()));
     connect(this, SIGNAL(textChanged()), this, SLOT(updateMatch()));
 }
 
@@ -182,15 +186,33 @@ int MdiChild::lineNumberAreaWidth()
         max /= 10;
         ++digits;
     }
-    int lineHeight = getLineHeight();
-    int space = 2 * lineHeight + fontMetrics().width(QLatin1Char('9')) * digits;   //可以指定其他width
+    int lineHeight = foldingWidgetWidth();
+    int space = lineHeight + fontMetrics().width(QLatin1Char('9')) * digits;   //可以指定其他width
 
     return space;
 }
 
+int MdiChild::foldingWidgetWidth()
+{
+    QTextBlock block = document()->firstBlock();
+    return (int)document()->documentLayout()->blockBoundingRect(block).height();
+}
+
+void MdiChild::foldingWidgetHighlight(QPoint pos)
+{
+    //复制mousePressEvent的内容，获取开始和结束行号
+    QRect rect =  contentsRect();
+
+    //下面的y和height要调整，y取较大值，height取小值
+    foldingWidget->update(lineNumberArea->width() + 1, rect.y(), foldingWidget->width() - 2, rect.height());
+}
+
 void MdiChild::updateLineNumberAreaWidth(int /* newBlockCount */)
 {
-    setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);  //左边留下行号的空间，可以延长
+    //qDebug()  <<  "start: " << "updateLineNumberAreaWidth";
+
+    setViewportMargins(lineNumberAreaWidth() + foldingWidgetWidth(), 0, 0, 0);  //左边留下行号和折叠标记的空间，可以延长
+    //qDebug()  <<  "end: " << "updateLineNumberAreaWidth";
 }
 
 void MdiChild::updateLineNumberArea(QRectF /*rect_f*/)
@@ -203,6 +225,7 @@ void MdiChild::updateLineNumberArea(int /*slider_pos*/)
 }
 void MdiChild::updateLineNumberArea()
 {
+    //qDebug()  <<  "start: " << "updateLineNumberArea";
     /*
      * When the signal is emitted, the sliderPosition has been adjusted according to the action,
      * but the value has not yet been propagated (meaning the valueChanged() signal was not yet emitted),
@@ -220,14 +243,15 @@ void MdiChild::updateLineNumberArea()
     QRect rect =  contentsRect();   //Returns the area inside the widget's margins.
     // schedules a paint event for processing when Qt returns to the main event loop.
     lineNumberArea->update(0, rect.y(), lineNumberArea->width(), rect.height());  //horizontal x，vertical y
+    foldingWidget->update(lineNumberArea->width(), rect.y(), foldingWidget->width(), rect.height());
 
     updateLineNumberAreaWidth(0);
     //----------
     int dy = verticalScrollBar()->sliderPosition();
     if (dy > -1) {
         lineNumberArea->scroll(0, dy);   //dx = 0, dy = dy, 如果scrollbar滚动了的话，linenumberarea也要跟着滚动
+        foldingWidget->scroll(0, dy);
     }
-
     // Adjust slider to alway see the number of the currently being edited line...
     // Not sure what the part does.
     int firstBlockId = getFirstVisibleBlockId();
@@ -236,7 +260,7 @@ void MdiChild::updateLineNumberArea()
 //        qDebug() << "textCursor:" << textCursor().block().blockNumber();
         verticalScrollBar()->setSliderPosition(dy - document()->documentMargin());
 
-
+    //qDebug()  <<  "end: " << "updateLineNumberArea";
 }
 
 
@@ -245,7 +269,9 @@ void MdiChild::resizeEvent(QResizeEvent *e)
     QTextEdit::resizeEvent(e);
 
     QRect cr = contentsRect();
-    lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
+    int width = lineNumberAreaWidth();
+    lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), width, cr.height()));
+    foldingWidget->setGeometry(QRect(cr.left() + width, cr.top(), foldingWidgetWidth(), cr.height()));
 }
 
 int MdiChild::getFirstVisibleBlockId()
@@ -305,7 +331,7 @@ void MdiChild::lineNumberAreaPaintEvent(QPaintEvent *event)
     verticalScrollBar()->setSliderPosition(verticalScrollBar()->sliderPosition());
 
     QPainter painter(lineNumberArea);   //将lineNumberArea作为paint device
-    painter.fillRect(event->rect(), Qt::lightGray);   //整个边界背景设置为浅灰
+    painter.fillRect(event->rect(), QColor(240, 240, 240));   //整个边界背景设置为浅灰
     int blockNumber = getFirstVisibleBlockId();
 
     QTextBlock block = document()->findBlockByNumber(blockNumber);
@@ -334,14 +360,13 @@ void MdiChild::lineNumberAreaPaintEvent(QPaintEvent *event)
     QColor col_0(120, 120, 120);    // Other lines  (custom darkgrey)
 
     // Draw the numbers (displaying the current line number in green)
-    int lineHeight = (int)document()->documentLayout()->blockBoundingRect(block).height(); //每行的高度
+    //int lineHeight = (int)document()->documentLayout()->blockBoundingRect(block).height(); //每行的高度
     while (block.isValid() && top <= event->rect().bottom()) {
         if (block.isVisible() && bottom >= event->rect().top()) {
             QString number = QString::number(blockNumber + 1);   //blockNumber 从0开始，所以要+1
-            painter.setPen(QColor(120, 120, 120));
             painter.setPen(col_0);
             //painter.setPen((textCursor().blockNumber() == blockNumber) ? col_1 : col_0);
-            painter.drawText(-lineHeight, top,   //why starts from -5, 增加了数字的右边距
+            painter.drawText(-2, top,   //why starts from -5, 增加了数字的右边距
                              lineNumberArea->width(), fontMetrics().height(),
                              Qt::AlignRight, number);
         }
@@ -352,6 +377,89 @@ void MdiChild::lineNumberAreaPaintEvent(QPaintEvent *event)
         //bottom = top + lineHeight;
         bottom = top + (int)document()->documentLayout()->blockBoundingRect(block).height();
         ++blockNumber;
+    }
+}
+
+void MdiChild::foldingWidgetPaintEvent(QPaintEvent *event)
+{
+    if(requireNotes.isEmpty()) return;   //需求注释为空直接返回
+    verticalScrollBar()->setSliderPosition(verticalScrollBar()->sliderPosition());
+
+    QPainter painter(foldingWidget);   //将foldingWidget作为paint device
+    painter.fillRect(event->rect(), QColor(240, 240, 240));   //整个边界背景设置为浅灰
+    int blockNumber = getFirstVisibleBlockId();
+
+    QVector<RequireNote*>::const_iterator it = requireNotes.constBegin();
+    while(it != requireNotes.constEnd() && (*it)->startLine < blockNumber){  //找到视图中能看到的第一个匹配符所在行的需求注释
+        it++;
+    }
+
+    int translate_y = (blockNumber > 0) ? - verticalScrollBar()->sliderPosition() : 0;
+
+
+    //QColor col_1(90, 255, 30);      // Current line (custom green)
+    QColor col_0(120, 120, 120);    // Other lines  (custom darkgrey)
+    painter.setPen(col_0);
+
+    // 在每个匹配的行上绘制折叠箭头
+    while (it != requireNotes.constEnd()) {
+        QTextBlock block = document()->findBlockByNumber((*it)->startLine);
+        //减去滚轮移动的y轴上的距离，得到viewport中的相对坐标
+        QRectF rect = document()->documentLayout()->blockBoundingRect(block).translated(0, translate_y);
+        if (block.isVisible() && rect.top() >= event->rect().top() && rect.bottom() <= event->rect().bottom()) {
+
+            painter.drawText(-2, rect.top(),   //why starts from -5, 增加了数字的右边距
+                             foldingWidget->width(), fontMetrics().height(),
+                             Qt::AlignRight, ">");
+            it++;
+        }else{
+            break;
+        }
+    }
+}
+
+void MdiChild::foldingWidgetMousePressEvent(QMouseEvent *event)
+{
+    if(requireNotes.isEmpty()) return;   //需求注释为空直接返回
+    verticalScrollBar()->setSliderPosition(verticalScrollBar()->sliderPosition());
+
+    int blockNumber = getFirstVisibleBlockId();
+
+    QVector<RequireNote*>::const_iterator it = requireNotes.constBegin();
+    while(it != requireNotes.constEnd() && (*it)->endLine < blockNumber){  //找到视图中能看到的第一个匹配符所在行的需求注释
+        it++;
+    }
+
+    if(it != requireNotes.constEnd()) qDebug() << "FirstNote: " << (*it)->endLine;
+    int translate_y = (blockNumber > 0) ? - verticalScrollBar()->sliderPosition() : 0;
+
+    int viewTop = viewport()->geometry().top();
+    int viewBot = viewport()->geometry().bottom();
+
+    qDebug() << "viewTop:" << viewTop;
+    qDebug() << "viewBot:" << viewBot;
+
+    QVector<RequireNote*>::const_iterator res = requireNotes.constEnd();
+    while (it != requireNotes.constEnd()) {
+        qDebug() << "it: " << (*it)->startLine;
+        QTextBlock startBlock = document()->findBlockByNumber((*it)->startLine);
+        QTextBlock endBlock = document()->findBlockByNumber((*it)->endLine);
+        //减去滚轮移动的y轴上的距离，得到viewport中的相对坐标
+        QRectF sRect = document()->documentLayout()->blockBoundingRect(startBlock).translated(0, translate_y);
+        QRectF eRect = document()->documentLayout()->blockBoundingRect(endBlock).translated(0, translate_y);
+        //qDebug() << "Line: " << (*it)->startLine;
+        qDebug() << "top: " << sRect.top();
+        qDebug() << "bot: " << eRect.bottom();
+        qDebug() << "posy:" << event->pos().y();
+        if(sRect.top() > viewBot || eRect.bottom() < viewTop ) break;   //超出可视范围，直接返回
+        if ((startBlock.isVisible() || endBlock.isVisible())   //两个文本块，至少有一个是可视的
+                && sRect.top() <= event->pos().y() && eRect.bottom() >= event->pos().y()) {  //点击位置位于文本块之间
+            res = it;
+        }
+        it++;
+    }
+    if(res != requireNotes.constEnd()) {
+        qDebug() << "Line: " << (*res)->startLine;
     }
 }
 
@@ -478,6 +586,7 @@ int MdiChild::getLineHeight()
 // walk through and check that we don't exceed 80 chars per line
 void MdiChild::highlightMatch()
 {
+    //qDebug()  <<  "start: " << "highlightMatch";
     //bool match = false;
     QList<QTextEdit::ExtraSelection> selections;
     setExtraSelections(selections);
@@ -524,11 +633,12 @@ void MdiChild::highlightMatch()
     //requireNotes.clear();
     //updateRequireNotes(-1, document()->lineCount(), nullptr);
 
+    //qDebug()  <<  "end: " << "highlightMatch";
 }
 
 void MdiChild::updateMatch()
 {
-    qDebug() << "updateMatch";
+    //qDebug() << "start:" << "updateMatch";
     QTextBlock currentBlock = document()->begin();
     while(currentBlock.isValid()){
         TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
@@ -552,7 +662,7 @@ void MdiChild::updateMatch()
     }
     requireNotes.clear();
     updateRequireNotes(-1, document()->lineCount(), nullptr);
-
+    //qDebug() << "end:" << "updateMatch";
 }
 
 void MdiChild::updateRequireNotes(int startLine, int endLine, RequireNote* node)
@@ -679,7 +789,6 @@ void MdiChild::createParenthesisSelection(int pos)
 
 void MdiChild::changeRequirementToNote(int lineNumber)
 {
-    qDebug() << "changeRequirementToNote";
     QTextBlock currentBlock = document()->findBlockByLineNumber(lineNumber);
     TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
     int end;
@@ -720,5 +829,49 @@ void MdiChild::changeRequirementToNote(int lineNumber)
         }
     }
 
+}
+
+void MdiChild::goToLine(int lineNumber)
+{
+    QTextCursor cursor(document());
+    QTextBlock block = document()->findBlockByLineNumber(lineNumber);
+    cursor.setPosition(block.position());
+    QString text = block.text();
+    int index = text.indexOf(startStr);
+    if(index != -1){
+        cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::MoveAnchor, index);
+    }
+    setTextCursor(cursor);
+    ensureCursorVisible(); // 确保光标可见
+}
+
+void MdiChild::autoCompleteMatch()
+{
+    //qDebug()  <<  "start: " << "autoCompleteMatch";
+    // 获取当前光标位置
+    QTextCursor cursor = textCursor();
+    QTextBlock currentBlock = cursor.block();
+    TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
+    if(data){
+        QVector<ParenthesisInfo *> infos = data->parentheses();  //这里先考虑每行只可以有一个匹配符的情况
+        if(!infos.empty()) {
+            ParenthesisInfo *info = infos.at(0);
+            if(info->character == startStr && info->matchLineNumber != -1) return;  //如果当前行>>>有匹配，直接返回
+        }
+    }
+    // 获取当前光标所在行的文本
+    QString currentLineText = cursor.block().text();
+
+    // 判断当前行是否为空行并且以">>>"结尾
+    if (currentLineText.endsWith(startStr)) {
+        //调整光标到本行末尾
+        cursor.setPosition(currentBlock.position() + currentBlock.length());
+        setTextCursor(cursor);
+        // 插入一个新行
+        cursor.insertBlock();
+        // 在新行中插入"<<<"
+        cursor.insertText(endStr);
+    }
+    //qDebug()  <<  "end: " << "autoCompleteMatch";
 }
 

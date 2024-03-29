@@ -118,7 +118,7 @@ MainWindow::MainWindow()
     connect(ui->testCreateClassAct, &QAction::triggered, this, &MainWindow::createNewClass);
 
     connect(ui->projectTreeView, &QTreeView::doubleClicked, this, &MainWindow::doubleClickedProjectTree);
-    connect(ui->requirementView, &QTreeView::doubleClicked, this, &MainWindow::doubleClickedRequirementView);
+    connect(ui->requirementView, &RequirementTreeView::clicked, this, &MainWindow::doubleClickedRequirementView);
 
     // 连接每个QTextEdit的textChanged()信号到槽函数
     connect(ui->mdiArea, &QMdiArea::subWindowActivated, [this](QMdiSubWindow *subWindow) {
@@ -425,8 +425,15 @@ void MainWindow::doubleClickedRequirementView(const QModelIndex &index)
     QString pos = requirementModel.data(index, Qt::ToolTipRole).toString();
     QString filePath = pos.left(pos.indexOf(":line"));
     int lineNumber = pos.mid((pos.indexOf(":line")) + QString(":line").length()).toInt();
-    QFileInfo fileInfo(filePath);
-    //openFile(filePath);
+
+    if(openFile(filePath)){
+        MdiChild* child = activeMdiChild();
+        child->goToLine(lineNumber);
+        qDebug() << "expand1";
+
+        ui->requirementView->expandAll();
+        qDebug()  << "expand2";
+    }
 }
 
 void MainWindow::completeRequirement(const QModelIndex &index)
@@ -443,8 +450,8 @@ void MainWindow::completeRequirement(const QModelIndex &index)
         if (hasChildren) {   //提示信息
             int ret = QMessageBox::warning(this, tr("Complete the Requirement?"),
                                            tr("This requirement includes some sub-requirements. \n"
-                                              "If you click Apply, all sub-requirements it includes will also be completed. \n"
-                                              "Are you sure you want to click Apply?"), QMessageBox::Apply, QMessageBox::Cancel);
+                                              "If you click Yes, all sub-requirements it includes will also be completed. \n"
+                                              "Are you sure you want to complete?"), QMessageBox::Yes, QMessageBox::Cancel);
             if(ret == QMessageBox::Apply){
                 if(openFile(filePath)){
                     MdiChild* child = activeMdiChild();

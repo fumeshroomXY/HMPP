@@ -1,6 +1,7 @@
 #ifndef REQUIREMENTTREEVIEW_H
 #define REQUIREMENTTREEVIEW_H
 #include <QTreeView>
+#include <QMouseEvent>
 
 
 class RequirementTreeView : public QTreeView
@@ -13,6 +14,10 @@ public:
 
 protected:
     void showContextMenu(const QPoint &pos);
+
+private:
+    //想实现双击时该项如果是折叠的就保持折叠，如果是展开的就保持展开，但是好像有问题
+    void mouseDoubleClickEvent(QMouseEvent *event);
 
 signals:
     void complete(const QModelIndex &index);

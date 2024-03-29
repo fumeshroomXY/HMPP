@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MdiChild_t {
-    QByteArrayData data[23];
-    char stringdata0[318];
+    QByteArrayData data[24];
+    char stringdata0[336];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -51,7 +51,8 @@ QT_MOC_LITERAL(18, 244, 16), // "fixButtonHovered"
 QT_MOC_LITERAL(19, 261, 16), // "fixButtonClicked"
 QT_MOC_LITERAL(20, 278, 12), // "clearPreview"
 QT_MOC_LITERAL(21, 291, 14), // "highlightMatch"
-QT_MOC_LITERAL(22, 306, 11) // "updateMatch"
+QT_MOC_LITERAL(22, 306, 11), // "updateMatch"
+QT_MOC_LITERAL(23, 318, 17) // "autoCompleteMatch"
 
     },
     "MdiChild\0showProblemTab\0\0hideProblemTab\0"
@@ -62,7 +63,7 @@ QT_MOC_LITERAL(22, 306, 11) // "updateMatch"
     "highlightCurrentLine\0updateLineNumberArea\0"
     "showFaultPromptDialog\0fixButtonHovered\0"
     "fixButtonClicked\0clearPreview\0"
-    "highlightMatch\0updateMatch"
+    "highlightMatch\0updateMatch\0autoCompleteMatch"
 };
 #undef QT_MOC_LITERAL
 
@@ -72,7 +73,7 @@ static const uint qt_meta_data_MdiChild[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      17,   14, // methods
+      18,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -80,25 +81,26 @@ static const uint qt_meta_data_MdiChild[] = {
        2,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   99,    2, 0x06 /* Public */,
-       3,    0,  102,    2, 0x06 /* Public */,
+       1,    1,  104,    2, 0x06 /* Public */,
+       3,    0,  107,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       4,    1,  103,    2, 0x0a /* Public */,
-       7,    1,  106,    2, 0x0a /* Public */,
-       9,    2,  109,    2, 0x0a /* Public */,
-      12,    0,  114,    2, 0x08 /* Private */,
-      13,    1,  115,    2, 0x08 /* Private */,
-      15,    0,  118,    2, 0x08 /* Private */,
-      16,    1,  119,    2, 0x08 /* Private */,
-      16,    1,  122,    2, 0x08 /* Private */,
-      16,    0,  125,    2, 0x08 /* Private */,
-      17,    0,  126,    2, 0x08 /* Private */,
-      18,    0,  127,    2, 0x08 /* Private */,
-      19,    0,  128,    2, 0x08 /* Private */,
-      20,    0,  129,    2, 0x08 /* Private */,
-      21,    0,  130,    2, 0x08 /* Private */,
-      22,    0,  131,    2, 0x08 /* Private */,
+       4,    1,  108,    2, 0x0a /* Public */,
+       7,    1,  111,    2, 0x0a /* Public */,
+       9,    2,  114,    2, 0x0a /* Public */,
+      12,    0,  119,    2, 0x08 /* Private */,
+      13,    1,  120,    2, 0x08 /* Private */,
+      15,    0,  123,    2, 0x08 /* Private */,
+      16,    1,  124,    2, 0x08 /* Private */,
+      16,    1,  127,    2, 0x08 /* Private */,
+      16,    0,  130,    2, 0x08 /* Private */,
+      17,    0,  131,    2, 0x08 /* Private */,
+      18,    0,  132,    2, 0x08 /* Private */,
+      19,    0,  133,    2, 0x08 /* Private */,
+      20,    0,  134,    2, 0x08 /* Private */,
+      21,    0,  135,    2, 0x08 /* Private */,
+      22,    0,  136,    2, 0x08 /* Private */,
+      23,    0,  137,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Int,    2,
@@ -113,6 +115,7 @@ static const uint qt_meta_data_MdiChild[] = {
     QMetaType::Void,
     QMetaType::Void, QMetaType::QRectF,    2,
     QMetaType::Void, QMetaType::Int,    2,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -147,6 +150,7 @@ void MdiChild::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
         case 14: _t->clearPreview(); break;
         case 15: _t->highlightMatch(); break;
         case 16: _t->updateMatch(); break;
+        case 17: _t->autoCompleteMatch(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -194,13 +198,13 @@ int MdiChild::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 17)
+        if (_id < 18)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 17;
+        _id -= 18;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 17)
+        if (_id < 18)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 17;
+        _id -= 18;
     }
     return _id;
 }
@@ -279,6 +283,74 @@ void *LineNumberArea::qt_metacast(const char *_clname)
 }
 
 int LineNumberArea::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QWidget::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    return _id;
+}
+struct qt_meta_stringdata_FoldingWidget_t {
+    QByteArrayData data[1];
+    char stringdata0[14];
+};
+#define QT_MOC_LITERAL(idx, ofs, len) \
+    Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
+    qptrdiff(offsetof(qt_meta_stringdata_FoldingWidget_t, stringdata0) + ofs \
+        - idx * sizeof(QByteArrayData)) \
+    )
+static const qt_meta_stringdata_FoldingWidget_t qt_meta_stringdata_FoldingWidget = {
+    {
+QT_MOC_LITERAL(0, 0, 13) // "FoldingWidget"
+
+    },
+    "FoldingWidget"
+};
+#undef QT_MOC_LITERAL
+
+static const uint qt_meta_data_FoldingWidget[] = {
+
+ // content:
+       7,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       0,    0, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       0,    0, // constructors
+       0,       // flags
+       0,       // signalCount
+
+       0        // eod
+};
+
+void FoldingWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    Q_UNUSED(_o);
+    Q_UNUSED(_id);
+    Q_UNUSED(_c);
+    Q_UNUSED(_a);
+}
+
+const QMetaObject FoldingWidget::staticMetaObject = {
+    { &QWidget::staticMetaObject, qt_meta_stringdata_FoldingWidget.data,
+      qt_meta_data_FoldingWidget,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
+};
+
+
+const QMetaObject *FoldingWidget::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->dynamicMetaObject() : &staticMetaObject;
+}
+
+void *FoldingWidget::qt_metacast(const char *_clname)
+{
+    if (!_clname) return Q_NULLPTR;
+    if (!strcmp(_clname, qt_meta_stringdata_FoldingWidget.stringdata0))
+        return static_cast<void*>(const_cast< FoldingWidget*>(this));
+    return QWidget::qt_metacast(_clname);
+}
+
+int FoldingWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
     _id = QWidget::qt_metacall(_c, _id, _a);
     if (_id < 0)
