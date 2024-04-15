@@ -2,8 +2,8 @@
 #include <QDebug>
 #include <QTextDocument>
 
-const QString startStr = ">>>";
-const QString endStr = "<<<";
+const QString startStr = "{";
+const QString endStr = "}";
 
 TextBlockData::TextBlockData()
 {
@@ -150,6 +150,8 @@ void Highlighter::highlightBlock(const QString &text)  //After a QSyntaxHighligh
         startIndex = commentStartExpression.indexIn(text, startIndex + commentLength);
     }
 
+
+    //查询并高亮除0错误
     int faultIndex = faultRegExp.indexIn(text);
     if(faultIndex >= 0){
         QTextBlock block = currentBlock();

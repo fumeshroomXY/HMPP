@@ -205,12 +205,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE {
-        if(event->rect()->width() == codeEditor->foldingWidgetWidth()){
              codeEditor->foldingWidgetPaintEvent(event);
-        }else if(event->rect()->width() == codeEditor->foldingWidgetWidth()){
-            codeEditor->foldingWidgetHighlightEvent(event);
-        }
-
     }
 
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE{

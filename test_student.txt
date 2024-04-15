@@ -62,6 +62,8 @@ public:
         }
     }
 
+
+
     // 计算平均成绩
     double calculateAverage() const {
         double sum = 0.0;
@@ -130,8 +132,6 @@ void initialize(StringList<Student> students)
 
 >>>level 1 requirement
 <<<
-
-
 
 
 

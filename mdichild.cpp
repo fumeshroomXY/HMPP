@@ -7,7 +7,7 @@
 
 MdiChild::MdiChild(QWidget *parent): QTextEdit(parent)
 {
-    setAttribute(Qt::WA_DeleteOnClose);   //子窗口关闭时销毁这个对象
+    setAttribute(Qt::WA_DeleteOnClose);   //delete this widget when the widget has accepted the close event
     isUntitled = true;
 
     lineNumberArea = new LineNumberArea(this);
@@ -18,7 +18,6 @@ MdiChild::MdiChild(QWidget *parent): QTextEdit(parent)
 
     connect(document(), SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
     //connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(faultLinePaint()));
-    //connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(updateLineNumberArea(QRect,int)));
 
     //高亮光标所在行
     //connect(this, &QTextEdit::cursorPositionChanged, this, highlightCurrentLine);
@@ -41,6 +40,7 @@ MdiChild::MdiChild(QWidget *parent): QTextEdit(parent)
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightMatch()));
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(autoCompleteMatch()));
     connect(this, SIGNAL(textChanged()), this, SLOT(updateMatch()));
+
 }
 
 void MdiChild::newFile()
@@ -130,8 +130,10 @@ QString MdiChild::userFriendlyCurrentFile()  //提取文件名，从文件路径
 void MdiChild::closeEvent(QCloseEvent *event)
 {
     if (maybeSave()) {
+
         event->accept();
     } else {    //如果文档未被更改过，或更改了但取消关闭，或放弃保存
+
         event->ignore();
     }
 }
@@ -186,16 +188,15 @@ int MdiChild::lineNumberAreaWidth()
         max /= 10;
         ++digits;
     }
-    int lineHeight = foldingWidgetWidth();
+    int lineHeight = fontMetrics().height();
     int space = lineHeight + fontMetrics().width(QLatin1Char('9')) * digits;   //可以指定其他width
-
     return space;
 }
 
 int MdiChild::foldingWidgetWidth()
 {
-    QTextBlock block = document()->firstBlock();
-    return (int)document()->documentLayout()->blockBoundingRect(block).height();
+    int space = fontMetrics().height();
+    return space;
 }
 
 void MdiChild::foldingWidgetHighlight(QPoint pos)
@@ -209,10 +210,7 @@ void MdiChild::foldingWidgetHighlight(QPoint pos)
 
 void MdiChild::updateLineNumberAreaWidth(int /* newBlockCount */)
 {
-    //qDebug()  <<  "start: " << "updateLineNumberAreaWidth";
-
     setViewportMargins(lineNumberAreaWidth() + foldingWidgetWidth(), 0, 0, 0);  //左边留下行号和折叠标记的空间，可以延长
-    //qDebug()  <<  "end: " << "updateLineNumberAreaWidth";
 }
 
 void MdiChild::updateLineNumberArea(QRectF /*rect_f*/)
@@ -243,7 +241,8 @@ void MdiChild::updateLineNumberArea()
     QRect rect =  contentsRect();   //Returns the area inside the widget's margins.
     // schedules a paint event for processing when Qt returns to the main event loop.
     lineNumberArea->update(0, rect.y(), lineNumberArea->width(), rect.height());  //horizontal x，vertical y
-    foldingWidget->update(lineNumberArea->width(), rect.y(), foldingWidget->width(), rect.height());
+
+    foldingWidget->update(0, rect.y(), foldingWidget->width(), rect.height());
 
     updateLineNumberAreaWidth(0);
     //----------
@@ -856,7 +855,7 @@ void MdiChild::autoCompleteMatch()
         QVector<ParenthesisInfo *> infos = data->parentheses();  //这里先考虑每行只可以有一个匹配符的情况
         if(!infos.empty()) {
             ParenthesisInfo *info = infos.at(0);
-            if(info->character == startStr && info->matchLineNumber != -1) return;  //如果当前行>>>有匹配，直接返回
+            if(info->matchLineNumber != -1) return;  //如果当前行括号有匹配，直接返回
         }
     }
     // 获取当前光标所在行的文本

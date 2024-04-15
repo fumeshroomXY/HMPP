@@ -18,6 +18,10 @@ class QMdiSubWindow;
 class QGridLayout;
 QT_END_NAMESPACE
 
+//项目目录下的子目录名可以根据需求更改
+extern const QString srcDir;
+extern const QString headDir;
+
 namespace Ui{
     class MainWindow;
 }
@@ -34,7 +38,7 @@ public:
     projectTree(QString proName, QString proPath){
         projectName = proName;
         projectPath = proPath;
-        cmakeFile = "CMakeList.txt";
+        cmakeFile = "CMakeLists.txt";
         sourceFiles.append("main.cpp");
     }
 };
@@ -60,7 +64,6 @@ public:
 
     bool addFileToProject(const projectTree* pro, QString fileName);
 
-    void updateProjectModel();
 
     void initCMakeFile(const projectTree *pro);
 
@@ -131,16 +134,21 @@ private:
 
     QTimer *timer;
 
-    QList<projectTree*> projects;
+    projectTree* currentPro;
 
-    QStandardItemModel projectModel;
+    QStandardItemModel* projectModel;
 
-    QStandardItemModel requirementModel;
+    QStandardItemModel* requirementModel;
 
     QErrorMessage *errordlg;
 
     QDir appDir;
 
+    bool loadProject(const QString &fileName);
+    void initProjectModel(projectTree *newPro);
+
+    //寻找Model中符合特定条件的项
+    QModelIndex findModelItem(const QString &searchString, const QModelIndex &parentIndex, QStandardItemModel *model, int role);
 };
 
 #endif
