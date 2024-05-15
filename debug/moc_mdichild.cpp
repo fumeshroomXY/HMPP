@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MdiChild_t {
-    QByteArrayData data[24];
-    char stringdata0[336];
+    QByteArrayData data[27];
+    char stringdata0[393];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -33,32 +33,36 @@ QT_MOC_LITERAL(0, 0, 8), // "MdiChild"
 QT_MOC_LITERAL(1, 9, 14), // "showProblemTab"
 QT_MOC_LITERAL(2, 24, 0), // ""
 QT_MOC_LITERAL(3, 25, 14), // "hideProblemTab"
-QT_MOC_LITERAL(4, 40, 11), // "resizeEvent"
-QT_MOC_LITERAL(5, 52, 13), // "QResizeEvent*"
-QT_MOC_LITERAL(6, 66, 5), // "event"
-QT_MOC_LITERAL(7, 72, 14), // "faultLinePaint"
-QT_MOC_LITERAL(8, 87, 11), // "blockNumber"
-QT_MOC_LITERAL(9, 99, 10), // "setFixText"
-QT_MOC_LITERAL(10, 110, 4), // "var1"
-QT_MOC_LITERAL(11, 115, 4), // "var2"
-QT_MOC_LITERAL(12, 120, 19), // "documentWasModified"
-QT_MOC_LITERAL(13, 140, 25), // "updateLineNumberAreaWidth"
-QT_MOC_LITERAL(14, 166, 13), // "newBlockCount"
-QT_MOC_LITERAL(15, 180, 20), // "highlightCurrentLine"
-QT_MOC_LITERAL(16, 201, 20), // "updateLineNumberArea"
-QT_MOC_LITERAL(17, 222, 21), // "showFaultPromptDialog"
-QT_MOC_LITERAL(18, 244, 16), // "fixButtonHovered"
-QT_MOC_LITERAL(19, 261, 16), // "fixButtonClicked"
-QT_MOC_LITERAL(20, 278, 12), // "clearPreview"
-QT_MOC_LITERAL(21, 291, 14), // "highlightMatch"
-QT_MOC_LITERAL(22, 306, 11), // "updateMatch"
-QT_MOC_LITERAL(23, 318, 17) // "autoCompleteMatch"
+QT_MOC_LITERAL(4, 40, 16), // "updateClassFiles"
+QT_MOC_LITERAL(5, 57, 25), // "QHash<QString,ClassInfo>*"
+QT_MOC_LITERAL(6, 83, 13), // "classInfoHash"
+QT_MOC_LITERAL(7, 97, 11), // "resizeEvent"
+QT_MOC_LITERAL(8, 109, 13), // "QResizeEvent*"
+QT_MOC_LITERAL(9, 123, 5), // "event"
+QT_MOC_LITERAL(10, 129, 14), // "faultLinePaint"
+QT_MOC_LITERAL(11, 144, 11), // "blockNumber"
+QT_MOC_LITERAL(12, 156, 10), // "setFixText"
+QT_MOC_LITERAL(13, 167, 4), // "var1"
+QT_MOC_LITERAL(14, 172, 4), // "var2"
+QT_MOC_LITERAL(15, 177, 19), // "documentWasModified"
+QT_MOC_LITERAL(16, 197, 25), // "updateLineNumberAreaWidth"
+QT_MOC_LITERAL(17, 223, 13), // "newBlockCount"
+QT_MOC_LITERAL(18, 237, 20), // "highlightCurrentLine"
+QT_MOC_LITERAL(19, 258, 20), // "updateLineNumberArea"
+QT_MOC_LITERAL(20, 279, 21), // "showFaultPromptDialog"
+QT_MOC_LITERAL(21, 301, 16), // "fixButtonHovered"
+QT_MOC_LITERAL(22, 318, 16), // "fixButtonClicked"
+QT_MOC_LITERAL(23, 335, 12), // "clearPreview"
+QT_MOC_LITERAL(24, 348, 14), // "highlightMatch"
+QT_MOC_LITERAL(25, 363, 11), // "updateMatch"
+QT_MOC_LITERAL(26, 375, 17) // "autoCompleteMatch"
 
     },
     "MdiChild\0showProblemTab\0\0hideProblemTab\0"
-    "resizeEvent\0QResizeEvent*\0event\0"
-    "faultLinePaint\0blockNumber\0setFixText\0"
-    "var1\0var2\0documentWasModified\0"
+    "updateClassFiles\0QHash<QString,ClassInfo>*\0"
+    "classInfoHash\0resizeEvent\0QResizeEvent*\0"
+    "event\0faultLinePaint\0blockNumber\0"
+    "setFixText\0var1\0var2\0documentWasModified\0"
     "updateLineNumberAreaWidth\0newBlockCount\0"
     "highlightCurrentLine\0updateLineNumberArea\0"
     "showFaultPromptDialog\0fixButtonHovered\0"
@@ -73,45 +77,47 @@ static const uint qt_meta_data_MdiChild[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      18,   14, // methods
+      19,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       2,       // signalCount
+       3,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,  104,    2, 0x06 /* Public */,
-       3,    0,  107,    2, 0x06 /* Public */,
+       1,    1,  109,    2, 0x06 /* Public */,
+       3,    0,  112,    2, 0x06 /* Public */,
+       4,    1,  113,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       4,    1,  108,    2, 0x0a /* Public */,
-       7,    1,  111,    2, 0x0a /* Public */,
-       9,    2,  114,    2, 0x0a /* Public */,
-      12,    0,  119,    2, 0x08 /* Private */,
-      13,    1,  120,    2, 0x08 /* Private */,
-      15,    0,  123,    2, 0x08 /* Private */,
-      16,    1,  124,    2, 0x08 /* Private */,
-      16,    1,  127,    2, 0x08 /* Private */,
-      16,    0,  130,    2, 0x08 /* Private */,
-      17,    0,  131,    2, 0x08 /* Private */,
-      18,    0,  132,    2, 0x08 /* Private */,
-      19,    0,  133,    2, 0x08 /* Private */,
-      20,    0,  134,    2, 0x08 /* Private */,
-      21,    0,  135,    2, 0x08 /* Private */,
-      22,    0,  136,    2, 0x08 /* Private */,
-      23,    0,  137,    2, 0x08 /* Private */,
+       7,    1,  116,    2, 0x0a /* Public */,
+      10,    1,  119,    2, 0x0a /* Public */,
+      12,    2,  122,    2, 0x0a /* Public */,
+      15,    0,  127,    2, 0x08 /* Private */,
+      16,    1,  128,    2, 0x08 /* Private */,
+      18,    0,  131,    2, 0x08 /* Private */,
+      19,    1,  132,    2, 0x08 /* Private */,
+      19,    1,  135,    2, 0x08 /* Private */,
+      19,    0,  138,    2, 0x08 /* Private */,
+      20,    0,  139,    2, 0x08 /* Private */,
+      21,    0,  140,    2, 0x08 /* Private */,
+      22,    0,  141,    2, 0x08 /* Private */,
+      23,    0,  142,    2, 0x08 /* Private */,
+      24,    0,  143,    2, 0x08 /* Private */,
+      25,    0,  144,    2, 0x08 /* Private */,
+      26,    0,  145,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Int,    2,
     QMetaType::Void,
+    QMetaType::Void, 0x80000000 | 5,    6,
 
  // slots: parameters
-    QMetaType::Void, 0x80000000 | 5,    6,
-    QMetaType::Void, QMetaType::Int,    8,
-    QMetaType::Void, QMetaType::QString, QMetaType::QString,   10,   11,
+    QMetaType::Void, 0x80000000 | 8,    9,
+    QMetaType::Void, QMetaType::Int,   11,
+    QMetaType::Void, QMetaType::QString, QMetaType::QString,   13,   14,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,   14,
+    QMetaType::Void, QMetaType::Int,   17,
     QMetaType::Void,
     QMetaType::Void, QMetaType::QRectF,    2,
     QMetaType::Void, QMetaType::Int,    2,
@@ -135,22 +141,23 @@ void MdiChild::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
         switch (_id) {
         case 0: _t->showProblemTab((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 1: _t->hideProblemTab(); break;
-        case 2: _t->resizeEvent((*reinterpret_cast< QResizeEvent*(*)>(_a[1]))); break;
-        case 3: _t->faultLinePaint((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 4: _t->setFixText((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2]))); break;
-        case 5: _t->documentWasModified(); break;
-        case 6: _t->updateLineNumberAreaWidth((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 7: _t->highlightCurrentLine(); break;
-        case 8: _t->updateLineNumberArea((*reinterpret_cast< QRectF(*)>(_a[1]))); break;
-        case 9: _t->updateLineNumberArea((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 10: _t->updateLineNumberArea(); break;
-        case 11: _t->showFaultPromptDialog(); break;
-        case 12: _t->fixButtonHovered(); break;
-        case 13: _t->fixButtonClicked(); break;
-        case 14: _t->clearPreview(); break;
-        case 15: _t->highlightMatch(); break;
-        case 16: _t->updateMatch(); break;
-        case 17: _t->autoCompleteMatch(); break;
+        case 2: _t->updateClassFiles((*reinterpret_cast< QHash<QString,ClassInfo>*(*)>(_a[1]))); break;
+        case 3: _t->resizeEvent((*reinterpret_cast< QResizeEvent*(*)>(_a[1]))); break;
+        case 4: _t->faultLinePaint((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 5: _t->setFixText((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2]))); break;
+        case 6: _t->documentWasModified(); break;
+        case 7: _t->updateLineNumberAreaWidth((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 8: _t->highlightCurrentLine(); break;
+        case 9: _t->updateLineNumberArea((*reinterpret_cast< QRectF(*)>(_a[1]))); break;
+        case 10: _t->updateLineNumberArea((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 11: _t->updateLineNumberArea(); break;
+        case 12: _t->showFaultPromptDialog(); break;
+        case 13: _t->fixButtonHovered(); break;
+        case 14: _t->fixButtonClicked(); break;
+        case 15: _t->clearPreview(); break;
+        case 16: _t->highlightMatch(); break;
+        case 17: _t->updateMatch(); break;
+        case 18: _t->autoCompleteMatch(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -167,6 +174,13 @@ void MdiChild::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
             typedef void (MdiChild::*_t)();
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&MdiChild::hideProblemTab)) {
                 *result = 1;
+                return;
+            }
+        }
+        {
+            typedef void (MdiChild::*_t)(QHash<QString,ClassInfo> * );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&MdiChild::updateClassFiles)) {
+                *result = 2;
                 return;
             }
         }
@@ -198,13 +212,13 @@ int MdiChild::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 18)
+        if (_id < 19)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 18;
+        _id -= 19;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 18)
+        if (_id < 19)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 18;
+        _id -= 19;
     }
     return _id;
 }
@@ -220,6 +234,13 @@ void MdiChild::showProblemTab(int _t1)
 void MdiChild::hideProblemTab()
 {
     QMetaObject::activate(this, &staticMetaObject, 1, Q_NULLPTR);
+}
+
+// SIGNAL 2
+void MdiChild::updateClassFiles(QHash<QString,ClassInfo> * _t1)
+{
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 2, _a);
 }
 struct qt_meta_stringdata_LineNumberArea_t {
     QByteArrayData data[1];

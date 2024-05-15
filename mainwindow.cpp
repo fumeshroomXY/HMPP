@@ -572,6 +572,12 @@ void MainWindow::completeRequirement(const QModelIndex &index)
     qDebug() << "10";
 }
 
+void MainWindow::updateProjectClass(QHash<QString, ClassInfo>* classInfoHash)
+{
+    //根据类的信息，对照原来的类信息，更新类文件及其内容
+    qDebug() << "MainWindow::updateProjectClass";
+}
+
 void MainWindow::setToolBarLayout()
 {
     qDebug() << "11";
@@ -987,6 +993,9 @@ MdiChild *MainWindow::createMdiChild()
     connect(child, &MdiChild::showProblemTab, this, &MainWindow::showProgramOutput);
     //connect(child, &MdiChild::showProblemTab, ui->tabProgramOutput, &QWidget::show);//当收到展示问题面板信号时，展示问题面板
     connect(child, &MdiChild::hideProblemTab, ui->tabProgramOutput, &QWidget::hide);
+
+    //根据源文件类信息，更新类文件
+    connect(child, &MdiChild::updateClassFiles, this, &MainWindow::updateProjectClass);
     qDebug() << "30";
     return child;
 }

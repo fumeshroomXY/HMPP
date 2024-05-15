@@ -7,6 +7,7 @@
 #include <QStandardItemModel>
 #include <QFileInfo>
 #include <QDir>
+#include <mdichild.h>
 
 class MdiChild;
 struct RequireNote;
@@ -107,6 +108,9 @@ private slots:
     void updateRequirementModel();
     void completeRequirement(const QModelIndex &index);
 
+    //根据源文件类信息，更新类文件
+    void updateProjectClass(QHash<QString, ClassInfo>* classInfoHash);
+
 private:
     enum { MaxRecentFiles = 5 };
 
@@ -135,6 +139,8 @@ private:
     QTimer *timer;
 
     projectTree* currentPro;
+
+    QList<ClassInfo>* classList;
 
     QStandardItemModel* projectModel;
 

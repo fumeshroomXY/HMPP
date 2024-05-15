@@ -12,6 +12,7 @@ INPUT(
 ./release\faultpromptdialog.o
 ./release\faultlinehighlighter.o
 ./release\requirementtreeview.o
+./release\syntaxrule.o
 ./release\qrc_ui_images.o
 ./release\moc_mainwindow.o
 ./release\moc_mdichild.o

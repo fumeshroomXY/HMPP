@@ -1,0 +1,60 @@
+#ifndef SYNTAXRULE_H
+#define SYNTAXRULE_H
+
+
+#include <QString>
+#include <QList>
+#include <QRegExp>
+
+
+//定义C++的基础数据类型
+extern const QStringList basicType;
+
+//
+extern const QRegExp basicVarPattern;
+extern const QString basicVarStr;
+
+//定义全局变量的规则
+extern const QString globalVarStr;
+extern const QRegExp globalVarPattern;
+
+//定义基础和复合变量的命名规则
+extern const QRegExp varPattern;
+extern const QString varStr;
+
+//定义函数的命名规则
+extern const QRegExp definedMethodPattern;
+extern const QString definedMethodStr;
+
+//定义类的命名规则
+extern const QString classStr;
+extern const QRegExp classPattern;
+
+//定义类调用成员变量的规则
+extern const QString classVarStr;
+extern const QRegExp classVarPattern;
+
+//定义类调用成员函数的规则
+extern const QString classMethodStr;
+extern const QRegExp classMethodPattern;
+
+//定义类的构造函数规则
+extern const QString classConstructStr1;   //比如 Student* stu("name", age)
+extern const QRegExp classConstructPattern1;
+
+extern const QString classConstructStr2;   //比如 Student stu("name", age)
+extern const QRegExp classConstructPattern2;
+
+//定义类的构造函数完整函数体的规则
+extern const QString classCtrMethodStr;
+extern const QRegExp classCtrMethodPattern;
+
+//规则集
+extern const QList<QRegExp> syntaxRuleList;
+
+//未指定的类型或类名
+extern const QString UNSPECIFIED;
+
+
+#endif // SYNTAXRULE_H
+

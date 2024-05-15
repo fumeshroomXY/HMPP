@@ -55,7 +55,8 @@ SOURCES       = main.cpp \
 		screenfactor.cpp \
 		faultpromptdialog.cpp \
 		faultlinehighlighter.cpp \
-		requirementtreeview.cpp release\qrc_ui_images.cpp \
+		requirementtreeview.cpp \
+		syntaxrule.cpp release\qrc_ui_images.cpp \
 		release\moc_mainwindow.cpp \
 		release\moc_mdichild.cpp \
 		release\moc_codeanalyzeconfigdialog.cpp \
@@ -81,6 +82,7 @@ OBJECTS       = release/main.o \
 		release/faultpromptdialog.o \
 		release/faultlinehighlighter.o \
 		release/requirementtreeview.o \
+		release/syntaxrule.o \
 		release/qrc_ui_images.o \
 		release/moc_mainwindow.o \
 		release/moc_mdichild.o \
@@ -106,7 +108,8 @@ DIST          =  mainwindow.h \
 		screenfactor.h \
 		faultpromptdialog.h \
 		faultlinehighlighter.h \
-		requirementtreeview.h main.cpp \
+		requirementtreeview.h \
+		syntaxrule.h main.cpp \
 		mainwindow.cpp \
 		mdichild.cpp \
 		codeanalyzeconfigdialog.cpp \
@@ -118,7 +121,8 @@ DIST          =  mainwindow.h \
 		screenfactor.cpp \
 		faultpromptdialog.cpp \
 		faultlinehighlighter.cpp \
-		requirementtreeview.cpp
+		requirementtreeview.cpp \
+		syntaxrule.cpp
 QMAKE_TARGET  = userInterface
 DESTDIR        = release\ #avoid trailing-slash linebreak
 TARGET         = userInterface.exe
@@ -141,7 +145,7 @@ dist:
 	$(ZIP) userInterface.zip $(SOURCES) $(DIST) userInterface.pro ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\spec_pre.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\qdevice.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\device_config.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\common\angle.conf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\qconfig.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_3dcore.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_3dcore_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_3dinput.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_3dinput_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_3dlogic.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_3dlogic_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_3dquick.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_3dquick_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_3dquickinput.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_3dquickinput_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_3dquickrender.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_3dquickrender_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_3drender.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_3drender_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_axbase.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_axbase_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_axcontainer.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_axcontainer_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_axserver.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_axserver_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_bluetooth.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_bluetooth_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_bootstrap_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_clucene_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_concurrent.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_concurrent_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_core.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_core_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_dbus.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_dbus_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_designer.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_designer_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_designercomponents_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_gui.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_gui_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_help.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_help_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_labscontrols_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_labstemplates_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_location.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_location_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_multimedia.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_multimedia_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_multimediawidgets.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_multimediawidgets_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_network.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_network_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_nfc.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_nfc_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_opengl.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_opengl_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_openglextensions.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_openglextensions_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_platformsupport_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_positioning.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_positioning_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_printsupport.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_printsupport_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_qml.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_qml_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_qmldevtools_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_qmltest.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_qmltest_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_quick.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_quick_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_quickparticles_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_quickwidgets.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_quickwidgets_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_script.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_script_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_scripttools.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_scripttools_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_sensors.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_sensors_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_serialbus.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_serialbus_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_serialport.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_serialport_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_sql.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_sql_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_svg.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_svg_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_testlib.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_testlib_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_uiplugin.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_uitools.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_uitools_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_webchannel.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_webchannel_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_websockets.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_websockets_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_widgets.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_widgets_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_winextras.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_winextras_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_xml.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_xml_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_xmlpatterns.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\modules\qt_lib_xmlpatterns_private.pri ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\qt_functions.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\qt_config.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\win32\qt_config.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\win32-g++\qmake.conf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\spec_post.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\exclusive_builds.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\default_pre.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\win32\default_pre.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\resolve_config.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\exclusive_builds_post.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\default_post.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\build_pass.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\qml_debug.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\win32\rtti.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\precompile_header.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\warn_on.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\qt.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\resources.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\moc.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\win32\opengl.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\uic.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\file_copies.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\win32\windows.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\testcase_targets.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\exceptions.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\yacc.prf ..\..\..\..\Qt\5.6\mingw49_32\mkspecs\features\lex.prf userInterface.pro ui_images.qrc ..\..\..\..\Qt\5.6\mingw49_32\lib\qtmain.prl ..\..\..\..\Qt\5.6\mingw49_32\lib\Qt5Widgets.prl ..\..\..\..\Qt\5.6\mingw49_32\lib\Qt5Gui.prl ..\..\..\..\Qt\5.6\mingw49_32\lib\Qt5Core.prl  NO_PCH_SOURCES RESOURCES HEADERS SOURCES OBJECTIVE_SOURCES FORMS YACCSOURCES YACCSOURCES LEXSOURCES 
 
 clean: compiler_clean 
-	-$(DEL_FILE) release\main.o release\mainwindow.o release\mdichild.o release\codeanalyzeconfigdialog.o release\ruledescriptdialog.o release\allruledescriptdialog.o release\managepropertysetdialog.o release\faultinstance.o release\highlighter.o release\screenfactor.o release\faultpromptdialog.o release\faultlinehighlighter.o release\requirementtreeview.o release\qrc_ui_images.o release\moc_mainwindow.o release\moc_mdichild.o release\moc_codeanalyzeconfigdialog.o release\moc_ruledescriptdialog.o release\moc_allruledescriptdialog.o release\moc_managepropertysetdialog.o release\moc_faultinstance.o release\moc_highlighter.o release\moc_screenfactor.o release\moc_faultpromptdialog.o release\moc_faultlinehighlighter.o release\moc_requirementtreeview.o
+	-$(DEL_FILE) release\main.o release\mainwindow.o release\mdichild.o release\codeanalyzeconfigdialog.o release\ruledescriptdialog.o release\allruledescriptdialog.o release\managepropertysetdialog.o release\faultinstance.o release\highlighter.o release\screenfactor.o release\faultpromptdialog.o release\faultlinehighlighter.o release\requirementtreeview.o release\syntaxrule.o release\qrc_ui_images.o release\moc_mainwindow.o release\moc_mdichild.o release\moc_codeanalyzeconfigdialog.o release\moc_ruledescriptdialog.o release\moc_allruledescriptdialog.o release\moc_managepropertysetdialog.o release\moc_faultinstance.o release\moc_highlighter.o release\moc_screenfactor.o release\moc_faultpromptdialog.o release\moc_faultlinehighlighter.o release\moc_requirementtreeview.o
 
 distclean: clean 
 	-$(DEL_FILE) $(DESTDIR_TARGET)
@@ -327,6 +331,23 @@ release/moc_mainwindow.cpp: ../../../../Qt/5.6/mingw49_32/include/QtWidgets/QMai
 		../../../../Qt/5.6/mingw49_32/include/QtCore/qfileinfo.h \
 		../../../../Qt/5.6/mingw49_32/include/QtCore/QDir \
 		../../../../Qt/5.6/mingw49_32/include/QtCore/qdir.h \
+		mdichild.h \
+		../../../../Qt/5.6/mingw49_32/include/QtWidgets/QTextEdit \
+		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qtextedit.h \
+		../../../../Qt/5.6/mingw49_32/include/QtGui/qtextdocument.h \
+		../../../../Qt/5.6/mingw49_32/include/QtGui/qtextoption.h \
+		../../../../Qt/5.6/mingw49_32/include/QtGui/qtextcursor.h \
+		../../../../Qt/5.6/mingw49_32/include/QtGui/qtextformat.h \
+		../../../../Qt/5.6/mingw49_32/include/QtGui/qpen.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/QObject \
+		faultpromptdialog.h \
+		../../../../Qt/5.6/mingw49_32/include/QtWidgets/QDialog \
+		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qdialog.h \
+		../../../../Qt/5.6/mingw49_32/include/QtWidgets/QPushButton \
+		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qpushbutton.h \
+		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qabstractbutton.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/QVector \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/QEvent \
 		mainwindow.h
 	D:\Qt\5.6\mingw49_32\bin\moc.exe $(DEFINES) -D__GNUC__ -DWIN32 -ID:/Qt/5.6/mingw49_32/mkspecs/win32-g++ -ID:/QtMaterial/Qtprojects/HMPPprojects/userInterfaceUI -ID:/Qt/5.6/mingw49_32/include -ID:/Qt/5.6/mingw49_32/include/QtWidgets -ID:/Qt/5.6/mingw49_32/include/QtGui -ID:/Qt/5.6/mingw49_32/include/QtANGLE -ID:/Qt/5.6/mingw49_32/include/QtCore mainwindow.h -o release\moc_mainwindow.cpp
 
@@ -451,6 +472,7 @@ release/moc_mdichild.cpp: ../../../../Qt/5.6/mingw49_32/include/QtWidgets/QTextE
 		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qabstractbutton.h \
 		../../../../Qt/5.6/mingw49_32/include/QtGui/qicon.h \
 		../../../../Qt/5.6/mingw49_32/include/QtCore/QVector \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/QEvent \
 		mdichild.h
 	D:\Qt\5.6\mingw49_32\bin\moc.exe $(DEFINES) -D__GNUC__ -DWIN32 -ID:/Qt/5.6/mingw49_32/mkspecs/win32-g++ -ID:/QtMaterial/Qtprojects/HMPPprojects/userInterfaceUI -ID:/Qt/5.6/mingw49_32/include -ID:/Qt/5.6/mingw49_32/include/QtWidgets -ID:/Qt/5.6/mingw49_32/include/QtGui -ID:/Qt/5.6/mingw49_32/include/QtANGLE -ID:/Qt/5.6/mingw49_32/include/QtCore mdichild.h -o release\moc_mdichild.cpp
 
@@ -1538,6 +1560,7 @@ release/moc_requirementtreeview.cpp: ../../../../Qt/5.6/mingw49_32/include/QtWid
 		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qtabbar.h \
 		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qtabwidget.h \
 		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qrubberband.h \
+		../../../../Qt/5.6/mingw49_32/include/QtGui/QMouseEvent \
 		requirementtreeview.h
 	D:\Qt\5.6\mingw49_32\bin\moc.exe $(DEFINES) -D__GNUC__ -DWIN32 -ID:/Qt/5.6/mingw49_32/mkspecs/win32-g++ -ID:/QtMaterial/Qtprojects/HMPPprojects/userInterfaceUI -ID:/Qt/5.6/mingw49_32/include -ID:/Qt/5.6/mingw49_32/include/QtWidgets -ID:/Qt/5.6/mingw49_32/include/QtGui -ID:/Qt/5.6/mingw49_32/include/QtANGLE -ID:/Qt/5.6/mingw49_32/include/QtCore requirementtreeview.h -o release\moc_requirementtreeview.cpp
 
@@ -1669,7 +1692,8 @@ ui_mainwindow.h: mainwindow.ui \
 		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qstyle.h \
 		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qtabbar.h \
 		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qtabwidget.h \
-		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qrubberband.h
+		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qrubberband.h \
+		../../../../Qt/5.6/mingw49_32/include/QtGui/QMouseEvent
 	D:\Qt\5.6\mingw49_32\bin\uic.exe mainwindow.ui -o ui_mainwindow.h
 
 ui_codeanalyzeconfigdialog.h: codeanalyzeconfigdialog.ui
@@ -1842,7 +1866,24 @@ release/main.o: main.cpp ../../../../Qt/5.6/mingw49_32/include/QtWidgets/QApplic
 		../../../../Qt/5.6/mingw49_32/include/QtCore/QFileInfo \
 		../../../../Qt/5.6/mingw49_32/include/QtCore/qfileinfo.h \
 		../../../../Qt/5.6/mingw49_32/include/QtCore/QDir \
-		../../../../Qt/5.6/mingw49_32/include/QtCore/qdir.h
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qdir.h \
+		mdichild.h \
+		../../../../Qt/5.6/mingw49_32/include/QtWidgets/QTextEdit \
+		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qtextedit.h \
+		../../../../Qt/5.6/mingw49_32/include/QtGui/qtextdocument.h \
+		../../../../Qt/5.6/mingw49_32/include/QtGui/qtextoption.h \
+		../../../../Qt/5.6/mingw49_32/include/QtGui/qtextcursor.h \
+		../../../../Qt/5.6/mingw49_32/include/QtGui/qtextformat.h \
+		../../../../Qt/5.6/mingw49_32/include/QtGui/qpen.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/QObject \
+		faultpromptdialog.h \
+		../../../../Qt/5.6/mingw49_32/include/QtWidgets/QDialog \
+		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qdialog.h \
+		../../../../Qt/5.6/mingw49_32/include/QtWidgets/QPushButton \
+		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qpushbutton.h \
+		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qabstractbutton.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/QVector \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/QEvent
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\main.o main.cpp
 
 release/mainwindow.o: mainwindow.cpp ../../../../Qt/5.6/mingw49_32/include/QtWidgets/QtWidgets \
@@ -2338,6 +2379,7 @@ release/mainwindow.o: mainwindow.cpp ../../../../Qt/5.6/mingw49_32/include/QtWid
 		../../../../Qt/5.6/mingw49_32/include/QtWidgets/QTreeWidget \
 		../../../../Qt/5.6/mingw49_32/include/QtWidgets/QVBoxLayout \
 		requirementtreeview.h \
+		../../../../Qt/5.6/mingw49_32/include/QtGui/QMouseEvent \
 		allruledescriptdialog.h \
 		../../../../Qt/5.6/mingw49_32/include/QtWidgets/QTreeWidgetItem \
 		codeanalyzeconfigdialog.h \
@@ -2812,7 +2854,8 @@ release/mdichild.o: mdichild.cpp ../../../../Qt/5.6/mingw49_32/include/QtWidgets
 		highlighter.h \
 		../../../../Qt/5.6/mingw49_32/include/QtGui/QSyntaxHighlighter \
 		../../../../Qt/5.6/mingw49_32/include/QtGui/QTextCharFormat \
-		../../../../Qt/5.6/mingw49_32/include/QtCore/QString
+		../../../../Qt/5.6/mingw49_32/include/QtCore/QString \
+		syntaxrule.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\mdichild.o mdichild.cpp
 
 release/codeanalyzeconfigdialog.o: codeanalyzeconfigdialog.cpp codeanalyzeconfigdialog.h \
@@ -2993,9 +3036,20 @@ release/codeanalyzeconfigdialog.o: codeanalyzeconfigdialog.cpp codeanalyzeconfig
 		../../../../Qt/5.6/mingw49_32/include/QtCore/qfileinfo.h \
 		../../../../Qt/5.6/mingw49_32/include/QtCore/QDir \
 		../../../../Qt/5.6/mingw49_32/include/QtCore/qdir.h \
+		mdichild.h \
+		../../../../Qt/5.6/mingw49_32/include/QtWidgets/QTextEdit \
+		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qtextedit.h \
+		../../../../Qt/5.6/mingw49_32/include/QtGui/qtextdocument.h \
+		../../../../Qt/5.6/mingw49_32/include/QtGui/qtextoption.h \
+		../../../../Qt/5.6/mingw49_32/include/QtGui/qtextcursor.h \
+		../../../../Qt/5.6/mingw49_32/include/QtGui/qtextformat.h \
+		../../../../Qt/5.6/mingw49_32/include/QtGui/qpen.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/QObject \
+		faultpromptdialog.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/QVector \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/QEvent \
 		ruledescriptdialog.h \
-		screenfactor.h \
-		../../../../Qt/5.6/mingw49_32/include/QtCore/QObject
+		screenfactor.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\codeanalyzeconfigdialog.o codeanalyzeconfigdialog.cpp
 
 release/ruledescriptdialog.o: ruledescriptdialog.cpp ruledescriptdialog.h \
@@ -4196,11 +4250,53 @@ release/requirementtreeview.o: requirementtreeview.cpp requirementtreeview.h \
 		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qtabbar.h \
 		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qtabwidget.h \
 		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qrubberband.h \
+		../../../../Qt/5.6/mingw49_32/include/QtGui/QMouseEvent \
 		../../../../Qt/5.6/mingw49_32/include/QtWidgets/QMenu \
 		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qmenu.h \
 		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qaction.h \
-		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qactiongroup.h
+		../../../../Qt/5.6/mingw49_32/include/QtWidgets/qactiongroup.h \
+		../../../../Qt/5.6/mingw49_32/include/QtWidgets/QAction
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\requirementtreeview.o requirementtreeview.cpp
+
+release/syntaxrule.o: syntaxrule.cpp syntaxrule.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/QString \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qstring.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qchar.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qglobal.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qconfig.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qfeatures.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qsystemdetection.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qprocessordetection.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qcompilerdetection.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qtypeinfo.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qtypetraits.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qisenum.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qsysinfo.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qlogging.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qflags.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qatomic.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qbasicatomic.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qatomic_bootstrap.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qgenericatomic.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qatomic_cxx11.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qatomic_gcc.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qatomic_msvc.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qatomic_armv7.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qatomic_armv6.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qatomic_armv5.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qatomic_ia64.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qatomic_x86.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qatomic_unix.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qglobalstatic.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qmutex.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qnumeric.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qversiontagging.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qbytearray.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qrefcount.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qnamespace.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qarraydata.h \
+		../../../../Qt/5.6/mingw49_32/include/QtCore/qstringbuilder.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\syntaxrule.o syntaxrule.cpp
 
 release/qrc_ui_images.o: release/qrc_ui_images.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\qrc_ui_images.o release\qrc_ui_images.cpp
