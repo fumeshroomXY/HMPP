@@ -12,24 +12,25 @@ class FaultLineHighlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
 public:
-    FaultLineHighlighter(QTextDocument *parent = 0);
+    FaultLineHighlighter(QTextDocument *parent, QRegExp pattern, QTextCharFormat format, QString faultName);
 
 protected:
     void highlightBlock(const QString &text) Q_DECL_OVERRIDE;
 
 private:
-    struct HighlightingRule
+    struct FaultHighlightRule
     {
         QRegExp pattern;
         QTextCharFormat format;
+        QString faultName;
 
-        bool operator==(const HighlightingRule& other) const {
-            return pattern == other.pattern && format == other.format;
+        bool operator==(const FaultHighlightRule& other) const {
+            return pattern == other.pattern && format == other.format && faultName == other.faultName;
         }
     };
-    QVector<HighlightingRule> highlightingRules;
-    QTextCharFormat faultLineFormat;
-    QRegExp faultRegExp = QRegExp("[a-zA-Z_][a-zA-Z0-9_]*\\s*/\\s*[a-zA-Z_][a-zA-Z0-9_]*");
+    FaultHighlightRule faultHighlightRule;
+    QList<int> highlightedLines;
+
 
 signals:
     void findFault();

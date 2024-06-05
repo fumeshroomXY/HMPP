@@ -4,9 +4,12 @@
 #include <QTextEdit>
 #include <QObject>
 #include <faultpromptdialog.h>
+#include <highlighter.h>
 #include <QVector>
 #include <QEvent>
 #include <QTextBlock>
+#include <QScrollBar>
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 class QPaintEvent;
@@ -27,8 +30,6 @@ enum SCOPE
 
 struct Variable;
 struct Method;
-struct EntityInMethod;
-struct EntityInSource;
 struct ClassInfo;
 
 
@@ -111,6 +112,8 @@ public:
     //更新顶层括号信息
     void updateTopParenthesis();
 
+    //匹配对应形式的fault
+    void matchFaultPattern(const QRegExp &faultPattern, const QTextCharFormat &format, QString faultName);
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;   //关闭事件
 
@@ -122,6 +125,9 @@ public slots:
     void faultLinePaint(int blockNumber);
     void setFixText(QString var1, QString var2);
 
+    //fault弹窗，quickfix并确定后触发
+    void faultFixOkClicked();
+
 private slots:
     void documentWasModified();    //文件被更改时显示更改窗口状态
 
@@ -132,7 +138,7 @@ private slots:
     void updateLineNumberArea(int /*slider_pos*/);
     void updateLineNumberArea();
 
-    void showFaultPromptDialog();
+    void showFaultPromptDialog(int lineNumber);
 
     void fixButtonHovered();
     void fixButtonClicked();
@@ -147,6 +153,8 @@ private slots:
     //当检测到>>>，自动插入<<<
     void autoCompleteMatch();
 
+    //更新faultBox的位置
+    void moveFaultPromptDialog();
 
 private:
     //更新需求节点
@@ -160,11 +168,12 @@ private:
     bool isUntitled;    //作为当前文件是否被保存到硬盘上的标志
 
     //绘制行号的区域
-    QWidget *lineNumberArea;
+    LineNumberArea *lineNumberArea;
 
     QWidget *foldingWidget;
 
-    CustomButton * button;
+    Highlighter* highlighter;
+
     FaultPromptDialog* faultPrompt;
     QString previewText;
     bool insertPreview = false;
@@ -243,21 +252,38 @@ signals:
     void showProblemTab(int);
     void hideProblemTab();
 
-    void updateClassFiles(QHash<QString, ClassInfo>* classInfoHash);
+    //通知主窗口更新类文件
+    void updateClassFiles(QString filePath, QHash<QString, ClassInfo>& classInfoHash);
 
 };
 
 class LineNumberArea : public QWidget
 {
     Q_OBJECT
-
+    friend class MdiChild;
 public:
     LineNumberArea(MdiChild *editor) : QWidget(editor) {
         codeEditor = editor;
+        iconX = 0;
+        iconY = 0;
+        faultWarningButton = new CustomButton(this);
+        faultWarningButton->setVisible(false);
+        connect(editor->verticalScrollBar(), &QScrollBar::valueChanged, this, &LineNumberArea::updateFaultImagePosition);
     }
 
     QSize sizeHint() const Q_DECL_OVERRIDE {
         return QSize(codeEditor->lineNumberAreaWidth(), 0);
+    }
+
+    // 设置图标的位置
+    void setIconPosition(int x, int y) {
+        iconX = x;
+        iconY = y;
+        qDebug() << "iconY: " << iconY;
+    }
+
+    QPoint getIconPosition(){
+        return QPoint(iconX, iconY);
     }
 
 protected:
@@ -268,6 +294,14 @@ protected:
 
 private:
     MdiChild *codeEditor;
+    CustomButton* faultWarningButton;
+    int iconX;
+    int iconY;
+
+private slots:
+    void updateFaultImagePosition() {
+        update();
+    }
 };
 
 class FoldingWidget: public QWidget
@@ -348,21 +382,6 @@ struct Method
     }
 };
 
-//定义源文件中一个函数的实现中出现的变量和函数
-struct EntityInMethod
-{
-    QList<Variable>* vars;
-    QList<Method>* methods;
-    Method self;
-};
-
-//源文件中所有出现的变量和函数
-struct EntityInSource
-{
-    QList<EntityInMethod>* entities;
-    QString fileName;    //文件名
-    QString filePath;    //文件路径
-};
 
 //类的信息
 struct ClassInfo

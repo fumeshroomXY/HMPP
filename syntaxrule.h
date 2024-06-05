@@ -55,6 +55,8 @@ extern const QList<QRegExp> syntaxRuleList;
 //未指定的类型或类名
 extern const QString UNSPECIFIED;
 
+//除0异常
+extern const QRegExp divisionByZeroPattern;
 
 #endif // SYNTAXRULE_H
 

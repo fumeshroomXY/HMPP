@@ -38,6 +38,7 @@ FaultPromptDialog::FaultPromptDialog(QWidget *parent) :
     //connect(fixButton, &CustomButton::enterSignal, this, &FaultPromptDialog::fixButtonEntered);
     connect(ui->fixButton, &QPushButton::released, this, &FaultPromptDialog::fixButtonReleased);
     connect(ui->unfixButton, &QPushButton::clicked, this, &FaultPromptDialog::unfixButtonClicked);
+    connect(ui->okButton, &QPushButton::clicked, this, &FaultPromptDialog::okButtonClicked);
     //connect(fixButton, &CustomButton::leaveSignal, this, &FaultPromptDialog::fixButtonLeft);
 }
 
@@ -77,4 +78,9 @@ void FaultPromptDialog::fixButtonLeft()
 void FaultPromptDialog::unfixButtonClicked()
 {
     emit unfixSignal();
+}
+
+void FaultPromptDialog::okButtonClicked()
+{
+    emit okclicked();
 }

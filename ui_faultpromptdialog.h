@@ -34,6 +34,7 @@ public:
     QPushButton *fixButton;
     QPushButton *unfixButton;
     QPushButton *deactivateButton;
+    QPushButton *okButton;
 
     void setupUi(QDialog *FaultPromptDialog)
     {
@@ -87,6 +88,11 @@ public:
 
         horizontalLayout->addWidget(deactivateButton);
 
+        okButton = new QPushButton(FaultPromptDialog);
+        okButton->setObjectName(QStringLiteral("okButton"));
+
+        horizontalLayout->addWidget(okButton);
+
 
         verticalLayout->addLayout(horizontalLayout);
 
@@ -109,6 +115,7 @@ public:
         fixButton->setText(QApplication::translate("FaultPromptDialog", "Quick fix", 0));
         unfixButton->setText(QApplication::translate("FaultPromptDialog", "Undo fix", 0));
         deactivateButton->setText(QApplication::translate("FaultPromptDialog", "Deactivate", 0));
+        okButton->setText(QApplication::translate("FaultPromptDialog", "OK", 0));
     } // retranslateUi
 
 };

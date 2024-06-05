@@ -104,3 +104,5 @@ const QList<QRegExp> syntaxRuleList = {basicVarPattern, definedMethodPattern, cl
                                        classPattern, classVarPattern, classMethodPattern};
 
 const QString UNSPECIFIED = "UNSPECIFIED";
+
+const QRegExp divisionByZeroPattern = QRegExp("([a-zA-Z_][a-zA-Z0-9_]*)\\s*/\\s*([a-zA-Z_][a-zA-Z0-9_]*)");

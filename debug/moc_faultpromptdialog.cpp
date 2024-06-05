@@ -142,8 +142,8 @@ void CustomButton::leaveSignal()
     QMetaObject::activate(this, &staticMetaObject, 1, Q_NULLPTR);
 }
 struct qt_meta_stringdata_FaultPromptDialog_t {
-    QByteArrayData data[13];
-    char stringdata0[187];
+    QByteArrayData data[15];
+    char stringdata0[213];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -159,20 +159,22 @@ QT_MOC_LITERAL(3, 33, 13), // "enteredSignal"
 QT_MOC_LITERAL(4, 47, 14), // "releasedSignal"
 QT_MOC_LITERAL(5, 62, 10), // "leftSignal"
 QT_MOC_LITERAL(6, 73, 11), // "unfixSignal"
-QT_MOC_LITERAL(7, 85, 16), // "showRuleDescript"
-QT_MOC_LITERAL(8, 102, 16), // "fixButtonClicked"
-QT_MOC_LITERAL(9, 119, 16), // "fixButtonEntered"
-QT_MOC_LITERAL(10, 136, 17), // "fixButtonReleased"
-QT_MOC_LITERAL(11, 154, 13), // "fixButtonLeft"
-QT_MOC_LITERAL(12, 168, 18) // "unfixButtonClicked"
+QT_MOC_LITERAL(7, 85, 9), // "okclicked"
+QT_MOC_LITERAL(8, 95, 15), // "okButtonClicked"
+QT_MOC_LITERAL(9, 111, 16), // "showRuleDescript"
+QT_MOC_LITERAL(10, 128, 16), // "fixButtonClicked"
+QT_MOC_LITERAL(11, 145, 16), // "fixButtonEntered"
+QT_MOC_LITERAL(12, 162, 17), // "fixButtonReleased"
+QT_MOC_LITERAL(13, 180, 13), // "fixButtonLeft"
+QT_MOC_LITERAL(14, 194, 18) // "unfixButtonClicked"
 
     },
     "FaultPromptDialog\0clickedSignal\0\0"
     "enteredSignal\0releasedSignal\0leftSignal\0"
-    "unfixSignal\0showRuleDescript\0"
-    "fixButtonClicked\0fixButtonEntered\0"
-    "fixButtonReleased\0fixButtonLeft\0"
-    "unfixButtonClicked"
+    "unfixSignal\0okclicked\0okButtonClicked\0"
+    "showRuleDescript\0fixButtonClicked\0"
+    "fixButtonEntered\0fixButtonReleased\0"
+    "fixButtonLeft\0unfixButtonClicked"
 };
 #undef QT_MOC_LITERAL
 
@@ -182,27 +184,29 @@ static const uint qt_meta_data_FaultPromptDialog[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      11,   14, // methods
+      13,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       5,       // signalCount
+       6,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    0,   69,    2, 0x06 /* Public */,
-       3,    0,   70,    2, 0x06 /* Public */,
-       4,    0,   71,    2, 0x06 /* Public */,
-       5,    0,   72,    2, 0x06 /* Public */,
-       6,    0,   73,    2, 0x06 /* Public */,
+       1,    0,   79,    2, 0x06 /* Public */,
+       3,    0,   80,    2, 0x06 /* Public */,
+       4,    0,   81,    2, 0x06 /* Public */,
+       5,    0,   82,    2, 0x06 /* Public */,
+       6,    0,   83,    2, 0x06 /* Public */,
+       7,    0,   84,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       7,    0,   74,    2, 0x08 /* Private */,
-       8,    0,   75,    2, 0x08 /* Private */,
-       9,    0,   76,    2, 0x08 /* Private */,
-      10,    0,   77,    2, 0x08 /* Private */,
-      11,    0,   78,    2, 0x08 /* Private */,
-      12,    0,   79,    2, 0x08 /* Private */,
+       8,    0,   85,    2, 0x0a /* Public */,
+       9,    0,   86,    2, 0x08 /* Private */,
+      10,    0,   87,    2, 0x08 /* Private */,
+      11,    0,   88,    2, 0x08 /* Private */,
+      12,    0,   89,    2, 0x08 /* Private */,
+      13,    0,   90,    2, 0x08 /* Private */,
+      14,    0,   91,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void,
@@ -210,8 +214,10 @@ static const uint qt_meta_data_FaultPromptDialog[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void,
 
  // slots: parameters
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -233,12 +239,14 @@ void FaultPromptDialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
         case 2: _t->releasedSignal(); break;
         case 3: _t->leftSignal(); break;
         case 4: _t->unfixSignal(); break;
-        case 5: _t->showRuleDescript(); break;
-        case 6: _t->fixButtonClicked(); break;
-        case 7: _t->fixButtonEntered(); break;
-        case 8: _t->fixButtonReleased(); break;
-        case 9: _t->fixButtonLeft(); break;
-        case 10: _t->unfixButtonClicked(); break;
+        case 5: _t->okclicked(); break;
+        case 6: _t->okButtonClicked(); break;
+        case 7: _t->showRuleDescript(); break;
+        case 8: _t->fixButtonClicked(); break;
+        case 9: _t->fixButtonEntered(); break;
+        case 10: _t->fixButtonReleased(); break;
+        case 11: _t->fixButtonLeft(); break;
+        case 12: _t->unfixButtonClicked(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -279,6 +287,13 @@ void FaultPromptDialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
                 return;
             }
         }
+        {
+            typedef void (FaultPromptDialog::*_t)();
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&FaultPromptDialog::okclicked)) {
+                *result = 5;
+                return;
+            }
+        }
     }
     Q_UNUSED(_a);
 }
@@ -308,13 +323,13 @@ int FaultPromptDialog::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 11)
+        if (_id < 13)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 11;
+        _id -= 13;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 11)
+        if (_id < 13)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 11;
+        _id -= 13;
     }
     return _id;
 }
@@ -347,5 +362,11 @@ void FaultPromptDialog::leftSignal()
 void FaultPromptDialog::unfixSignal()
 {
     QMetaObject::activate(this, &staticMetaObject, 4, Q_NULLPTR);
+}
+
+// SIGNAL 5
+void FaultPromptDialog::okclicked()
+{
+    QMetaObject::activate(this, &staticMetaObject, 5, Q_NULLPTR);
 }
 QT_END_MOC_NAMESPACE

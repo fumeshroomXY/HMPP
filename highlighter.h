@@ -42,6 +42,9 @@ class Highlighter : public QSyntaxHighlighter
 
 public:
     Highlighter(QTextDocument *parent = 0);
+    void addHighlightingRule(const QRegExp &pattern, const QTextCharFormat &format);
+
+    void deleteHighlightingRule(const QRegExp &pattern, const QTextCharFormat &format);
 
 protected:
     void highlightBlock(const QString &text) Q_DECL_OVERRIDE;

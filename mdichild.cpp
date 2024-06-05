@@ -5,6 +5,7 @@
 #include "faultpromptdialog.h"
 #include "highlighter.h"
 #include "syntaxrule.h"
+#include "faultlinehighlighter.h"
 
 
 
@@ -18,8 +19,9 @@ MdiChild::MdiChild(QWidget *parent): QTextEdit(parent)
     foldingWidget = new FoldingWidget(this);
     faultPrompt = new FaultPromptDialog(this);
     classInfoHash = new QHash<QString, ClassInfo>();
-    button = new CustomButton(this);
-    button->setVisible(false);
+
+    highlighter = new Highlighter(this->document());
+
 
     globalVars = new QList<Variable>();   //全局变量表
     definedMethods = new QList<Method>();    //已经有函数体的函数表，比如类内函数或全局函数
@@ -43,6 +45,7 @@ MdiChild::MdiChild(QWidget *parent): QTextEdit(parent)
     connect(faultPrompt, &FaultPromptDialog::clickedSignal, this, &MdiChild::fixButtonClicked);
     //connect(faultPrompt, &FaultPromptDialog::clickedSignal, this, &MdiChild::fixButtonHovered);
     connect(faultPrompt, &FaultPromptDialog::unfixSignal, this, &MdiChild::clearPreview);
+    connect(faultPrompt, &FaultPromptDialog::okclicked, this, &MdiChild::faultFixOkClicked);
 //    connect(faultPrompt, &FaultPromptDialog::releasedSignal, this, &MdiChild::clearPreview);
 //    connect(faultPrompt, &FaultPromptDialog::leftSignal, this, &MdiChild::clearPreview);
 
@@ -101,14 +104,18 @@ bool MdiChild::save()
 {
     qDebug() << "-4";
     //当用户保存时，分析文件结构，得到函数和变量信息
-    updateObjectInfoInSourceFile();
+
 
     if (isUntitled) {
+        bool flag = saveAs();
+        if(flag) updateObjectInfoInSourceFile();
         qDebug() << "-4";
-        return saveAs();
+        return flag;
     } else {
+        bool flag = saveFile(curFile);
+        if(flag) updateObjectInfoInSourceFile();
         qDebug() << "-4";
-        return saveFile(curFile);
+        return flag;
     }
 }
 
@@ -380,6 +387,8 @@ void MdiChild::lineNumberAreaPaintEvent(QPaintEvent *event)
 
     QPainter painter(lineNumberArea);   //将lineNumberArea作为paint device
     painter.fillRect(event->rect(), QColor(240, 240, 240));   //整个边界背景设置为浅灰
+    QImage pixmap(":/images/toolbar_images/error.png");
+
     int blockNumber = getFirstVisibleBlockId();
 
     QTextBlock block = document()->findBlockByNumber(blockNumber);
@@ -408,7 +417,20 @@ void MdiChild::lineNumberAreaPaintEvent(QPaintEvent *event)
     QColor col_0(120, 120, 120);    // Other lines  (custom darkgrey)
 
     // Draw the numbers (displaying the current line number in green)
-    //int lineHeight = (int)document()->documentLayout()->blockBoundingRect(block).height(); //每行的高度
+
+
+    QTextBlock faultBlock = document()->findBlockByNumber(faultLineNumber);
+    int lineHeight = (int)document()->documentLayout()->blockBoundingRect(faultBlock).height(); //每行的高度
+    int lineTop = (int)document()->documentLayout()->blockBoundingRect(faultBlock).translated(0, translate_y).top();
+    qDebug() << "lineHeight: " << lineHeight;
+    qDebug() << "lineTop: " << lineTop;
+    lineNumberArea->setIconPosition(0, lineTop);
+    if(lineNumberArea->getIconPosition().x() >= 0 && lineNumberArea->getIconPosition().y() >= 0
+            && faultBlock.isValid() && faultBlock.isVisible()){
+        QImage scaledPixmap = pixmap.scaled(lineHeight, lineHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        painter.drawImage(lineNumberArea->getIconPosition(), pixmap);
+    }
+
     while (block.isValid() && top <= event->rect().bottom()) {
         if (block.isVisible() && bottom >= event->rect().top()) {
             QString number = QString::number(blockNumber + 1);   //blockNumber 从0开始，所以要+1
@@ -417,6 +439,7 @@ void MdiChild::lineNumberAreaPaintEvent(QPaintEvent *event)
             painter.drawText(-2, top,   //why starts from -5, 增加了数字的右边距
                              lineNumberArea->width(), fontMetrics().height(),
                              Qt::AlignRight, number);
+
         }
 
         block = block.next();
@@ -425,6 +448,9 @@ void MdiChild::lineNumberAreaPaintEvent(QPaintEvent *event)
         //bottom = top + lineHeight;
         bottom = top + (int)document()->documentLayout()->blockBoundingRect(block).height();
         ++blockNumber;
+    }
+    if(lineNumberArea->faultWarningButton->getFaultLine() != -1){
+        lineNumberArea->faultWarningButton->setVisible(true);
     }
     qDebug() << "-16";
 }
@@ -459,6 +485,7 @@ void MdiChild::foldingWidgetPaintEvent(QPaintEvent *event)
         QTextBlock block = document()->findBlockByNumber((*it)->startLine);
         //减去滚轮移动的y轴上的距离，得到viewport中的相对坐标
         QRectF rect = document()->documentLayout()->blockBoundingRect(block).translated(0, translate_y);
+        qDebug() << "rect: " << rect;
         if (block.isVisible() && rect.top() >= event->rect().top() && rect.bottom() <= event->rect().bottom()) {
 
             painter.drawText(-2, rect.top(),   //why starts from -5, 增加了数字的右边距
@@ -525,21 +552,45 @@ void MdiChild::foldingWidgetMousePressEvent(QMouseEvent *event)
 void MdiChild::faultLinePaint(int blockNumber)
 {
     qDebug() << "-19";
+    qDebug() << "faultblockNumber: " << blockNumber;
+    //只针对演示文件
+    if(!curFile.endsWith("demo/demo.cpp")) return;
     faultLineNumber = blockNumber;
+
+    verticalScrollBar()->setSliderPosition(verticalScrollBar()->sliderPosition());
+    int firstBlockNumber = getFirstVisibleBlockId();
+    int translate_y = (firstBlockNumber > 0) ? - verticalScrollBar()->sliderPosition() : 0;
+
+
     QTextBlock block = document()->findBlockByNumber(blockNumber);
-    QRectF blockBox = document()->documentLayout()->blockBoundingRect(block);
+//    int height = (int) document()->documentLayout()->blockBoundingRect(block).height();
+//    int top = (int) document()->documentLayout()->blockBoundingRect(block).top();
+//    qDebug() << "height: " << height;
+//    qDebug() << "top: " << top;
+//    qDebug() << "text: " << block.text();
+    QRectF blockBox = document()->documentLayout()->blockBoundingRect(block).translated(0, translate_y);
+    qDebug() << blockBox;
 
     QIcon icon = QIcon(":/images/toolbar_images/error.png");
     //QPushButton *faultButton = new QPushButton(this);
-    button->setIcon(icon);
+
     int iconSize = blockBox.height();
+    qDebug() << "iconSize: " << iconSize;
     //button->resize(iconSize, iconSize);
     if(block.isValid() && block.isVisible()){
-        button->setGeometry(lineNumberArea->width(), blockBox.top(), iconSize, iconSize);
-        button->setVisible(true);
+        lineNumberArea->setIconPosition(0, blockBox.top());
+        qDebug() << "button appears.";
+        qDebug() << blockBox;
+
+//        this->setVisible(true);
+//        lineNumberArea->setVisible(true);
+//        lineNumberArea->faultWarningButton->setVisible(true);
+//        qDebug() << "pos: " << lineNumberArea->faultWarningButton->pos();
     }
+    showFaultPromptDialog(blockNumber);
 //    setFocus();
-    connect(button, &QPushButton::clicked, this, &MdiChild::showFaultPromptDialog);
+    //connect(lineNumberArea->faultWarningButton, &QPushButton::clicked, this, &MdiChild::showFaultPromptDialog);
+
 
 //    connect(button, &CustomButton::clicked, this, &MdiChild::fixButtonClicked);
 //    connect(button, &CustomButton::enterSignal, this, &MdiChild::fixButtonHovered);
@@ -548,35 +599,41 @@ void MdiChild::faultLinePaint(int blockNumber)
     qDebug() << "-19";
 }
 
-void MdiChild::showFaultPromptDialog()
+void MdiChild::showFaultPromptDialog(int lineNumber)
 {
     if(faultPrompt->isVisible() == true){
         faultPrompt->setVisible(false);
         return;
     }
-    if(button->isVisible() == false){
-        return;
-    }
-    int currentCursor = textCursor().block().blockNumber();
-
-    QTextBlock block = document()->findBlockByNumber(currentCursor);
-    QRectF blockBox = document()->documentLayout()->blockBoundingRect(block);
-    int height = faultPrompt->height();
-    QRect buttonRect = button->geometry();
-//    faultPrompt->setGeometry(buttonRect.x() + buttonRect.width(), buttonRect.y() - height,   //这是相对坐标，但是不知道为什么有问题
-//                             blockBox.width() / 2, height);
-    QPoint pos = mapToGlobal(buttonRect.topLeft());     //这是绝对坐标
-    faultPrompt->setGeometry(pos.x(), blockBox.top() - height,
-                            blockBox.width() / 2, height);
-
-
-
-//        faultPrompt->setGeometry(lineNumberArea->width(), blockBox.top() - height,
-//                                 blockBox.width() / 2, height);
+    moveFaultPromptDialog();
     faultPrompt->show();
     emit showProblemTab(faultLineNumber);
-    setFocus();
+
+    connect(this->verticalScrollBar(), &QScrollBar::valueChanged, this, &MdiChild::moveFaultPromptDialog);
+
+    //setFocus();
     //insertPreview = true;
+}
+
+void MdiChild::moveFaultPromptDialog()
+{
+    if(!faultPrompt->isVisible()){
+        return;
+    }
+    QTextBlock block = document()->findBlockByNumber(faultLineNumber);
+    if(block.isValid() && block.isVisible()){
+        verticalScrollBar()->setSliderPosition(verticalScrollBar()->sliderPosition());
+        int firstBlockNumber = getFirstVisibleBlockId();
+        int translate_y = (firstBlockNumber > 0) ? - verticalScrollBar()->sliderPosition() : 0;
+
+        QRectF blockRect = document()->documentLayout()->blockBoundingRect(block).translated(0, translate_y);
+        QPoint blockPosition = viewport()->mapToGlobal(blockRect.topLeft().toPoint());
+        qDebug() << "blockPosition: " << blockPosition;
+        int height = faultPrompt->height();
+        // Position the dialog above the block
+        QPoint dialogPos(blockPosition.x(), blockPosition.y() - height - blockRect.height() * 2);
+        faultPrompt->move(dialogPos);
+    }
 }
 
 void MdiChild::fixButtonHovered()
@@ -608,7 +665,7 @@ void MdiChild::fixButtonClicked()
         cursor.removeSelectedText();
         cursor.insertText(previewText, insertFormat);
         insertPreview = false;
-        button->setVisible(false);
+        lineNumberArea->faultWarningButton->setVisible(false);
         faultPrompt->setVisible(false);
         faultLineNumber = -1;
         emit hideProblemTab();
@@ -624,6 +681,24 @@ void MdiChild::clearPreview() {
     cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, previewText.length());
     cursor.removeSelectedText();
     insertPreview = false;
+}
+
+void MdiChild::faultFixOkClicked()
+{
+    if(insertPreview)  //已经fix了
+    {
+        faultPrompt->setVisible(false);
+        lineNumberArea->setIconPosition(-1, -1);
+
+        QTextCharFormat format;
+        format.setUnderlineColor(Qt::red);
+        format.setUnderlineStyle(QTextCharFormat::WaveUnderline);
+
+        QRegExp divisionByZero = QRegExp("([a-zA-Z_][a-zA-Z0-9_]*)\\s*/\\s*([a-zA-Z_][a-zA-Z0-9_]*)");
+        highlighter->deleteHighlightingRule(divisionByZero, format);
+        highlighter->rehighlight();
+        emit hideProblemTab();
+    }
 }
 
 void MdiChild::setFixText(QString var1, QString var2)
@@ -966,8 +1041,14 @@ void MdiChild::updateTopParenthesis()  //更新顶层括号
 
 void MdiChild::updateObjectInfoInSourceFile()
 {
-    qDebug() << "MdiChild::updateEntityInSource";
+    qDebug() << "MdiChild::updateObjectInfoInSourceFile";
     qDebug() << "-28";
+
+    qDebug() << "curFile: " << curFile;
+    if(curFile.endsWith(".h")) {
+        qDebug() << "-28";
+        return;   //如果是.h文件，则直接跳过
+    }
 
     //找到全局作用域
     updateTopParenthesis();
@@ -1078,7 +1159,14 @@ void MdiChild::updateObjectInfoInSourceFile()
                     Variable var(reg.cap(3), className, varType, CLASS);  //type未指定, className = 实例的类变量名
                     ClassInfo info = classInfoHash->value(className);
                     //怎么保证不重复插入
-                    if(!info.vars->contains(var)) info.vars->append(var);
+                    bool flag = false;  //用于标记是否存在同名的类变量
+                    for(int i = 0; i < info.vars->size(); ++i){
+                        if(info.vars->at(i).name == reg.cap(3)){
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if(flag == false) info.vars->append(var);
                 }
                 pos += reg.matchedLength(); // 继续查找下一个匹配位置
             }
@@ -1106,6 +1194,12 @@ void MdiChild::updateObjectInfoInSourceFile()
                     qDebug() << "params: " << params;
                     QString returnType = findMethodReturnType(methodName, className, params, CLASS);
                     Method classMethod(methodName, className, returnType, params, paramStr, CLASS);
+
+
+                    //按理说，如果这里扫描到的函数没有在源文件中定义，应该补充相应定义
+                    //可能有两种情况
+                    //1. 类外调用
+                    //2. 类内调用
                     ClassInfo& i = (*classInfoHash)[className];    //用引用修改值
                     if(!i.methods->contains(classMethod)){
                         qDebug() << "not contains";
@@ -1317,7 +1411,12 @@ void MdiChild::updateObjectInfoInSourceFile()
         qDebug() << definedMethods->at(i).returnType << " " << definedMethods->at(i).className << " "
                  << definedMethods->at(i).name << "(" << definedMethods->at(i).paramStr << ")";
     }
+
+
     qDebug() << "-28";
+
+    //通知主窗口更新类文件
+    emit updateClassFiles(currentFile(), *classInfoHash);
 }
 
 void MdiChild::convertMethodParamToTemp(const QString& str, const int& pos)
@@ -1489,7 +1588,7 @@ QString MdiChild::getExpressionType(const QString& exp)
     QRegExp funcPattern("([A-Za-z_][A-Za-z0-9_]+)\\b\\((.*)\\)");   //函数调用或者类的正则表达式
 
 
-    //这里比较复杂，又涉及到常量，变量，函数调用返回值的问题
+    //这里比较复杂，涉及到常量，变量，函数调用返回值的问题
 
     QString expType = "";
     QString param = exp;
@@ -1542,7 +1641,7 @@ QString MdiChild::findMethodReturnType(const QString& methodName, const QString&
     for(int i = 0; i < definedMethods->size(); ++i){
         Method m = definedMethods->at(i);
         if(m.scope == scope && m.name == methodName && m.className == className
-                && m.parameters == parameters){  //这里没有考虑到同名函数，参数不同的情况
+                && m.parameters == parameters){  //这里已经考虑了同名函数，参数不同的情况
             type = m.returnType;
         }
     }
@@ -1589,7 +1688,7 @@ QString MdiChild::findVarType(const QString& varName, const QString& className, 
             }
         }
     }
-    if(res.isEmpty()) res = UNSPECIFIED;
+    if(res.isEmpty()) res = UNSPECIFIED;  //无论如何，一个变量的类型不能为空
     return res;
 }
 
@@ -1650,5 +1749,25 @@ void MdiChild::autoCompleteMatch()
     }
     //qDebug()  <<  "end: " << "autoCompleteMatch";
     qDebug() << "-30";
+}
+
+void MdiChild::matchFaultPattern(const QRegExp& faultPattern, const QTextCharFormat& format, QString faultName)
+{
+    QString text = document()->toPlainText(); // 获取文档中的所有文本
+    int pos = 0;
+    //这里只找第一个fault出现的地方
+    if ((pos = faultPattern.indexIn(text, pos)) != -1) {
+        // 找到了匹配的内容
+        //1类名，2.->，3成员变量名，4[]，5赋值表达式
+        qDebug()  << "Find the fault: " << faultPattern.cap(0) << faultPattern.cap(1) << faultPattern.cap(2);
+        qDebug() << "Matched text:" << faultPattern.cap(0) << "at position:" << pos;
+        highlighter->addHighlightingRule(faultPattern, format);
+        highlighter->rehighlight();
+        QTextBlock block = document()->findBlock(pos);
+        int blockNumber = block.blockNumber();
+        faultLinePaint(blockNumber);
+        setFixText(faultPattern.cap(1), faultPattern.cap(2));
+    }
+
 }
 

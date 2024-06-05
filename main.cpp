@@ -24,5 +24,6 @@ int main(int argc, char *argv[])
         mainWin.openFile(fileName);
     //mainWin.setSizePolicy(QSizePolicy::MinimumExpanding);
     mainWin.show();    //默认情况下新建部件不可见
+    qDebug() << "MainWindowisVisiable:" << mainWin.isVisible();
     return app.exec();   //让QApplication对象进入事件循环
 }

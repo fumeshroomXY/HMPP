@@ -25,7 +25,9 @@ SOURCES += main.cpp\
     faultpromptdialog.cpp \
     faultlinehighlighter.cpp \
     requirementtreeview.cpp \
-    syntaxrule.cpp
+    syntaxrule.cpp \
+    selectnewclassdialog.cpp \
+    issue.cpp
 
 HEADERS  += mainwindow.h \
     mdichild.h \
@@ -39,7 +41,9 @@ HEADERS  += mainwindow.h \
     faultpromptdialog.h \
     faultlinehighlighter.h \
     requirementtreeview.h \
-    syntaxrule.h
+    syntaxrule.h \
+    selectnewclassdialog.h \
+    issue.h
 
 RESOURCES += \
     ui_images.qrc
@@ -50,4 +54,5 @@ FORMS += \
     ruledescriptdialog.ui \
     allruledescriptdialog.ui \
     managepropertysetdialog.ui \
-    faultpromptdialog.ui
+    faultpromptdialog.ui \
+    selectnewclassdialog.ui

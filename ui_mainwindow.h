@@ -69,7 +69,12 @@ public:
     QAction *manageSetAct;
     QAction *allRuleDescriptAct;
     QAction *newProjectAct;
-    QAction *testCreateClassAct;
+    QAction *actionCplus;
+    QAction *actionJava;
+    QAction *actionCsharp;
+    QAction *codePredictAct;
+    QAction *testAct;
+    QAction *SCMDemoAct;
     QWidget *centralwidget;
     QHBoxLayout *horizontalLayout;
     QStackedWidget *stackedWidget;
@@ -133,7 +138,10 @@ public:
     QMenu *menuWindow;
     QMenu *menuHelp;
     QMenu *menuConfiguration;
+    QMenu *menuChooseTargetLanguage;
     QMenu *menuTools_T;
+    QMenu *menuTest;
+    QMenu *menuDemo;
     QStatusBar *statusbar;
     QToolBar *toolBar;
 
@@ -243,8 +251,24 @@ public:
         allRuleDescriptAct->setObjectName(QStringLiteral("allRuleDescriptAct"));
         newProjectAct = new QAction(MainWindow);
         newProjectAct->setObjectName(QStringLiteral("newProjectAct"));
-        testCreateClassAct = new QAction(MainWindow);
-        testCreateClassAct->setObjectName(QStringLiteral("testCreateClassAct"));
+        actionCplus = new QAction(MainWindow);
+        actionCplus->setObjectName(QStringLiteral("actionCplus"));
+        actionCplus->setCheckable(true);
+        actionJava = new QAction(MainWindow);
+        actionJava->setObjectName(QStringLiteral("actionJava"));
+        actionJava->setCheckable(true);
+        actionCsharp = new QAction(MainWindow);
+        actionCsharp->setObjectName(QStringLiteral("actionCsharp"));
+        actionCsharp->setCheckable(true);
+        codePredictAct = new QAction(MainWindow);
+        codePredictAct->setObjectName(QStringLiteral("codePredictAct"));
+        QIcon icon17;
+        icon17.addFile(QStringLiteral(":/images/toolbar_images/codepredict.png"), QSize(), QIcon::Normal, QIcon::Off);
+        codePredictAct->setIcon(icon17);
+        testAct = new QAction(MainWindow);
+        testAct->setObjectName(QStringLiteral("testAct"));
+        SCMDemoAct = new QAction(MainWindow);
+        SCMDemoAct->setObjectName(QStringLiteral("SCMDemoAct"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         horizontalLayout = new QHBoxLayout(centralwidget);
@@ -268,25 +292,25 @@ public:
         verticalLayout_2->addWidget(requirementView);
 
         treeClassView = new QTreeWidget(pageProject);
-        QIcon icon17;
-        icon17.addFile(QStringLiteral(":/images/toolbar_images/folder.png"), QSize(), QIcon::Normal, QIcon::Off);
         QIcon icon18;
-        icon18.addFile(QStringLiteral(":/images/toolbar_images/class.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        icon18.addFile(QStringLiteral(":/images/toolbar_images/folder.png"), QSize(), QIcon::Normal, QIcon::Off);
         QIcon icon19;
-        icon19.addFile(QStringLiteral(":/images/toolbar_images/memberfunc.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        icon19.addFile(QStringLiteral(":/images/toolbar_images/class.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        QIcon icon20;
+        icon20.addFile(QStringLiteral(":/images/toolbar_images/memberfunc.svg"), QSize(), QIcon::Normal, QIcon::Off);
         QTreeWidgetItem *__qtreewidgetitem = new QTreeWidgetItem(treeClassView);
-        __qtreewidgetitem->setIcon(0, icon17);
+        __qtreewidgetitem->setIcon(0, icon18);
         QTreeWidgetItem *__qtreewidgetitem1 = new QTreeWidgetItem(__qtreewidgetitem);
         new QTreeWidgetItem(__qtreewidgetitem1);
         new QTreeWidgetItem(__qtreewidgetitem1);
         QTreeWidgetItem *__qtreewidgetitem2 = new QTreeWidgetItem(__qtreewidgetitem);
-        __qtreewidgetitem2->setIcon(0, icon18);
+        __qtreewidgetitem2->setIcon(0, icon19);
         QTreeWidgetItem *__qtreewidgetitem3 = new QTreeWidgetItem(__qtreewidgetitem2);
-        __qtreewidgetitem3->setIcon(0, icon19);
+        __qtreewidgetitem3->setIcon(0, icon20);
         QTreeWidgetItem *__qtreewidgetitem4 = new QTreeWidgetItem(__qtreewidgetitem2);
-        __qtreewidgetitem4->setIcon(0, icon19);
+        __qtreewidgetitem4->setIcon(0, icon20);
         QTreeWidgetItem *__qtreewidgetitem5 = new QTreeWidgetItem(__qtreewidgetitem2);
-        __qtreewidgetitem5->setIcon(0, icon19);
+        __qtreewidgetitem5->setIcon(0, icon20);
         new QTreeWidgetItem(__qtreewidgetitem2);
         new QTreeWidgetItem(__qtreewidgetitem2);
         new QTreeWidgetItem(__qtreewidgetitem2);
@@ -324,9 +348,9 @@ public:
         sizePolicy.setHeightForWidth(pushButton_2->sizePolicy().hasHeightForWidth());
         pushButton_2->setSizePolicy(sizePolicy);
         pushButton_2->setBaseSize(QSize(16, 16));
-        QIcon icon20;
-        icon20.addFile(QStringLiteral(":/images/toolbar_images/robot16.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        pushButton_2->setIcon(icon20);
+        QIcon icon21;
+        icon21.addFile(QStringLiteral(":/images/toolbar_images/robot16.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        pushButton_2->setIcon(icon21);
 
         horizontalLayout_2->addWidget(pushButton_2);
 
@@ -360,7 +384,7 @@ public:
         pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
         sizePolicy.setHeightForWidth(pushButton_3->sizePolicy().hasHeightForWidth());
         pushButton_3->setSizePolicy(sizePolicy);
-        pushButton_3->setIcon(icon20);
+        pushButton_3->setIcon(icon21);
 
         verticalLayout_3->addWidget(pushButton_3);
 
@@ -400,9 +424,9 @@ public:
         sizePolicy.setHeightForWidth(pushButton_4->sizePolicy().hasHeightForWidth());
         pushButton_4->setSizePolicy(sizePolicy);
         pushButton_4->setBaseSize(QSize(16, 16));
-        QIcon icon21;
-        icon21.addFile(QStringLiteral(":/images/toolbar_images/user.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        pushButton_4->setIcon(icon21);
+        QIcon icon22;
+        icon22.addFile(QStringLiteral(":/images/toolbar_images/user.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        pushButton_4->setIcon(icon22);
 
         verticalLayout_4->addWidget(pushButton_4);
 
@@ -424,7 +448,7 @@ public:
         pushButton_5->setObjectName(QStringLiteral("pushButton_5"));
         sizePolicy.setHeightForWidth(pushButton_5->sizePolicy().hasHeightForWidth());
         pushButton_5->setSizePolicy(sizePolicy);
-        pushButton_5->setIcon(icon20);
+        pushButton_5->setIcon(icon21);
 
         verticalLayout_5->addWidget(pushButton_5);
 
@@ -463,7 +487,7 @@ public:
         sizePolicy.setHeightForWidth(pushButton_6->sizePolicy().hasHeightForWidth());
         pushButton_6->setSizePolicy(sizePolicy);
         pushButton_6->setBaseSize(QSize(16, 16));
-        pushButton_6->setIcon(icon21);
+        pushButton_6->setIcon(icon22);
 
         verticalLayout_7->addWidget(pushButton_6);
 
@@ -485,7 +509,7 @@ public:
         pushButton_7->setObjectName(QStringLiteral("pushButton_7"));
         sizePolicy.setHeightForWidth(pushButton_7->sizePolicy().hasHeightForWidth());
         pushButton_7->setSizePolicy(sizePolicy);
-        pushButton_7->setIcon(icon20);
+        pushButton_7->setIcon(icon21);
 
         verticalLayout_6->addWidget(pushButton_7);
 
@@ -580,11 +604,11 @@ public:
             tableWidgetReport->setRowCount(1);
         QTableWidgetItem *__qtablewidgetitem3 = new QTableWidgetItem();
         tableWidgetReport->setVerticalHeaderItem(0, __qtablewidgetitem3);
-        QIcon icon22;
-        icon22.addFile(QStringLiteral(":/images/toolbar_images/error.png"), QSize(), QIcon::Normal, QIcon::Off);
+        QIcon icon23;
+        icon23.addFile(QStringLiteral(":/images/toolbar_images/error.png"), QSize(), QIcon::Normal, QIcon::Off);
         QTableWidgetItem *__qtablewidgetitem4 = new QTableWidgetItem();
         __qtablewidgetitem4->setTextAlignment(Qt::AlignCenter);
-        __qtablewidgetitem4->setIcon(icon22);
+        __qtablewidgetitem4->setIcon(icon23);
         tableWidgetReport->setItem(0, 0, __qtablewidgetitem4);
         QTableWidgetItem *__qtablewidgetitem5 = new QTableWidgetItem();
         __qtablewidgetitem5->setTextAlignment(Qt::AlignCenter);
@@ -643,8 +667,14 @@ public:
         menuHelp->setObjectName(QStringLiteral("menuHelp"));
         menuConfiguration = new QMenu(menubar);
         menuConfiguration->setObjectName(QStringLiteral("menuConfiguration"));
+        menuChooseTargetLanguage = new QMenu(menuConfiguration);
+        menuChooseTargetLanguage->setObjectName(QStringLiteral("menuChooseTargetLanguage"));
         menuTools_T = new QMenu(menubar);
         menuTools_T->setObjectName(QStringLiteral("menuTools_T"));
+        menuTest = new QMenu(menubar);
+        menuTest->setObjectName(QStringLiteral("menuTest"));
+        menuDemo = new QMenu(menubar);
+        menuDemo->setObjectName(QStringLiteral("menuDemo"));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QStringLiteral("statusbar"));
@@ -685,6 +715,8 @@ public:
         menubar->addAction(menuHelp->menuAction());
         menubar->addAction(menuConfiguration->menuAction());
         menubar->addAction(menuTools_T->menuAction());
+        menubar->addAction(menuDemo->menuAction());
+        menubar->addAction(menuTest->menuAction());
         menuFile->addAction(newAct);
         menuFile->addAction(newProjectAct);
         menuFile->addAction(openAct);
@@ -698,7 +730,6 @@ public:
         menuEdit->addSeparator();
         menuEdit->addAction(undoAct);
         menuEdit->addAction(redoAct);
-        menuEdit->addAction(testCreateClassAct);
         menuWindow->addAction(closeAct);
         menuWindow->addAction(closeAllAct);
         menuWindow->addSeparator();
@@ -711,14 +742,22 @@ public:
         menuHelp->addAction(aboutDeveloperAct);
         menuConfiguration->addAction(manageSetAct);
         menuConfiguration->addAction(allRuleDescriptAct);
+        menuConfiguration->addAction(menuChooseTargetLanguage->menuAction());
+        menuChooseTargetLanguage->addAction(actionCplus);
+        menuChooseTargetLanguage->addAction(actionJava);
+        menuChooseTargetLanguage->addAction(actionCsharp);
         menuTools_T->addAction(runDebugAct);
         menuTools_T->addAction(codeAnalysisAct);
         menuTools_T->addAction(hmppAct);
+        menuTest->addAction(testAct);
+        menuDemo->addAction(SCMDemoAct);
         toolBar->addAction(projectShowAct);
         toolBar->addSeparator();
         toolBar->addAction(runDebugAct);
         toolBar->addSeparator();
         toolBar->addAction(codeAnalysisAct);
+        toolBar->addSeparator();
+        toolBar->addAction(codePredictAct);
         toolBar->addSeparator();
         toolBar->addAction(hmppAct);
 
@@ -739,9 +778,9 @@ public:
         newAct->setToolTip(QApplication::translate("MainWindow", "Create a new file", 0));
 #endif // QT_NO_TOOLTIP
         newAct->setShortcut(QApplication::translate("MainWindow", "Ctrl+N", 0));
-        openAct->setText(QApplication::translate("MainWindow", "Open(&O)", 0));
+        openAct->setText(QApplication::translate("MainWindow", "Open project(&O)", 0));
 #ifndef QT_NO_TOOLTIP
-        openAct->setToolTip(QApplication::translate("MainWindow", "Open an existing file", 0));
+        openAct->setToolTip(QApplication::translate("MainWindow", "Open an existing project", 0));
 #endif // QT_NO_TOOLTIP
         openAct->setShortcut(QApplication::translate("MainWindow", "Ctrl+O", 0));
         saveAct->setText(QApplication::translate("MainWindow", "Save(&s)", 0));
@@ -839,7 +878,15 @@ public:
 #ifndef QT_NO_TOOLTIP
         newProjectAct->setToolTip(QApplication::translate("MainWindow", "Create a new project", 0));
 #endif // QT_NO_TOOLTIP
-        testCreateClassAct->setText(QApplication::translate("MainWindow", "Create a class", 0));
+        actionCplus->setText(QApplication::translate("MainWindow", "C++", 0));
+        actionJava->setText(QApplication::translate("MainWindow", "Java", 0));
+        actionCsharp->setText(QApplication::translate("MainWindow", "C#", 0));
+        codePredictAct->setText(QApplication::translate("MainWindow", "SCP Configure", 0));
+#ifndef QT_NO_TOOLTIP
+        codePredictAct->setToolTip(QApplication::translate("MainWindow", "Predict code", 0));
+#endif // QT_NO_TOOLTIP
+        testAct->setText(QApplication::translate("MainWindow", "testAction", 0));
+        SCMDemoAct->setText(QApplication::translate("MainWindow", "SCM Demo", 0));
         QTreeWidgetItem *___qtreewidgetitem = treeClassView->headerItem();
         ___qtreewidgetitem->setText(0, QApplication::translate("MainWindow", "Class View", 0));
 
@@ -972,7 +1019,10 @@ public:
         menuWindow->setTitle(QApplication::translate("MainWindow", "Window(&W)", 0));
         menuHelp->setTitle(QApplication::translate("MainWindow", "Help(&H)", 0));
         menuConfiguration->setTitle(QApplication::translate("MainWindow", "Configuration(&I)", 0));
+        menuChooseTargetLanguage->setTitle(QApplication::translate("MainWindow", "Choose Target Language", 0));
         menuTools_T->setTitle(QApplication::translate("MainWindow", "Tools(&T)", 0));
+        menuTest->setTitle(QApplication::translate("MainWindow", "Test", 0));
+        menuDemo->setTitle(QApplication::translate("MainWindow", "Demo", 0));
         toolBar->setWindowTitle(QApplication::translate("MainWindow", "toolBar", 0));
     } // retranslateUi
 

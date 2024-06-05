@@ -1,6 +1,7 @@
 #include "highlighter.h"
 #include <QDebug>
 #include <QTextDocument>
+#include <QAbstractTextDocumentLayout>
 
 const QString startStr = "{";
 const QString endStr = "}";
@@ -100,8 +101,6 @@ Highlighter::Highlighter(QTextDocument *parent)
     //伪码需求的正则表达式
     //requireStartExpression = QRegExp(">>>");
 
-
-
     faultLineFormat.setUnderlineStyle(QTextCharFormat::WaveUnderline);
     faultLineFormat.setUnderlineColor(Qt::red);
 
@@ -109,6 +108,24 @@ Highlighter::Highlighter(QTextDocument *parent)
     faultHighlightRule.format = faultLineFormat;
 
 }
+
+void Highlighter::addHighlightingRule(const QRegExp &pattern, const QTextCharFormat &format)
+{
+    HighlightingRule rule;
+    rule.pattern = pattern;
+    rule.format = format;
+    if(highlightingRules.contains(rule)) return;   //已经包含了就直接返回，不添加
+    highlightingRules.append(rule);
+}
+
+void Highlighter::deleteHighlightingRule(const QRegExp &pattern, const QTextCharFormat &format)
+{
+    HighlightingRule rule;
+    rule.pattern = pattern;
+    rule.format = format;
+    highlightingRules.removeOne(rule);
+}
+
 //! [6]
 
 //! [7]
@@ -152,27 +169,29 @@ void Highlighter::highlightBlock(const QString &text)  //After a QSyntaxHighligh
 
 
     //查询并高亮除0错误
-    int faultIndex = faultRegExp.indexIn(text);
-    if(faultIndex >= 0){
-        QTextBlock block = currentBlock();
-        QString var0 = faultRegExp.cap(1);
-        QString var1 = faultRegExp.cap(2);
-        int blockNumber = block.blockNumber();
+    //当前文档名为演示文档时，才检查错误
+//    int faultIndex = faultRegExp.indexIn(text);
+//    if(faultIndex >= 0){
+
+//        QTextBlock block = currentBlock();
+//        QString var0 = faultRegExp.cap(1);
+//        QString var1 = faultRegExp.cap(2);
+//        int blockNumber = block.blockNumber();
 
 
-        QString fixedCode = "if(%1 == 0)";
-        fixedCode = fixedCode.arg(var1);
-        qDebug() << fixedCode;
-        QTextCursor cursor = document()->find(fixedCode, 0);  //
+//        QString fixedCode = "if(%1 == 0)";
+//        fixedCode = fixedCode.arg(var1);
+//        qDebug() << fixedCode;
+//        QTextCursor cursor = document()->find(fixedCode, 0);  //
 
-        if(cursor.isNull()){
-            emit findFault(blockNumber);
-            emit faultInfo(var0, var1);
-            int length = faultRegExp.matchedLength();
-            setFormat(faultIndex, length, faultLineFormat);
-            faultIndex = faultRegExp.indexIn(text, faultIndex + length);
-        }
-    }
+//        if(cursor.isNull()){
+//            emit findFault(blockNumber);
+//            emit faultInfo(var0, var1);
+//            int length = faultRegExp.matchedLength();
+//            setFormat(faultIndex, length, faultLineFormat);
+//            faultIndex = faultRegExp.indexIn(text, faultIndex + length);
+//        }
+//    }
 
     //匹配双尖括号
     TextBlockData *data = new TextBlockData;

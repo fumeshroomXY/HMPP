@@ -23,6 +23,8 @@ QT_END_NAMESPACE
 extern const QString srcDir;
 extern const QString headDir;
 
+extern const QStringList LanguageSet;
+
 namespace Ui{
     class MainWindow;
 }
@@ -42,7 +44,10 @@ public:
         cmakeFile = "CMakeLists.txt";
         sourceFiles.append("main.cpp");
     }
+    projectTree(){}
 };
+
+
 
 class QErrorMessage;
 
@@ -67,6 +72,9 @@ public:
 
 
     void initCMakeFile(const projectTree *pro);
+
+    //当新添加类时，修改CmakeFile，添加类的源文件
+    bool addFileStrToCmakeFile(const QString& fileName);
 
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;    //指定重载符
@@ -108,8 +116,23 @@ private slots:
     void updateRequirementModel();
     void completeRequirement(const QModelIndex &index);
 
-    //根据源文件类信息，更新类文件
-    void updateProjectClass(QHash<QString, ClassInfo>* classInfoHash);
+
+    //设置目标语言
+    void setTargetLangToCplus();
+    void setTargetLangToJava();
+    void setTargetLangToCsharp();
+
+    //更新项目的类信息
+    void updateProjectClassInfo(QString filePath, QHash<QString, ClassInfo>& newClassInfoHash);
+
+    //测试用槽函数
+    void testSlot();
+
+    //项目视图右键出现菜单
+    void projectViewMenuRequest(const QPoint& pos);
+
+    //展示用
+    void showDemoSCM();
 
 private:
     enum { MaxRecentFiles = 5 };
@@ -124,9 +147,13 @@ private:
     void prependToRecentFiles(const QString &fileName);
     void setRecentFilesVisible(bool visible);
 
-    void createNewClass();
+    //当更新项目的类信息后，添加类的头文件和源文件
+    bool createNewClassFiles(const QString& className);
     MdiChild *activeMdiChild() const;
     QMdiSubWindow *findMdiChild(const QString &fileName) const;
+
+    //初始化成员变量
+    void init();
 
     Ui::MainWindow* ui;
 
@@ -140,21 +167,51 @@ private:
 
     projectTree* currentPro;
 
-    QList<ClassInfo>* classList;
+    //保存已打开的项目
+    QMultiHash<QString, projectTree*> projects;
 
     QStandardItemModel* projectModel;
 
     QStandardItemModel* requirementModel;
 
+    //当前文件的类信息汇总
+    QHash<QString, ClassInfo> proClassInfoHash;   //key = 类名，value = 类信息
+
+    //每个文件对应的类信息汇总， key = 文件名， value = 类名 + 类信息
+    QHash<QString, QHash<QString, ClassInfo>> fileClassInfoHash;
+
+    //include文件中包含的类
+    QStringList includedClass;
+
     QErrorMessage *errordlg;
 
+    //本工具所在的目录
     QDir appDir;
+
+    //当前项目使用的目标语言
+    QString targetLanginCurrentPro;
 
     bool loadProject(const QString &fileName);
     void initProjectModel(projectTree *newPro);
 
+    //初始化项目信息
+    void initProjectInfo();
+
     //寻找Model中符合特定条件的项
+
     QModelIndex findModelItem(const QString &searchString, const QModelIndex &parentIndex, QStandardItemModel *model, int role);
+
+    //为新创建的类的头文件，添加类的成员变量和函数信息
+    bool clearAndModifyClassFile(const ClassInfo &info, QString className);
+
+    //在类的头文件中删除对应信息
+    //bool deleteInfoInClassFile(const ClassInfo &info, QString className);
+
+    //在QStandardItemModel中删除指定节点及其所有子节点
+    void removeNodeAndChildrenInModel(QStandardItemModel *model, const QModelIndex &index);
+
+    //关闭项目
+    void closeProject(QString proName, QString proPath);
 };
 
 #endif

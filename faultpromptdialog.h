@@ -12,11 +12,16 @@ class CustomButton : public QPushButton {
     Q_OBJECT
 
 public:
-    explicit CustomButton(QWidget *parent = nullptr) : QPushButton(parent) {}
+    explicit CustomButton(QWidget *parent = nullptr) : QPushButton(parent){faultLine = -1;}
+    int getFaultLine(){return faultLine;}
+    void setFaultLine(int lineNumber) {faultLine = lineNumber;}
 
 protected:
     void enterEvent(QEvent *event) override;
     void leaveEvent(QEvent *event) override;
+
+private:
+    int faultLine;
 
 signals:
     void enterSignal();
@@ -31,6 +36,8 @@ public:
     explicit FaultPromptDialog(QWidget *parent);
     ~FaultPromptDialog();
 
+public slots:
+    void okButtonClicked();
 private slots:
     void showRuleDescript();
     void fixButtonClicked();
@@ -47,6 +54,7 @@ signals:
     void releasedSignal();
     void leftSignal();
     void unfixSignal();
+    void okclicked();
 };
 
 #endif // FAULTPROMPTDIALOG_H

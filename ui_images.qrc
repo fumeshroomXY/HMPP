@@ -29,5 +29,6 @@
         <file>images/toolbar_images/robot16.png</file>
         <file>images/toolbar_images/user.svg</file>
         <file>images/toolbar_images/txt.svg</file>
+        <file>images/toolbar_images/codepredict.png</file>
     </qresource>
 </RCC>
