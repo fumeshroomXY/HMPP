@@ -6,6 +6,7 @@
 #include "highlighter.h"
 #include "syntaxrule.h"
 #include "faultlinehighlighter.h"
+#include "mainwindow.h"
 
 
 
@@ -19,6 +20,9 @@ MdiChild::MdiChild(QWidget *parent): QTextEdit(parent)
     foldingWidget = new FoldingWidget(this);
     faultPrompt = new FaultPromptDialog(this);
     classInfoHash = new QHash<QString, ClassInfo>();
+
+    syntaxIssueList = QList<ClassUndefinedSyntaxIssue> ();
+    unspecifiedTypeIssueList = QList<ClassMemberUnspecifiedIssue> ();
 
     highlighter = new Highlighter(this->document());
 
@@ -108,12 +112,18 @@ bool MdiChild::save()
 
     if (isUntitled) {
         bool flag = saveAs();
-        if(flag) updateObjectInfoInSourceFile();
+        if(flag) {
+            updateObjectInfoInSourceFile();
+            updateObjectInfoInHeaderFile();
+        }
         qDebug() << "-4";
         return flag;
     } else {
         bool flag = saveFile(curFile);
-        if(flag) updateObjectInfoInSourceFile();
+        if(flag) {
+            updateObjectInfoInSourceFile();
+            updateObjectInfoInHeaderFile();
+        }
         qDebug() << "-4";
         return flag;
     }
@@ -225,6 +235,23 @@ QString MdiChild::strippedName(const QString &fullFileName)
 {
     return QFileInfo(fullFileName).fileName();
 }
+
+MainWindow *MdiChild::getMainWindowPtr() const
+{
+    return mainWindowPtr;
+}
+
+void MdiChild::setMainWindowPtr(MainWindow *value)
+{
+    mainWindowPtr = value;
+}
+
+QList<ClassMemberUnspecifiedIssue> MdiChild::getUnspecifiedTypeIssueList()
+{
+    updateIssueInfoInHeaderFile();
+    return unspecifiedTypeIssueList;
+}
+
 
 int MdiChild::lineNumberAreaWidth()
 {
@@ -431,6 +458,9 @@ void MdiChild::lineNumberAreaPaintEvent(QPaintEvent *event)
         painter.drawImage(lineNumberArea->getIconPosition(), pixmap);
     }
 
+    drawIssueImage(syntaxIssueList, painter, translate_y);
+    drawIssueImage(unspecifiedTypeIssueList, painter, translate_y);
+
     while (block.isValid() && top <= event->rect().bottom()) {
         if (block.isVisible() && bottom >= event->rect().top()) {
             QString number = QString::number(blockNumber + 1);   //blockNumber 从0开始，所以要+1
@@ -453,6 +483,30 @@ void MdiChild::lineNumberAreaPaintEvent(QPaintEvent *event)
         lineNumberArea->faultWarningButton->setVisible(true);
     }
     qDebug() << "-16";
+}
+
+template <typename T>
+void MdiChild::drawIssueImage(const QList<T>& list, QPainter& painter, int offset, int imageHeight)
+{
+    int translate_y = offset;
+    QTextBlock startBlock = document()->findBlockByNumber(0);
+    imageHeight = (int)document()->documentLayout()->blockBoundingRect(startBlock).height(); //每行的高度
+
+    for(const T & issue : list){
+        int lineNumber = issue.getIssueLineNumber();
+        qDebug() << "ClassEncapsulateSyntaxIssue: " << lineNumber;
+        QTextBlock faultBlock = document()->findBlockByNumber(lineNumber);
+        //QImage image(":/images/toolbar_images/error.png");
+        QImage image = issue.getImage();
+        int top = (int)document()->documentLayout()->blockBoundingRect(faultBlock).translated(0, translate_y).top();
+
+        qDebug() << "top" << top;
+        if(faultBlock.isValid() && faultBlock.isVisible()){
+            qDebug() << "lineHeight" << imageHeight;
+            QImage scaledimage = image.scaled(imageHeight, imageHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+            painter.drawImage(0, top,  scaledimage);
+        }
+    }
 }
 
 void MdiChild::foldingWidgetPaintEvent(QPaintEvent *event)
@@ -607,7 +661,7 @@ void MdiChild::showFaultPromptDialog(int lineNumber)
     }
     moveFaultPromptDialog();
     faultPrompt->show();
-    emit showProblemTab(faultLineNumber);
+    emit showSCMFault(faultLineNumber);
 
     connect(this->verticalScrollBar(), &QScrollBar::valueChanged, this, &MdiChild::moveFaultPromptDialog);
 
@@ -1037,6 +1091,175 @@ void MdiChild::updateTopParenthesis()  //更新顶层括号
     }
 }
 
+void MdiChild::updateIssueInfoInHeaderFile()
+{
+    qDebug() << "MdiChild::updateIssueInfoInHeaderFile";
+    qDebug() << "-71";
+
+    qDebug() << "curFile: " << curFile;
+    if(!curFile.endsWith(".h")) {
+        qDebug() << "-71";
+        return;   //如果不是.cpp文件，则直接跳过
+    }
+
+    unspecifiedTypeIssueList.clear();
+
+    QTextCursor cursor(document());
+    cursor.movePosition(QTextCursor::Start);
+
+    int lineNumber = 0;
+    QString fileName = userFriendlyCurrentFile();
+    QString className = fileName.left(fileName.indexOf("."));
+    QString filePath = currentFile();
+
+    QString searchString = UNSPECIFIED;
+
+    while (!cursor.isNull() && !cursor.atEnd()) {
+        QTextBlock block = cursor.block();
+        QString text = block.text();
+        int position = text.indexOf(searchString);
+        while (position != -1) {
+            ClassMemberUnspecifiedIssue issue(className, filePath, lineNumber, position);
+            unspecifiedTypeIssueList.append(issue);
+            // Find the next occurrence in the same line
+            position = text.indexOf(searchString, position + searchString.length());
+        }
+
+        cursor.movePosition(QTextCursor::NextBlock);
+        lineNumber++;
+    }
+
+}
+
+void MdiChild::updateObjectInfoInHeaderFile()
+{
+    qDebug() << "MdiChild::updateObjectInfoInHeaderFile";
+    qDebug() << "-56";
+
+    qDebug() << "curFile: " << curFile;
+    QString className;
+    if(!curFile.endsWith(".h")) {
+        qDebug() << "-56";
+        return;   //如果不是.h文件，则直接跳过
+    }else{
+        QString fileName = userFriendlyCurrentFile();
+        className = fileName.left(fileName.indexOf("."));
+    }
+
+    //找到全局作用域
+    updateTopParenthesis();
+    syntaxIssueList.clear();
+
+    QString text = document()->toPlainText(); // 获取文档中的所有文本
+
+    QString classBodyStart = QString("\\bclass[^\\S\n]+%1[^\\{]*(\\{)").arg(className);
+    QRegExp classBodyReg = QRegExp(classBodyStart);
+
+    //寻找类声明函数体括号的开始和结束位置
+    int pos = 0;
+    int startPos = 0;
+    int endPos = 0;
+    if((pos = classBodyReg.indexIn(text, pos)) != -1){
+        qDebug() << "MatchText: " << classBodyReg.cap(0);
+        startPos = classBodyReg.pos(1);
+
+        QTextBlock block = document()->findBlock(startPos);
+        int posOffset = startPos - block.position();
+
+        int matchLineNumber = -1;
+        int matchPos = -1;
+        if(block.isValid()){
+            TextBlockData *data = static_cast<TextBlockData *>(block.userData());
+            if (data) {
+                QVector<ParenthesisInfo *> infos = data->parentheses();
+                //Returns the index of the block's first character within the document.
+                for (int i = 0; i < infos.size(); ++i) {
+                    ParenthesisInfo *info = infos.at(i);
+                    if(info->character == "{" && info->position == posOffset){
+                        matchLineNumber = info->matchLineNumber;
+                        matchPos = info->matchPosition;
+                    }
+                }
+            }
+        }
+        if(matchLineNumber != -1){
+            endPos = document()->findBlockByLineNumber(matchLineNumber).position() + matchPos;
+        }
+
+    }else{
+        qDebug() << "Cannot find classBody in header file: " << className;
+        return;
+    }
+
+    qDebug() << "startPos" << startPos;
+    qDebug() << "endPos" << endPos;
+
+    MainWindow* mw_ptr = getMainWindowPtr();
+    if(mw_ptr == nullptr){
+        qDebug() << "Parent MainWindow does not exist.";
+        return;
+    }
+    qDebug() << "static_cast";
+
+    qDebug() << "getProClassInfo.";
+    ClassInfo info = mw_ptr->getProClassInfo(className);
+    // 遍历正则表达式列表，并检测文本是否符合
+    QRegExp reg;
+
+    qDebug() << "check the new class info.";
+    for(int i = 0; i < info.vars->size(); ++i){
+        Variable& v = (*info.vars)[i];
+        qDebug() << "Variable: " << v.name;
+    }
+
+    if(info.vars == nullptr || info.methods == nullptr){
+        qDebug() << "nullptr error.";
+    }
+
+    for(int i = 0; i < info.vars->size(); ++i){
+        Variable& v = (*info.vars)[i];
+        if(v.type != UNSPECIFIED) continue;
+
+        reg = QRegExp(classVarInHeaderStr.arg(v.name));
+        int pos = startPos;
+        if ((pos = reg.indexIn(text, pos)) != -1) {
+            if(pos >= endPos) break;
+            // 找到了匹配的内容
+            qDebug()  << "classVarInHeader: " ;
+            qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;  //type需要选择是否加上&或*，cap(2)
+            qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
+
+            v.type = reg.cap(1) + reg.cap(2) + reg.cap(3);
+        }
+    }
+
+
+    for(int i = 0; i < info.methods->size(); ++i){
+        Method& m = (*info.methods)[i];
+        if(m.returnType != UNSPECIFIED && !m.parameters.contains(UNSPECIFIED)) continue;
+
+        reg = QRegExp(classMethodInHeaderStr.arg(m.name));
+        int pos = startPos;
+        if ((pos = reg.indexIn(text, pos)) != -1) {
+            if(pos >= endPos) break;
+            // 找到了匹配的内容
+            qDebug()  << "classMethodInHeader: " ;
+            qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;  //type需要选择是否加上&或*，cap(2)
+            qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
+
+            QString returnType = reg.cap(1) + reg.cap(2);
+            QString paramStr = reg.cap(3);
+            QList<QString> parameters = onlyGetMethodParamType(paramStr);
+
+            m.returnType = returnType;
+            m.parameters = parameters;
+            m.paramStr = paramStr;
+        }
+    }
+
+    mw_ptr->setProClassInfo(className, info);
+    emit showHeaderFileIssue();
+}
 
 
 void MdiChild::updateObjectInfoInSourceFile()
@@ -1045,13 +1268,14 @@ void MdiChild::updateObjectInfoInSourceFile()
     qDebug() << "-28";
 
     qDebug() << "curFile: " << curFile;
-    if(curFile.endsWith(".h")) {
+    if(!curFile.endsWith(".cpp")) {
         qDebug() << "-28";
-        return;   //如果是.h文件，则直接跳过
+        return;   //如果不是.cpp文件，则直接跳过
     }
 
     //找到全局作用域
     updateTopParenthesis();
+    syntaxIssueList.clear();
 
     QString text = document()->toPlainText(); // 获取文档中的所有文本
     // 遍历正则表达式列表，并检测文本是否符合
@@ -1079,6 +1303,7 @@ void MdiChild::updateObjectInfoInSourceFile()
                     QString matchedStr = text.mid(pos, regCtr.matchedLength());
                     if(regCtr.exactMatch(matchedStr)){
                         //这里要分析参数列表
+                        //如果参数中返回的类型包含UNSPECIFIED，怎么处理
                         QString paramStr = completeMethodParamType(regCtr.cap(5), pos);
                         QStringList params = onlyGetMethodParamType(paramStr);
                         qDebug() << "params: " << params;
@@ -1101,6 +1326,7 @@ void MdiChild::updateObjectInfoInSourceFile()
                     QString matchedStr = text.mid(pos, regCtr.matchedLength());
                     if(regCtr.exactMatch(matchedStr)){
                         //这里要分析参数列表
+                        //如果参数中返回的类型包含UNSPECIFIED，怎么处理
                         QString paramStr = completeMethodParamType(regCtr.cap(3), pos);
                         QStringList params = onlyGetMethodParamType(paramStr);
                         qDebug() << "params: " << params;
@@ -1167,6 +1393,12 @@ void MdiChild::updateObjectInfoInSourceFile()
                         }
                     }
                     if(flag == false) info.vars->append(var);
+                }else{
+                    qDebug() << "ClassUndefined: " << reg.cap(0) << "at position:" << pos;
+                    QString filePath = curFile;
+                    int lineNumber = document()->findBlock(pos).blockNumber();
+                    ClassUndefinedSyntaxIssue curIssue(reg.cap(1), filePath, lineNumber);
+                    if(!syntaxIssueList.contains(curIssue)) syntaxIssueList.append(curIssue);
                 }
                 pos += reg.matchedLength(); // 继续查找下一个匹配位置
             }
@@ -1208,6 +1440,13 @@ void MdiChild::updateObjectInfoInSourceFile()
                         qDebug() << "method size = " << i.methods->size();
                         qDebug() << i.methods;
                     }
+                }else{
+                    qDebug() << "ClassUndefined: " << reg.cap(0) << "at position:" << pos;
+                    QString filePath = curFile;
+                    int lineNumber = document()->findBlock(pos).blockNumber();
+                    ClassUndefinedSyntaxIssue curIssue(reg.cap(1), filePath, lineNumber);
+                    qDebug() << "curIssue: " << curIssue.getName() << " " << curIssue.getDescription() << " " << curIssue.getFilePath();
+                    if(!syntaxIssueList.contains(curIssue)) syntaxIssueList.append(curIssue);
                 }
                 pos += reg.matchedLength(); // 继续查找下一个匹配位置
             }
@@ -1417,6 +1656,7 @@ void MdiChild::updateObjectInfoInSourceFile()
 
     //通知主窗口更新类文件
     emit updateClassFiles(currentFile(), *classInfoHash);
+    emit showSourceFileIssue(syntaxIssueList);
 }
 
 void MdiChild::convertMethodParamToTemp(const QString& str, const int& pos)

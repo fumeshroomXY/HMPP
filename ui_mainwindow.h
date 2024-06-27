@@ -18,7 +18,6 @@
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
-#include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMdiArea>
 #include <QtWidgets/QMenu>
@@ -127,7 +126,8 @@ public:
     QTabWidget *tabProgramOutput;
     QWidget *tabDebug;
     QGridLayout *gridLayout_3;
-    QListWidget *listWidget;
+    QGridLayout *gridLayoutIssue;
+    QTableWidget *tableIssueWidget;
     QWidget *tabFaultReport;
     QGridLayout *gridLayout;
     QTableWidget *tableWidgetReport;
@@ -575,15 +575,21 @@ public:
         tabDebug->setObjectName(QStringLiteral("tabDebug"));
         gridLayout_3 = new QGridLayout(tabDebug);
         gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
-        gridLayout_3->setContentsMargins(1, 1, 1, 1);
-        listWidget = new QListWidget(tabDebug);
-        new QListWidgetItem(listWidget);
-        new QListWidgetItem(listWidget);
-        new QListWidgetItem(listWidget);
-        new QListWidgetItem(listWidget);
-        listWidget->setObjectName(QStringLiteral("listWidget"));
+        gridLayoutIssue = new QGridLayout();
+        gridLayoutIssue->setObjectName(QStringLiteral("gridLayoutIssue"));
+        tableIssueWidget = new QTableWidget(tabDebug);
+        tableIssueWidget->setObjectName(QStringLiteral("tableIssueWidget"));
+        tableIssueWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+        tableIssueWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        tableIssueWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+        tableIssueWidget->setShowGrid(false);
+        tableIssueWidget->horizontalHeader()->setVisible(false);
+        tableIssueWidget->verticalHeader()->setVisible(false);
 
-        gridLayout_3->addWidget(listWidget, 1, 0, 1, 1);
+        gridLayoutIssue->addWidget(tableIssueWidget, 0, 0, 1, 1);
+
+
+        gridLayout_3->addLayout(gridLayoutIssue, 1, 0, 1, 1);
 
         tabProgramOutput->addTab(tabDebug, QString());
         tabFaultReport = new QWidget();
@@ -764,7 +770,7 @@ public:
         retranslateUi(MainWindow);
 
         stackedWidget->setCurrentIndex(0);
-        tabProgramOutput->setCurrentIndex(1);
+        tabProgramOutput->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -979,20 +985,7 @@ public:
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left"
                         ":0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">\302\240 \302\240 }</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">};</span></p></body></html>", 0));
-
-        const bool __sortingEnabled1 = listWidget->isSortingEnabled();
-        listWidget->setSortingEnabled(false);
-        QListWidgetItem *___qlistwidgetitem = listWidget->item(0);
-        ___qlistwidgetitem->setText(QApplication::translate("MainWindow", "warning1", 0));
-        QListWidgetItem *___qlistwidgetitem1 = listWidget->item(1);
-        ___qlistwidgetitem1->setText(QApplication::translate("MainWindow", "warning2", 0));
-        QListWidgetItem *___qlistwidgetitem2 = listWidget->item(2);
-        ___qlistwidgetitem2->setText(QApplication::translate("MainWindow", "error1", 0));
-        QListWidgetItem *___qlistwidgetitem3 = listWidget->item(3);
-        ___qlistwidgetitem3->setText(QApplication::translate("MainWindow", "error2", 0));
-        listWidget->setSortingEnabled(__sortingEnabled1);
-
-        tabProgramOutput->setTabText(tabProgramOutput->indexOf(tabDebug), QApplication::translate("MainWindow", "Debug", 0));
+        tabProgramOutput->setTabText(tabProgramOutput->indexOf(tabDebug), QApplication::translate("MainWindow", "Issue Report", 0));
         QTableWidgetItem *___qtablewidgetitem = tableWidgetReport->horizontalHeaderItem(0);
         ___qtablewidgetitem->setText(QApplication::translate("MainWindow", "Locate", 0));
         QTableWidgetItem *___qtablewidgetitem1 = tableWidgetReport->horizontalHeaderItem(1);
@@ -1002,7 +995,7 @@ public:
         QTableWidgetItem *___qtablewidgetitem3 = tableWidgetReport->verticalHeaderItem(0);
         ___qtablewidgetitem3->setText(QApplication::translate("MainWindow", "1", 0));
 
-        const bool __sortingEnabled2 = tableWidgetReport->isSortingEnabled();
+        const bool __sortingEnabled1 = tableWidgetReport->isSortingEnabled();
         tableWidgetReport->setSortingEnabled(false);
         QTableWidgetItem *___qtablewidgetitem4 = tableWidgetReport->item(0, 0);
         ___qtablewidgetitem4->setText(QApplication::translate("MainWindow", "codeeditor.cpp", 0));
@@ -1010,7 +1003,7 @@ public:
         ___qtablewidgetitem5->setText(QApplication::translate("MainWindow", "line 13", 0));
         QTableWidgetItem *___qtablewidgetitem6 = tableWidgetReport->item(0, 2);
         ___qtablewidgetitem6->setText(QApplication::translate("MainWindow", "The exception that is thrown when there is an attempt to divide an integral or Decimal value by zero.", 0));
-        tableWidgetReport->setSortingEnabled(__sortingEnabled2);
+        tableWidgetReport->setSortingEnabled(__sortingEnabled1);
 
         tabProgramOutput->setTabText(tabProgramOutput->indexOf(tabFaultReport), QApplication::translate("MainWindow", "Fault Report", 0));
         tabProgramOutput->setTabText(tabProgramOutput->indexOf(tabAppOutput), QApplication::translate("MainWindow", "Application Output", 0));

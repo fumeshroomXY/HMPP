@@ -30,5 +30,6 @@
         <file>images/toolbar_images/user.svg</file>
         <file>images/toolbar_images/txt.svg</file>
         <file>images/toolbar_images/codepredict.png</file>
+        <file>images/toolbar_images/question.png</file>
     </qresource>
 </RCC>

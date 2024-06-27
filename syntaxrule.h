@@ -18,6 +18,10 @@ extern const QString basicVarStr;
 extern const QString globalVarStr;
 extern const QRegExp globalVarPattern;
 
+//定义变量在类的声明体中的规则
+extern const QString classVarInHeaderStr;
+extern const QRegExp classVarInHeaderPattern;
+
 //定义基础和复合变量的命名规则
 extern const QRegExp varPattern;
 extern const QString varStr;
@@ -25,6 +29,10 @@ extern const QString varStr;
 //定义函数的命名规则
 extern const QRegExp definedMethodPattern;
 extern const QString definedMethodStr;
+
+//定义函数在类的声明体中的规则
+extern const QString classMethodInHeaderStr;
+extern const QRegExp classMethodInHeaderPattern;
 
 //定义类的命名规则
 extern const QString classStr;

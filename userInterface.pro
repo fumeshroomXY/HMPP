@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     requirementtreeview.cpp \
     syntaxrule.cpp \
     selectnewclassdialog.cpp \
-    issue.cpp
+    issue.cpp \
+    issuemanager.cpp
 
 HEADERS  += mainwindow.h \
     mdichild.h \
@@ -43,7 +44,8 @@ HEADERS  += mainwindow.h \
     requirementtreeview.h \
     syntaxrule.h \
     selectnewclassdialog.h \
-    issue.h
+    issue.h \
+    issuemanager.h
 
 RESOURCES += \
     ui_images.qrc

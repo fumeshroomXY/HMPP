@@ -7,9 +7,10 @@
 #include <QStandardItemModel>
 #include <QFileInfo>
 #include <QDir>
-#include <mdichild.h>
+#include "mdichild.h"
 
 class MdiChild;
+class IssueManager;
 struct RequireNote;
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -76,6 +77,36 @@ public:
     //当新添加类时，修改CmakeFile，添加类的源文件
     bool addFileStrToCmakeFile(const QString& fileName);
 
+
+    //展示Class封装问题的面板
+    void showClassEncapsulateIssueTab();
+
+    //返回对应类名的类信息
+    ClassInfo getProClassInfo(QString className);
+
+    //设定对应类名的类信息
+    void setProClassInfo(QString className, const ClassInfo &info);
+
+    //同步项目中的和文件对应的类信息
+    void synchronizeClassInfoFromProToFile(QString className);
+
+    //删除和新增头文件中对应的类成员
+    bool delAndAddInfoInClassHeaderFile(const ClassInfo &delInfo, const ClassInfo &addInfo, QString className);
+
+    //清空类的源文件并重写类函数信息
+    bool clearAndModifyClassSourceFile(const ClassInfo &info, QString className);
+
+public slots:
+
+    //点击Issue时跳转到对应行
+    void setCursorToIssueLine(QTableWidgetItem *item);
+
+    //展示实例类名未定义的问题
+    void showClassUndefinedSyntaxIssue(const QList<ClassUndefinedSyntaxIssue> &list);
+
+    //UNSPECIFIED type 问题
+    void showClassUnspecifiedTypeIssue();
+
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;    //指定重载符
 
@@ -105,9 +136,9 @@ private slots:
 
     void setCursorToFaultLine(QTableWidgetItem *);
 
-    void setPage2();
-    void setPage1();
-    void showProgramOutput(int);
+    void showHMPPView();
+    void showProjectView();
+    void showSCMFaultTab(int);
     void lineEditPrompt();
     void doubleClickedProjectTree(const QModelIndex &index);
     void doubleClickedRequirementView(const QModelIndex &index);
@@ -167,6 +198,8 @@ private:
 
     projectTree* currentPro;
 
+    IssueManager* proIssueManager;
+
     //保存已打开的项目
     QMultiHash<QString, projectTree*> projects;
 
@@ -202,7 +235,7 @@ private:
     QModelIndex findModelItem(const QString &searchString, const QModelIndex &parentIndex, QStandardItemModel *model, int role);
 
     //为新创建的类的头文件，添加类的成员变量和函数信息
-    bool clearAndModifyClassFile(const ClassInfo &info, QString className);
+    bool clearAndModifyClassHeaderFile(const ClassInfo &info, QString className);
 
     //在类的头文件中删除对应信息
     //bool deleteInfoInClassFile(const ClassInfo &info, QString className);

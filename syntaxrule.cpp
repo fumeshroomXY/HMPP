@@ -22,6 +22,13 @@ const QString basicVarStr = "\\b(" + basicType.join("|") + ")"
 
 const QRegExp basicVarPattern = QRegExp(basicVarStr);
 
+
+const QString classVarInHeaderStr = "\\b([A-Za-z_][A-Za-z0-9_]*)"
+                                    "(\\*|&?)[^\\S\n]+%1\\b"
+                                    "(\\[?\\]?)[^\\S\n]*;";
+
+const QRegExp classVarInHeaderPattern = QRegExp(classVarInHeaderStr);
+
 //定义全局变量
 //1类型，2*&，3变量名，4[]
 const QString globalVarStr = "\\b([A-Za-z_][A-Za-z0-9_]*)"
@@ -49,6 +56,11 @@ const QString definedMethodStr = "\\b([A-Za-z_][A-Za-z0-9_]*)(\\*|&?)[^\\S\n]+"
                                  "\\(([^\\)]*)\\)\\s*\\{";
 
 const QRegExp definedMethodPattern = QRegExp(definedMethodStr);
+
+const QString classMethodInHeaderStr = "\\b([A-Za-z_][A-Za-z0-9_]*)(\\*|&?)[^\\S\n]+%1\\b"
+                                 "\\(([^()]*)\\);";
+
+const QRegExp classMethodInHeaderPattern = QRegExp(classMethodInHeaderStr);
 
 
 //1类名，2类名，3参数列表，4形参，5类成员变量

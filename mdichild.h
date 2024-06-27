@@ -5,11 +5,15 @@
 #include <QObject>
 #include <faultpromptdialog.h>
 #include <highlighter.h>
+#include <issue.h>
+#include "syntaxrule.h"
+
 #include <QVector>
 #include <QEvent>
 #include <QTextBlock>
 #include <QScrollBar>
 #include <QDebug>
+#include <memory>
 
 QT_BEGIN_NAMESPACE
 class QPaintEvent;
@@ -21,6 +25,7 @@ QT_END_NAMESPACE
 class LineNumberArea;
 class FoldingWidget;
 class CustomButton;
+class MainWindow;
 
 //定义作用域
 enum SCOPE
@@ -114,6 +119,17 @@ public:
 
     //匹配对应形式的fault
     void matchFaultPattern(const QRegExp &faultPattern, const QTextCharFormat &format, QString faultName);
+    QList<ClassMemberUnspecifiedIssue> getUnspecifiedTypeIssueList();
+
+    //更新头文件的issue信息
+    void updateIssueInfoInHeaderFile();
+
+    //更新头文件的类信息
+    void updateObjectInfoInHeaderFile();
+
+    MainWindow *getMainWindowPtr() const;
+    void setMainWindowPtr(MainWindow *value);
+
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;   //关闭事件
 
@@ -128,11 +144,13 @@ public slots:
     //fault弹窗，quickfix并确定后触发
     void faultFixOkClicked();
 
+    void highlightCurrentLine();
+
 private slots:
     void documentWasModified();    //文件被更改时显示更改窗口状态
 
     void updateLineNumberAreaWidth(int newBlockCount);
-    void highlightCurrentLine();
+
     //void updateLineNumberArea(const QRect &, int);
     void updateLineNumberArea(QRectF /*rect_f*/);
     void updateLineNumberArea(int /*slider_pos*/);
@@ -167,6 +185,8 @@ private:
     QString curFile;     //保存当前文件路径
     bool isUntitled;    //作为当前文件是否被保存到硬盘上的标志
 
+    MainWindow* mainWindowPtr;
+
     //绘制行号的区域
     LineNumberArea *lineNumberArea;
 
@@ -175,6 +195,13 @@ private:
     Highlighter* highlighter;
 
     FaultPromptDialog* faultPrompt;
+
+
+    //用于保存语法错误，这里主要是类未定义的，还有UNSPECIFIED的语法错误
+    QList<ClassUndefinedSyntaxIssue> syntaxIssueList;
+
+    QList<ClassMemberUnspecifiedIssue> unspecifiedTypeIssueList;
+
     QString previewText;
     bool insertPreview = false;
     bool faultflag = true;
@@ -248,9 +275,15 @@ private:
     //返回任意表达式的类型，如函数调用，变量
     QString getExpressionType(const QString &exp);
 
+    //画Issue所在行号的问题图标
+    template <typename T>
+    void drawIssueImage(const QList<T> &list, QPainter &painter, int offset, int imageHeight = 0);
+
 signals:
-    void showProblemTab(int);
+    void showSCMFault(int);
     void hideProblemTab();
+    void showHeaderFileIssue();
+    void showSourceFileIssue(const QList<ClassUndefinedSyntaxIssue> & list);
 
     //通知主窗口更新类文件
     void updateClassFiles(QString filePath, QHash<QString, ClassInfo>& classInfoHash);
@@ -354,6 +387,13 @@ struct Variable
     bool operator==(const Variable& other) const {
         return (name == other.name && className == other.className && type == other.type && scope == other.scope);
     }
+
+    //用于覆盖类型中包括UNSPECIFIED的情况
+    bool operator >= (const Variable& other) const {
+        bool res1 = (name == other.name && className == other.className && scope == other.scope);
+        bool res2 = (other.type == UNSPECIFIED) || (type == other.type);
+        return res1 && res2;
+    }
 };
 
 inline uint qHash(const Variable& var) {
@@ -380,6 +420,19 @@ struct Method
                 && returnType == other.returnType && scope == other.scope
                 && parameters == other.parameters);
     }
+
+    //用于覆盖类型中包括UNSPECIFIED的情况
+    bool operator >= (const Method& other) const {
+        bool res1 = (name == other.name && className == other.className && scope == other.scope
+                     && parameters.size() == other.parameters.size());
+        bool res2 = (other.returnType == UNSPECIFIED) || (returnType == other.returnType);
+        bool res3 = true;
+        for(int i = 0; i < parameters.size(); ++i){
+            bool res = (parameters[i] == other.parameters[i]) || (other.parameters[i] == UNSPECIFIED);
+            res3 = res3 && res;
+        }
+        return res1 && res2 && res3;
+    }
 };
 
 
@@ -390,7 +443,7 @@ struct ClassInfo
     QList<Method>* methods;
     QString name;   //类名
 
-    ClassInfo() {}
+    ClassInfo() : vars(new QList<Variable>()), methods(new QList<Method>()), name(""){}
     ClassInfo(QString name): vars(new QList<Variable>()), methods(new QList<Method>()), name(name){}
 };
 

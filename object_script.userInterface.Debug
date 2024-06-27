@@ -14,6 +14,8 @@ INPUT(
 ./debug\requirementtreeview.o
 ./debug\syntaxrule.o
 ./debug\selectnewclassdialog.o
+./debug\issue.o
+./debug\issuemanager.o
 ./debug\qrc_ui_images.o
 ./debug\moc_mainwindow.o
 ./debug\moc_mdichild.o
@@ -28,4 +30,5 @@ INPUT(
 ./debug\moc_faultlinehighlighter.o
 ./debug\moc_requirementtreeview.o
 ./debug\moc_selectnewclassdialog.o
+./debug\moc_issuemanager.o
 );

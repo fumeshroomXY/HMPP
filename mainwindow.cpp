@@ -16,6 +16,8 @@
 #include "highlighter.h"
 #include "faultlinehighlighter.h"
 #include "selectnewclassdialog.h"
+#include "syntaxrule.h"
+#include "issuemanager.h"
 
 const QString iconFilePath = "/images/toolbar_images";
 
@@ -61,17 +63,25 @@ MainWindow::MainWindow()
     ui->tableWidgetReport->horizontalHeader()->sectionResizeMode(QHeaderView::Stretch);
     ui->tableWidgetReport->horizontalHeader()->sectionResizeMode(QHeaderView::ResizeToContents);
 
+    //调整Issue Report区的行列长度
+    ui->tableIssueWidget->verticalHeader()->sectionResizeMode(QHeaderView::Stretch);
+    ui->tableIssueWidget->verticalHeader()->sectionResizeMode(QHeaderView::ResizeToContents);
+
+    ui->tableIssueWidget->horizontalHeader()->sectionResizeMode(QHeaderView::Stretch);
+    ui->tableIssueWidget->horizontalHeader()->sectionResizeMode(QHeaderView::ResizeToContents);
+
     connect(ui->actionCplus, &QAction::triggered, this, &MainWindow::setTargetLangToCplus);
     connect(ui->actionJava, &QAction::triggered, this, &MainWindow::setTargetLangToJava);
     connect(ui->actionCsharp, &QAction::triggered, this, &MainWindow::setTargetLangToCsharp);
 
     screenFactor = getScreenFactor();
 
-    connect(ui->projectShowAct, &QAction::triggered, this, &MainWindow::setPage1);
-    connect(ui->hmppAct, &QAction::triggered, this, &MainWindow::setPage2);
+    connect(ui->projectShowAct, &QAction::triggered, this, &MainWindow::showProjectView);
+    connect(ui->hmppAct, &QAction::triggered, this, &MainWindow::showHMPPView);
 
     connect(ui->tableWidgetReport, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), this, SLOT(setCursorToFaultLine(QTableWidgetItem*)));
 
+    connect(ui->tableIssueWidget, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), this, SLOT(setCursorToIssueLine(QTableWidgetItem*)));
 
     //设置lineEdit的灰色提示文本
     ui->lineEdit->setPlaceholderText("Ask anything about programming");
@@ -203,14 +213,15 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
 
     includedClass = includedClass + uncheckedItems;
 
-    //1. 新类要创建头文件和源文件（没有的话），更改项目文件
+    //1. 新类要创建头文件和源文件，更改项目文件
     for(auto className : checkedItems){
         if(proClassInfoHash.isEmpty() || !proClassInfoHash.contains(className)){  //项目原来的类信息不包括新类名
             if(createNewClassFiles(className)){  //为新类创建类文件
                 addFileStrToCmakeFile(className + ".cpp");
                 ClassInfo newInfo = updateClassInfoHash.value(className);
                 proClassInfoHash.insert(className, newInfo);
-                clearAndModifyClassFile(newInfo, className);
+                clearAndModifyClassHeaderFile(newInfo, className);
+                clearAndModifyClassSourceFile(newInfo, className);
                 includedClass.append(className);
             }else{
                 qDebug() << "updateProjectClassInfo: failed to create a new class: " << className;
@@ -239,9 +250,15 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
 
         ClassInfo delInfo = ClassInfo();
         delInfo.name = preInfo.name;
+
         for(int i = 0; i < preInfo.methods->size(); i++){
             Method m = preInfo.methods->at(i);
-            if(!newInfo.methods->contains(m)){   //如果新信息中没有旧信息同样的函数，说明需要删除
+            if(!newInfo.methods->contains(m)){   //如果旧信息中没有新信息同样的函数，说明需要添加
+                for(int j = 0; j < newInfo.methods->size(); j++){
+                    if(m >= newInfo.methods->at(i)){  //将旧信息中类型更全的函数更新到新信息中
+                        (*newInfo.methods)[i] = m;
+                    }
+                }
                 delInfo.methods->append(m);
                 proClassInfo.methods->removeOne(m);
             }
@@ -249,7 +266,12 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
 
         for(int i = 0; i < preInfo.vars->size(); i++){
             Variable v = preInfo.vars->at(i);
-            if(!newInfo.vars->contains(v)){   //如果新信息中没有旧信息同样的函数，说明需要删除
+            if(!newInfo.vars->contains(v)){
+                for(int j = 0; j < newInfo.vars->size(); j++){
+                    if(v >= newInfo.vars->at(i)){  //将旧信息中类型更全的变量更新到新信息中
+                        (*newInfo.vars)[i] = v;
+                    }
+                }
                 delInfo.vars->append(v);
                 proClassInfo.vars->removeOne(v);
             }
@@ -275,59 +297,207 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
 
         //由于情况复杂，这里直接粗暴的重写对应文件
         //如果遇到那种改动很小的情况，这种粗暴的方式不一定很高效
-        clearAndModifyClassFile(proClassInfo, className);
+        delAndAddInfoInClassHeaderFile(delInfo, addInfo, className);
 
     }
 
     fileClassInfoHash[filePath] = updateClassInfoHash;
+    showClassUnspecifiedTypeIssue();
 
     //3. 消失的类要删除头文件，更改项目文件
     //此项情况暂时不处理
 
 }
 
-//bool MainWindow::deleteInfoInClassFile(const ClassInfo& info, QString className)
-//{
-//    if(info.name.isEmpty()) return false;
-//    //为指定的类的头文件中加入类的成员信息
-//    QString classFilePath = currentPro->projectPath + "/" + headDir + "/" + className + ".h";
-//    QFile inputFile(classFilePath);
-//    if (!inputFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-//        qDebug() << "Failed to open file for reading:" << inputFile.errorString();
-//        return;
-//    }
+bool MainWindow::delAndAddInfoInClassHeaderFile(const ClassInfo& delInfo, const ClassInfo& addInfo, QString className)
+{
+    if(info.name.isEmpty()) return false;
+    if(currentPro == nullptr) {
+        qDebug() << "currentPro is nullptr.";
+        return false;
+    }
+    //为指定的类的头文件中加入类的成员信息
+    QString classFilePath = currentPro->projectPath + "/" + headDir + "/" + className + ".h";
+    QFile file(classFilePath);
+    if(!QFile::exists(classFilePath) || !file.open(QIODevice::ReadOnly | QIODevice::Text)){
+        qDebug() << file.errorString();
+        return false;
+    }
 
-//    QTemporaryFile tempFile;
-//    if (!tempFile.open()) {
-//        qDebug() << "Failed to open temporary file for writing.";
-//        return;
-//    }
+    QTextStream stream(&file);
+    QString content = stream.readAll();
+    file.close();
 
-//    QTextStream in(&inputFile);
-//    QTextStream out(&tempFile);
+    QRegExp reg;
+    for(int i = 0; i < delInfo.vars->size(); ++i){
+        const Variable& v = delInfo.vars->at(i);
+        if(v.type.contains("[")){
+            QString type = v.type.left(v.type.indexOf("["));
+            reg = QRegExp(QString("%1[^\\S\n]+%2[^\\S\n]*\\[[\\d\\s]+\\][^\\S\n]*;").arg(type).arg(v.name));
+        }else{
+            reg = QRegExp(QString("%1[^\\S\n]+%2[^\\S\n]*;").arg(v.type).arg(v.name));
+        }
+        int pos = 0;
+        if ((pos = reg.indexIn(content, pos)) != -1) {
+            // 找到了匹配的内容
+            qDebug()  << "classVarInHeader: " ;
+            qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;  //type需要选择是否加上&或*，cap(2)
+            qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
 
-//    while (!in.atEnd()) {
-//        QString line = in.readLine();
-//        line.remove(regexp); // Remove matches from the line
-//        out << line << '\n'; // Write modified line to temp file
-//    }
+            content.replace(pos, reg.cap(0).length(), "");
+        }else{
+            qDebug() << "Cannot find : " << v.className << "::" << v.type << " " << v.name;
+        }
+    }
 
-//    inputFile.close();
-//    tempFile.close();
+    for(int i = 0; i < delInfo.methods->size(); ++i){
+        const Method& m = delInfo.methods->at(i);
+        QString paramReg;
+        for(int j = 0; j < m.parameters.size(); j++){
+            if(j > 0){
+                paramReg += "[^\\S\n]*,[^\\S\n]*";
+            }
+            paramReg += QString("%1[^\\S\n]+[A-Za-z_][A-Za-z0-9_]*").arg(m.parameters[j]);
+        }
 
-//    if (!QFile::remove(filePath)) {
-//        qDebug() << "Failed to remove original file.";
-//        return;
-//    }
+        reg = QRegExp(QString("%1[^\\S\n]+%2\\(%3\\);").arg(m.returnType).arg(m.name).arg(paramReg));
+        int pos = 0;
+        if ((pos = reg.indexIn(content, pos)) != -1) {
+            // 找到了匹配的内容
+            qDebug()  << "classVarInHeader: " ;
+            qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;
+            qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
 
-//    if (!tempFile.rename(filePath)) {
-//        qDebug() << "Failed to rename temporary file.";
-//    }
+            content.replace(pos, reg.cap(0).length(), "");
+        }else{
+            qDebug() << "Cannot find : " << m.className << "::" << m.returnType << " " << m.name
+                     << " " << "(" << m.paramStr << ")";
+        }
+    }
 
-//}
+
+    QRegExp privateReg(QString("\\bprivate[^\\S\n]*:\n"));
+    for(int i = 0; i < addInfo.vars->size(); ++i){
+        const Variable& v = addInfo.vars->at(i);
+        QString insertStr;
+        if(v.type.contains("[")){
+            QString type = v.type.left(v.type.indexOf("["));
+            insertStr = QString("%1 %2[];").arg(type).arg(v.name);
+        }else{
+            insertStr = QString("%1 %2;").arg(v.type).arg(v.name);
+        }
+        int pos = 0;
+        if((pos = privateReg.indexIn(content, pos)) != -1){
+            qDebug() << "Matched text at position:" << pos;
+            qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
+
+            content.insert(pos + privateReg.cap(0).length(), insertStr);
+        }else{
+            qDebug() << "Cannot find : " << v.className << "::" << v.type << " " << v.name;
+        }
+
+    }
+
+    QRegExp publicReg(QString("\\bpublic[^\\S\n]*:\n"));
+    for(int i = 0; i < addInfo.methods->size(); ++i){
+        const Method& m = addInfo.methods->at(i);
+        QString insertStr = QString("%1 %2(%3);").arg(m.returnType).arg(m.name).arg(m.paramStr);
+
+        int pos = 0;
+        if((pos = publicReg.indexIn(content, pos)) != -1){
+            qDebug() << "Matched text at position:" << pos;
+            qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
+
+            content.insert(pos + publicReg.cap(0).length(), insertStr);
+        }else{
+            qDebug() << "Cannot find : " << m.className << "::" << m.returnType << " " << m.name
+                     << " " << "(" << m.paramStr << ")";
+        }
+    }
 
 
-bool MainWindow::clearAndModifyClassFile(const ClassInfo& info, QString className)
+    if(!QFile::exists(classFilePath) || !file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        qDebug() << file.errorString();
+        return false;
+    }
+    QTextStream stream(&file);
+    stream << content;
+    file.close();
+    return true;
+
+}
+
+void MainWindow::showClassUnspecifiedTypeIssue()
+{
+    qDebug() << "51";
+    if(!currentPro){
+        qDebug() << "showClassUnspecifiedTypeIssue : currentPro is empty.";
+        return;
+    }
+    QList<ClassInfo> issueInfos;
+    qDebug() << "find issue.";
+    for (auto it = proClassInfoHash.constBegin(); it != proClassInfoHash.constEnd(); ++it) {
+        //qDebug() << "Key:" << it.key() << "Value:" << it.value();
+        QString className = it.key();
+        ClassInfo info = it.value();
+        ClassInfo issueInfo(className);
+        for(int i = 0; i < info.vars->size(); i++){
+            Variable v = (*info.vars)[i];
+            if(v.type == UNSPECIFIED){
+                issueInfo.name = className;
+                issueInfo.vars->append(v);
+            }
+        }
+        for(int i = 0; i < info.methods->size(); i++){
+            Method m = (*info.methods)[i];
+            if(m.returnType == UNSPECIFIED || m.parameters.contains(UNSPECIFIED)){
+                issueInfo.name = className;
+                issueInfo.methods->append(m);
+            }
+        }
+        issueInfos.append(issueInfo);
+    }
+
+    for(int i = 0; i < issueInfos.size(); i++){
+        ClassInfo info = issueInfos[i];
+        qDebug() << info.name;
+        for(int j = 0; j < info.vars->size(); j++){
+            qDebug() << info.vars->at(j).name;
+        }
+        for(int j = 0; j < info.methods->size(); j++){
+            qDebug() << info.methods->at(j).name;
+        }
+    }
+
+    qDebug() << "collect issue.";
+
+    QList<ClassMemberUnspecifiedIssue> list;
+    for(auto info : issueInfos){
+        QString className = info.name;
+        QString filePath = currentPro->projectPath + "/" + headDir + "/" + className + ".h";
+        if(!openFile(filePath)){
+            qDebug() << "Cannot open file : " << filePath;
+        }
+        MdiChild* mdiChild = activeMdiChild();
+        if(!mdiChild){
+            qDebug() << "Cannot find the corresponding mdichild.";
+        }
+        list.append(mdiChild->getUnspecifiedTypeIssueList());
+    }
+
+    qDebug() << "showClassUnspecifiedTypeIssue: UnspecifiedIssueList.size = "
+             << proIssueManager->getUnspecifiedIssueList().size();
+    proIssueManager->clearUnspecifiedIssueList();
+    qDebug() << "showClassUnspecifiedTypeIssue: UnspecifiedIssueList.size = "
+             << proIssueManager->getUnspecifiedIssueList().size();
+    proIssueManager->appendUnspecifiedIssue(list);
+    qDebug() << "showClassUnspecifiedTypeIssue: UnspecifiedIssueList.size = "
+             << proIssueManager->getUnspecifiedIssueList().size();
+    showClassEncapsulateIssueTab();
+}
+
+
+bool MainWindow::clearAndModifyClassHeaderFile(const ClassInfo& info, QString className)
 {
     if(info.name.isEmpty()) return false;
     if(currentPro == nullptr) {
@@ -349,7 +519,7 @@ bool MainWindow::clearAndModifyClassFile(const ClassInfo& info, QString classNam
     stream << QString("#define %1_H").arg(upper);
     stream << "\n\n";
 
-    stream << QString("Class %1\n{").arg(className);
+    stream << QString("class %1\n{").arg(className);
     stream << "\n";
     stream << "\npublic:";
     stream << "\n";
@@ -378,7 +548,7 @@ bool MainWindow::clearAndModifyClassFile(const ClassInfo& info, QString classNam
 
         if(flag == false){   //不存在则写入set函数
             stream << "\t";
-            stream << QString("void set%1(%2 param){ %3 = param; }").arg(firstCapName, var.type, var.name);
+            stream << QString("void set%1(const %2& value){ %3 = value; }").arg(firstCapName, var.type, var.name);
             stream << "\n\n";
         }
 
@@ -393,7 +563,7 @@ bool MainWindow::clearAndModifyClassFile(const ClassInfo& info, QString classNam
 
         if(flag == false){   //不存在则写入set函数
             stream << "\t";
-            stream << QString("%1 get%2(){ return %4; }").arg(var.type, firstCapName, var.name);
+            stream << QString("%1 get%2() const { return %4; }").arg(var.type, firstCapName, var.name);
             stream << "\n\n";
         }
 
@@ -417,7 +587,38 @@ bool MainWindow::clearAndModifyClassFile(const ClassInfo& info, QString classNam
     stream << "\n";
     file.close();
     return true;
+}
 
+
+bool MainWindow::clearAndModifyClassSourceFile(const ClassInfo& info, QString className)
+{
+    if(info.name.isEmpty()) return false;
+    if(currentPro == nullptr) {
+        qDebug() << "currentPro is nullptr.";
+        return false;
+    }
+    //为指定的类的头文件中加入类的成员信息
+    QString classFilePath = currentPro->projectPath + "/" + srcDir + "/" + className + ".cpp";
+    QFile file(classFilePath);
+    if(!QFile::exists(classFilePath) || !file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)){
+        qDebug() << file.errorString();
+        return false;
+    }
+
+    QTextStream stream(&file);
+
+
+    //依次写入函数
+    for(int i = 0; i < info.methods->size(); ++i){
+        const Method& method = info.methods->at(i);
+        stream << QString("%1::%2 %3(%4){").arg(method.returnType, method.className, method.name, method.paramStr);
+        stream << "\n\n}";
+        stream << "\n\n";
+    }
+    //为变量设置set和get函数
+
+    file.close();
+    return true;
 }
 
 void MainWindow::doubleClickedProjectTree(const QModelIndex &index)
@@ -441,12 +642,12 @@ void MainWindow::updateRequireNotes(MdiChild *child)
     //先在projectTree中找到child对应的文件
 }
 
-void MainWindow::setPage1()
+void MainWindow::showProjectView()
 {
     ui->stackedWidget->setCurrentIndex(0);
 }
 
-void MainWindow::setPage2()
+void MainWindow::showHMPPView()
 {
     ui->stackedWidget->setCurrentIndex(3);
 }
@@ -632,7 +833,7 @@ void MainWindow::initProjectModel(projectTree* newPro)
 
 void MainWindow::initProjectInfo()
 {
-
+    proIssueManager = new IssueManager();
     //当前文件的类信息汇总
     proClassInfoHash = QHash<QString, ClassInfo>();   //key = 类名，value = 类信息
 
@@ -695,7 +896,7 @@ void MainWindow::initCMakeFile(const projectTree* pro)
 
 bool MainWindow::addFileStrToCmakeFile(const QString &fileNameStr)
 {
-    QString newFileStr = " " + srcDir + "/" + fileNameStr;
+    QString newFileStr = srcDir + "/" + fileNameStr;
     QString cmakeFilePath;
     qDebug() << "CmakeFile: " << cmakeFilePath;
     if(currentPro) {
@@ -725,9 +926,14 @@ bool MainWindow::addFileStrToCmakeFile(const QString &fileNameStr)
         return false;
     }
 
-    // 在 target 之后插入 str
-    pos += target.length();
-    content.insert(pos, newFileStr);
+    if(content.indexOf(newFileStr, pos) != -1){
+        qDebug() << newFileStr << "already exists in the CMakeFile.";
+        return true;
+    }else{
+        // 在 target 之后插入 str
+        pos += target.length();
+        content.insert(pos, " " + newFileStr);
+    }
 
     // 重新打开文件以写入修改后的内容
     if (!cmakeFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
@@ -759,20 +965,11 @@ bool MainWindow::addFileToProject(const projectTree *pro, QString fileName)
         QDir temp = proDir;
         filePath = pro->projectPath + "/" + srcDir + "/" + fileName;
         dirPath = pro->projectPath + "/" + srcDir;
-        if(temp.cd(srcDir) && temp.exists(fileName)){
-            qDebug() << fileName + "already exists in" + pro->projectPath;
-            qDebug() << "7";
-            return false;
-        }
+
     }else if(suffix == "h"){
         QDir temp = proDir;
         filePath = pro->projectPath + "/" + headDir + "/" + fileName;
         dirPath = pro->projectPath + "/" + headDir;
-        if(temp.cd(headDir) && temp.exists(fileName)){
-            qDebug() << fileName + "already exists in" + pro->projectPath;
-            qDebug() << "7";
-            return false;
-        }
     }
 
     QFile file(filePath);
@@ -802,13 +999,18 @@ bool MainWindow::addFileToProject(const projectTree *pro, QString fileName)
 
         if(suffix == "cpp"){  //区分要添加的文件是cpp还是h
             itemNewFile->setData(QIcon(resFilePath + "/cpp.svg"), Qt::DecorationRole);
-            QStandardItem* parent = projectModel->itemFromIndex(index);
-            parent->appendRow(itemNewFile);
         }else if(suffix == "h"){
             itemNewFile->setData(QIcon(resFilePath + "/header.svg"), Qt::DecorationRole);
-            QStandardItem* parent = projectModel->itemFromIndex(index);
-            parent->appendRow(itemNewFile);
         }
+        bool flag = true;
+        QStandardItem* parent = projectModel->itemFromIndex(index);
+        for (int i = 0; i < parent->rowCount(); ++i) {
+            QStandardItem* child = parent->child(i);
+            if (child->text() == itemNewFile->data(Qt::DisplayRole)) {
+                flag = false;
+            }
+        }
+        if(flag) parent->appendRow(itemNewFile);
 
         projectModel->sort(0);  //model第一列排序
         qDebug() << "7";
@@ -826,8 +1028,16 @@ QModelIndex MainWindow::findModelItem(const QString &searchString, const QModelI
 
     qDebug() << "searchString: " << searchString;
     // 获取指定父索引下的所有子项的数量，包括父索引本身，如果下面不加parent()，就不包括索引本身
-    int rowCount = model->rowCount(parentIndex.parent());
-    int columnCount = model->columnCount(parentIndex.parent());
+    int rowCount = model->rowCount(parentIndex);
+    int columnCount = model->columnCount(parentIndex);
+
+    qDebug() << "rowCount: " << rowCount;
+    qDebug() << "columnCount: " << columnCount;
+
+    if(parentIndex.isValid()){
+        QString str = parentIndex.data(role).toString();
+        if(str == searchString) return parentIndex;
+    }
 
     // 遍历每个子项
     for (int row = 0; row < rowCount; ++row) {
@@ -1113,6 +1323,27 @@ bool MainWindow::loadProject(const QString &fileName)
             }
         }
         file.close();
+
+        //打开main.cpp
+        QString curPath = QDir::currentPath();
+        qDebug() << "loadProject::currentDir: " << QDir::current();
+        QDir::setCurrent(proPath + "/" + "src");    //更换到src文件夹下
+        qDebug() << "loadProject::currentDir: " << QDir::current();
+        QFile mainCpp("main.cpp");
+        if(!mainCpp.open(QIODevice::ReadWrite | QIODevice::Text)){
+            qDebug() << mainCpp.errorString();
+            return false;
+        }
+        mainCpp.close();
+        bool flag = openFile("main.cpp");
+        if(!flag){
+            errordlg->setWindowTitle(tr("Error Message"));
+            errordlg->showMessage(tr("Failed to open main.cpp"));
+            return false;
+        }
+        QDir::setCurrent(curPath);    //更换回项目文件夹下
+        qDebug() << "loadProject::currentDir: " << QDir::current();
+
         if(projectName == "") return false;    //如果没找到项目名
 
         projectTree* pro = new projectTree(projectName, proPath);
@@ -1364,6 +1595,8 @@ MdiChild *MainWindow::createMdiChild()
     //highlighter = new Highlighter(editor->document());
     MdiChild *child = new MdiChild();
 
+    child->setMainWindowPtr(this);
+
     child->setFont(font);
 
     //FaultLineHighlighter *faultHighlighter = new FaultLineHighlighter(child->document());
@@ -1379,9 +1612,14 @@ MdiChild *MainWindow::createMdiChild()
     connect(child, &QTextEdit::copyAvailable, ui->cutAct, &QAction::setEnabled);
     connect(child, &QTextEdit::copyAvailable, ui->copyAct, &QAction::setEnabled);
 #endif
-    connect(child, &MdiChild::showProblemTab, this, &MainWindow::showProgramOutput);
-    connect(child, &MdiChild::showProblemTab, ui->tabProgramOutput, &QWidget::show);//当收到展示问题面板信号时，展示问题面板
+    connect(child, &MdiChild::showSCMFault, this, &MainWindow::showSCMFaultTab);
+    connect(child, &MdiChild::showSCMFault, ui->tabProgramOutput, &QWidget::show);//当收到展示问题面板信号时，展示问题面板
     connect(child, &MdiChild::hideProblemTab, ui->tabProgramOutput, &QWidget::hide);
+
+    connect(child, &MdiChild::showSourceFileIssue, this, &MainWindow::showClassUndefinedSyntaxIssue);
+    connect(child, &MdiChild::showSourceFileIssue, ui->tabProgramOutput, &QWidget::show);//当收到展示问题面板信号时，展示问题面板
+
+    connect(child, &MdiChild::showHeaderFileIssue, this, &MainWindow::showClassUnspecifiedTypeIssue);
 
     //根据源文件类信息，更新类文件
     connect(child, &MdiChild::updateClassFiles, this, &MainWindow::updateProjectClassInfo);
@@ -1389,16 +1627,121 @@ MdiChild *MainWindow::createMdiChild()
     return child;
 }
 
-void MainWindow::showProgramOutput(int faultLineNumber){
+void MainWindow::showSCMFaultTab(int faultLineNumber){
     qDebug() << "31";
     if(faultLineNumber == -1) return;
     QString line = "line " + QString::number(faultLineNumber + 1);
     QTableWidgetItem *item = new QTableWidgetItem(line);
     ui->tableWidgetReport->setItem(0, 1, item);
+    ui->tabProgramOutput->setCurrentIndex(1);
     ui->tabProgramOutput->show();
     qDebug() << "31";
 //    ui->mdiArea->setFocus();
 }
+
+void MainWindow::showClassUndefinedSyntaxIssue(const QList<ClassUndefinedSyntaxIssue>& list)
+{
+    qDebug() << "showClassUndefinedSyntaxIssue: UndefinedIssueList.size = "
+             << proIssueManager->getUndefinedIssueList().size();
+    proIssueManager->clearUndefinedIssueList();
+    qDebug() << "showClassUndefinedSyntaxIssue: UndefinedIssueList.size = "
+             << proIssueManager->getUndefinedIssueList().size();
+    proIssueManager->appendUndefinedIssue(list);
+    qDebug() << "showClassUndefinedSyntaxIssue: UndefinedIssueList.size = "
+             << proIssueManager->getUndefinedIssueList().size();
+    showClassEncapsulateIssueTab();
+}
+
+
+void MainWindow::showClassEncapsulateIssueTab()
+{
+    const auto& list1 = proIssueManager->getUndefinedIssueList();
+
+    const auto& list2 = proIssueManager->getUnspecifiedIssueList();
+
+    if(list1.isEmpty() && list2.isEmpty()){
+        qDebug() << "list is empty!";
+        return;
+    }
+
+    ui->tableIssueWidget->clear();
+
+    // Set number of rows and columns
+    int headerSize = 4;
+    ui->tableIssueWidget->setColumnCount(headerSize);
+    ui->tableIssueWidget->setRowCount(list1.size() + list2.size());
+
+    int i = 0;
+    for(i = 0; i < list1.size(); i++){
+        int currentRow = i;
+        qDebug() << "QTableWidget: row : " << ui->tableIssueWidget->rowCount()
+                 << " col: " << ui->tableIssueWidget->columnCount();
+        auto issue = *list1[i];
+        qDebug() << "showClassEncapsulateIssueTab";
+        qDebug() << "curIssue: " << issue.getName() << " " << issue.getDescription() << " " << issue.getFilePath();
+        QIcon icon(QPixmap::fromImage(issue.getImage()));
+        QTableWidgetItem* item1 = new QTableWidgetItem(icon, issue.getName());
+        ui->tableIssueWidget->setItem(currentRow, 0, item1);
+        QTableWidgetItem* item2 = new QTableWidgetItem(issue.getDescription());
+        ui->tableIssueWidget->setItem(currentRow, 1, item2);
+        QString fileName = issue.getFilePath();
+        QString filePath = fileName;
+        fileName = fileName.mid(fileName.lastIndexOf('/') + 1);
+        QTableWidgetItem* item3 = new QTableWidgetItem(fileName);
+        item3->setData(Qt::ToolTipRole, filePath);
+        ui->tableIssueWidget->setItem(currentRow, 2, item3);
+        qDebug() << "lineNumber: " << issue.getIssueLineNumber() + 1;
+        QTableWidgetItem* item4 = new QTableWidgetItem(QString("%1::%2").arg(issue.getIssueLineNumber() + 1)
+                                                                             .arg(issue.getPosition()));
+        //QTableWidgetItem* item4 = new QTableWidgetItem("test");
+        ui->tableIssueWidget->setItem(currentRow, 3, item4);
+    }
+
+    for(int j = 0; j < list2.size(); j++){
+        int currentRow = j + i;
+        qDebug() << "QTableWidget: row : " << ui->tableIssueWidget->rowCount()
+                 << " col: " << ui->tableIssueWidget->columnCount();
+        auto issue = *list2[j];
+        qDebug() << "showClassEncapsulateIssueTab";
+        qDebug() << "curIssue: " << issue.getName() << " " << issue.getDescription() << " " << issue.getFilePath();
+        QIcon icon(QPixmap::fromImage(issue.getImage()));
+        QTableWidgetItem* item1 = new QTableWidgetItem(icon, issue.getName());
+        ui->tableIssueWidget->setItem(currentRow, 0, item1);
+        QTableWidgetItem* item2 = new QTableWidgetItem(issue.getDescription());
+        ui->tableIssueWidget->setItem(currentRow, 1, item2);
+        QString fileName = issue.getFilePath();
+        QString filePath = fileName;
+        fileName = fileName.mid(fileName.lastIndexOf('/') + 1);
+        QTableWidgetItem* item3 = new QTableWidgetItem(fileName);
+        item3->setData(Qt::ToolTipRole, filePath);
+        ui->tableIssueWidget->setItem(currentRow, 2, item3);
+        qDebug() << "lineNumber: " << issue.getIssueLineNumber() + 1;
+        QTableWidgetItem* item4 = new QTableWidgetItem(QString("%1::%2").arg(issue.getIssueLineNumber() + 1)
+                                                                             .arg(issue.getPosition()));
+        //QTableWidgetItem* item4 = new QTableWidgetItem("test");
+        ui->tableIssueWidget->setItem(currentRow, 3, item4);
+    }
+
+    // Set stretch factors for columns and rows
+    for (int col = 0; col < ui->tableIssueWidget->columnCount(); ++col) {
+        if(col == 1){
+            ui->tableIssueWidget->horizontalHeader()->setSectionResizeMode(col, QHeaderView::Stretch);
+        }else{
+            ui->tableIssueWidget->horizontalHeader()->setSectionResizeMode(col, QHeaderView::ResizeToContents);
+        }
+
+    }
+//    for (int row = 0; row < ui->tableIssueWidget->rowCount(); ++row) {
+//        ui->tableIssueWidget->verticalHeader()->setSectionResizeMode(row, QHeaderView::Stretch);
+//    }
+
+    // Resize cells to fit content
+    ui->tableIssueWidget->resizeColumnsToContents();
+    ui->tableIssueWidget->resizeRowsToContents();
+    ui->tabProgramOutput->setCurrentIndex(0);
+    ui->tabProgramOutput->show();
+}
+
 
 void MainWindow::createActions()
 {
@@ -1691,9 +2034,6 @@ void MainWindow::configCodeAnalysis()
 //        ui->progressBar->hide();
     }
     qDebug() << "37";
-    //connect(ui->tableWidgetReport, &QTableWidgetItem::Clicked, this, &MainWindow::setCursorToFaultLine);
-
-    //connect(analyzeConfig->ui->manageButton, &QPushButton::clicked, this, &MainWindow::managePropertySet);
 }
 
 void MainWindow::updateProgressBar()
@@ -1715,7 +2055,7 @@ void MainWindow::setCursorToFaultLine(QTableWidgetItem *item)
     qDebug() << "39";
     int lineNumber = 0;
     MdiChild *mdiChild = activeMdiChild();
-    if(mdiChild == NULL) return;
+    if(mdiChild == nullptr) return;
     QTextCursor tc = mdiChild->textCursor();
     QString itemText = item->text();
 
@@ -1732,11 +2072,50 @@ void MainWindow::setCursorToFaultLine(QTableWidgetItem *item)
 
     //int lineNumber = 13;    //这里把跳转行固定了，可以注销掉此行
     int position = mdiChild->document()->findBlockByNumber (lineNumber - 1).position();
-    tc.setPosition(position,QTextCursor::MoveAnchor);
+    tc.setPosition(position, QTextCursor::MoveAnchor);
     mdiChild->setTextCursor(tc);
+    mdiChild->highlightCurrentLine();
 
     qDebug() << "39";
     //tudo;
+}
+
+void MainWindow::setCursorToIssueLine(QTableWidgetItem *item)
+{
+    qDebug() << "setCursorToIssueLine" ;
+    MdiChild *mdiChild = activeMdiChild();
+    if(mdiChild == nullptr) return;
+    // Get the row of the double-clicked item
+    int row = item->row();
+
+    // Retrieve all items in the current row
+
+    QTableWidgetItem *filePathItem = ui->tableIssueWidget->item(row, 2);
+    QString filePath = filePathItem->data(Qt::ToolTipRole).toString();
+
+    if(filePath != mdiChild->currentFile()){
+        if(!openFile(filePath)){
+            qDebug() << "Failed to open the file: " << filePath;
+        }else{
+            setCursorToIssueLine(item);
+        }
+    }else{
+        QTableWidgetItem *lineNumberWithPostionItem = ui->tableIssueWidget->item(row, 3);
+        QString text = lineNumberWithPostionItem->text();
+        int lineNumber = text.left(text.indexOf("::")).toInt() - 1;
+        if(lineNumber >= 0){
+            qDebug() << "Issue lineNumber: " << lineNumber;
+            QTextCursor tc = mdiChild->textCursor();
+            int position = mdiChild->document()->findBlockByNumber (lineNumber).position();
+            tc.setPosition(position, QTextCursor::MoveAnchor);
+            qDebug() << "cursor position: " << tc.position();
+            mdiChild->setTextCursor(tc);
+            mdiChild->highlightCurrentLine();
+        }else{
+            qDebug() << "Invalid lineNumber!";
+        }
+    }
+
 }
 
 void MainWindow::managePropertySet()
@@ -1867,4 +2246,59 @@ void MainWindow::showDemoSCM()
     QString faultName = "DivisionByZero";
 
     child->matchFaultPattern(divisionByZero, format, faultName);
+}
+
+ClassInfo MainWindow::getProClassInfo(QString className)
+{
+
+    if(proClassInfoHash.contains(className)){
+        qDebug() << "MainWindow::getProClassInfo";
+        return proClassInfoHash[className];
+    }else{
+        qDebug() << className << " dose not exist in the Hash.";
+        ClassInfo info;
+        return info;
+    }
+}
+
+void MainWindow::setProClassInfo(QString className, const ClassInfo& info)
+{
+    if(proClassInfoHash.contains(className)){
+        proClassInfoHash[className] = info;
+        synchronizeClassInfoFromProToFile(className);
+    }
+
+}
+
+void MainWindow::synchronizeClassInfoFromProToFile(QString className)
+{
+    if(!proClassInfoHash.contains(className)){
+        qDebug() << "proClassInfoHash does not contains " << className;
+        return;
+    }
+    const ClassInfo& info = proClassInfoHash.value(className);
+
+    for(auto it = fileClassInfoHash.begin(); it != fileClassInfoHash.end(); it++){
+        QHash<QString, ClassInfo>& hash = it.value();
+        if(hash.contains(className)){
+            ClassInfo& oldInfo = hash[className];
+            for(int i = 0; i < oldInfo.vars->size(); ++i){
+                for(int j = 0; j < info.vars->size(); ++j){
+                    if(info.vars->at(j) >= oldInfo.vars->at(i)){
+                        (*oldInfo.vars)[i] = info.vars->at(j);
+                        break;
+                    }
+                }
+            }
+
+            for(int i = 0; i < oldInfo.methods->size(); ++i){
+                for(int j = 0; j < info.methods->size(); ++j){
+                    if(info.methods->at(j) >= oldInfo.methods->at(i)){
+                        (*oldInfo.methods)[i] = info.methods->at(j);
+                        break;
+                    }
+                }
+            }
+        }
+    }
 }
