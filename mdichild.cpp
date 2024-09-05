@@ -58,6 +58,7 @@ MdiChild::MdiChild(QWidget *parent): QTextEdit(parent)
     //这个函数有问题，先不用了
     //connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(autoCompleteMatch()));
     connect(this, SIGNAL(textChanged()), this, SLOT(updateMatch()));
+    connect(this, SIGNAL(textChanged()), this, SLOT(updateInformalSpecPosInFile()));
     qDebug() << "-1";
 }
 
@@ -180,6 +181,29 @@ void MdiChild::closeEvent(QCloseEvent *event)
         event->ignore();
     }
     qDebug() << "-7";
+}
+
+void MdiChild::keyPressEvent(QKeyEvent *event)
+{
+    // 检测 Ctrl + T 组合键
+    if (event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_T) {
+        // 检查光标是否在视口内
+        // 获取当前光标
+        QTextCursor cursor = textCursor();
+        // 获取光标的矩形区域
+        QRect cursorRect = this->cursorRect(cursor);
+        // 获取文本编辑器的视口矩形区域
+        QRect viewportRect = this->viewport()->rect();
+
+        if(viewportRect.contains(cursorRect)){
+            cursor.insertText(RequireNoteStartStr + "\n\n" + RequireNoteEndStr);
+        }
+        // 忽略事件
+        event->accept();
+    } else {
+        // 调用父类的键盘事件处理方法
+        QTextEdit::keyPressEvent(event);
+    }
 }
 
 void MdiChild::documentWasModified()
@@ -786,11 +810,11 @@ void MdiChild::highlightMatch()
     TextBlockData *data = static_cast<TextBlockData *>(textCursor().block().userData());
 
     if (data) {
-        QVector<ParenthesisInfo *> infos = data->parentheses();
+        QVector<MarkInfo *> infos = data->parentheses();
         //Returns the index of the block's first character within the document.
         int pos = textCursor().block().position();
         for (int i = 0; i < infos.size(); ++i) {
-            ParenthesisInfo *info = infos.at(i);
+            MarkInfo *info = infos.at(i);
             //position of cursor at the current line
             int curPos = textCursor().position() - textCursor().block().position();
             //if cursor is exactly between the first and second char of ">>>", find the match"<<<"
@@ -802,7 +826,7 @@ void MdiChild::highlightMatch()
                 int matchPos = cursor.position();
 
 
-                //光标在>>>之间就会高亮
+                //光标在{之间就会高亮
                 if (curPos >= info->position && curPos <= info->position + info->character.length()) {
                     //if (matchLeftParenthesis(textCursor().block(), i + startStr.size(), 0, info->matchLineNumber, info->matchPosition))
                     //打印匹配到的括号的行号和相对位置
@@ -832,6 +856,9 @@ void MdiChild::updateMatch()
 {
     qDebug() << "-21";
     //qDebug() << "start:" << "updateMatch";
+
+    parenthesis.clear();
+    requireNotes.clear();
     QTextBlock currentBlock = document()->begin();
 
     int rootLine = -1;  //当前根括号的右括号所在行
@@ -842,14 +869,15 @@ void MdiChild::updateMatch()
 
 
         if (data) {
-            QVector<ParenthesisInfo *> infos = data->parentheses();
+            QVector<MarkInfo *> infos = data->parentheses();
             //Returns the index of the block's first character within the document.
             for (int i = 0; i < infos.size(); ++i) {
-                ParenthesisInfo *info = infos.at(i);
+                MarkInfo *info = infos.at(i);
 
                 //position of cursor at the current line
-                if (info->character == startStr) {
-                    if(matchLeftParenthesis(currentBlock, i + startStr.size(), 0, info->matchLineNumber, info->matchPosition)){
+                if (info->character == ParenthesisStartStr) {
+                    if(matchLeftMark(currentBlock, i + ParenthesisStartStr.size(), 0, info->matchLineNumber,
+                                            info->matchPosition, ParenthesisStartStr, ParenthesisEndStr)){
                         Parenthesis* p = new Parenthesis(info->character, lineNumber, info->position,
                                                      info->matchLineNumber, info->matchPosition);
                         if(p->endLine > rootLine || (p->endLine == rootLine && p->endPos > rootPos)){  //判断根括号
@@ -861,8 +889,9 @@ void MdiChild::updateMatch()
                         //打印匹配到的括号的行号和相对位置
                         //qDebug() << "matchLine:" << info->matchLineNumber << "  matchPosition:" << info->matchPosition;
                     }
-                } else if (info->character == endStr) {
-                    if(matchRightParenthesis(currentBlock, i - endStr.size(), 0, info->matchLineNumber, info->matchPosition)){
+                } else if (info->character == ParenthesisEndStr) {
+                    if(matchRightMark(currentBlock, i - ParenthesisEndStr.size(), 0, info->matchLineNumber,
+                                             info->matchPosition, ParenthesisStartStr, ParenthesisEndStr)){
                         Parenthesis* p = new Parenthesis(info->character, lineNumber, info->position,
                                                      info->matchLineNumber, info->matchPosition);
                         parenthesis.append(p);
@@ -870,10 +899,30 @@ void MdiChild::updateMatch()
                         //qDebug() << "matchLine:" << info->matchLineNumber << "  matchPosition:" << info->matchPosition;
                 }
             }
+
+
+            QVector<MarkInfo *> noteInfos = data->todoNotes();
+            //Returns the index of the block's first character within the document.
+            for (int i = 0; i < noteInfos.size(); ++i) {
+                MarkInfo *info = noteInfos.at(i);
+
+                //position of cursor at the current line
+                if (info->character == RequireNoteStartStr) {
+                    if(matchLeftMark(currentBlock, i + RequireNoteStartStr.size(), 0, info->matchLineNumber,
+                                            info->matchPosition, RequireNoteStartStr, RequireNoteEndStr)){
+                        RequireNote* p = new RequireNote("", lineNumber, info->matchLineNumber, curFile);
+
+                        requireNotes.append(p);
+                        //打印匹配到的括号的行号和相对位置
+                        //qDebug() << "matchLine:" << info->matchLineNumber << "  matchPosition:" << info->matchPosition;
+                    }
+                }
+            }
         }
         currentBlock = currentBlock.next();
     }
-    requireNotes.clear();
+    updateRequireNoteContent();
+    emit updateToDoRequireNote(curFile, requireNotes);
     //先不考虑这个函数，存在bug，当一行存在多个匹配括号时，会出现无限循环
     //updateRequireNotes(-1, document()->lineCount(), nullptr);
     //qDebug() << "end:" << "updateMatch";
@@ -894,13 +943,13 @@ void MdiChild::updateRequireNotes(int startLine, int endLine, RequireNote* node)
         QTextBlock currentBlock = document()->findBlockByLineNumber(i);
         TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
         if(data){
-            QVector<ParenthesisInfo *> infos = data->parentheses();  //这里先考虑每行只可以有一个匹配符的情况
+            QVector<MarkInfo *> infos = data->parentheses();  //这里先考虑每行只可以有一个匹配符的情况
             if(infos.empty()) {
                 i++;
                 continue;
             };
-            ParenthesisInfo *info = infos.at(0);
-            if(info->matchLineNumber == -1 || info->character == endStr){  //未匹配到或是结束括号则直接跳过
+            MarkInfo *info = infos.at(0);
+            if(info->matchLineNumber == -1 || info->character == ParenthesisEndStr){  //未匹配到或是结束括号则直接跳过
                 //qDebug() << "this" ;
                 i++;
                 continue;
@@ -927,71 +976,109 @@ void MdiChild::updateRequireNotes(int startLine, int endLine, RequireNote* node)
     qDebug() << "-22";
 }
 
+void MdiChild::updateRequireNoteContent()
+{
+    for(int i = 0; i < requireNotes.size(); ++i){
+        RequireNote* p = requireNotes[i];
+        if(p->note.isEmpty()){
+            int startPos = document()->findBlockByLineNumber(p->startLine).position();
+            QTextBlock block = document()->findBlockByLineNumber(p->endLine);
+            int endPos = block.position() + block.length();
 
-bool MdiChild::matchLeftParenthesis(QTextBlock currentBlock, int i, int numLeftParentheses, int &matchLineNumber, int &matchPosition)
+            QTextCursor cursor(document());
+            // 设置光标位置为起始位置
+            cursor.setPosition(startPos);
+            // 移动光标到结束位置并选择文本
+            cursor.setPosition(endPos, QTextCursor::KeepAnchor);
+            // 返回选择的文本
+            QString text = cursor.selectedText().trimmed();
+            if(text.startsWith(RequireNoteStartStr)){
+                text.remove(0, RequireNoteStartStr.length());
+            }
+            if(text.endsWith(RequireNoteEndStr)){
+                text.chop(RequireNoteEndStr.length());
+            }
+            p->note = text.trimmed();
+        }
+        qDebug() << "updateRequireNoteContent";
+        qDebug() << "Line: " << p->startLine;
+        qDebug() << "Content: " << p->note;
+    }
+}
+
+
+bool MdiChild::matchLeftMark(QTextBlock currentBlock, int i, int numLeftMarks, int &matchLineNumber,
+                                    int &matchPosition, QString startStr, QString endStr)
 {
     qDebug() << "-23";
     TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
-    QVector<ParenthesisInfo *> infos = data->parentheses();
+    QVector<MarkInfo *> infos = data->getInfos(startStr);
 
     int docPos = currentBlock.position();
     for (; i < infos.size(); ++i) {
-        ParenthesisInfo *info = infos.at(i);
+        MarkInfo *info = infos.at(i);
 
         if (info->character == startStr) {
-            ++numLeftParentheses;
+            ++numLeftMarks;
             continue;
         }
 
-        if (info->character == endStr && numLeftParentheses == 0) {
-            createParenthesisSelection(docPos + info->position);
+        if (info->character == endStr && numLeftMarks == 0) {
+            if(startStr == ParenthesisStartStr){
+                createParenthesisSelection(docPos + info->position);
+            }
             matchLineNumber = currentBlock.blockNumber();
             matchPosition = info->position;
             qDebug() << "-23";
             return true;
         } else
-            --numLeftParentheses;
+            --numLeftMarks;
     }
 
     currentBlock = currentBlock.next();
     if (currentBlock.isValid()){
         qDebug() << "-23";
-        return matchLeftParenthesis(currentBlock, 0, numLeftParentheses, matchLineNumber, matchPosition);
+        return matchLeftMark(currentBlock, 0, numLeftMarks, matchLineNumber,
+                                    matchPosition, startStr, endStr);
     }
     qDebug() << "-23";
     return false;
 }
 
-bool MdiChild::matchRightParenthesis(QTextBlock currentBlock, int i, int numRightParentheses, int &matchLineNumber, int &matchPosition)
+bool MdiChild::matchRightMark(QTextBlock currentBlock, int i, int numRightMarks, int &matchLineNumber,
+                                     int &matchPosition, QString startStr, QString endStr)
 {
     qDebug() << "-24";
     TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
-    QVector<ParenthesisInfo *> parentheses = data->parentheses();
+    QVector<MarkInfo *> infos = data->getInfos(startStr);
 
     int docPos = currentBlock.position();
-    for (; i > -1 && parentheses.size() > 0; --i) {
-        ParenthesisInfo *info = parentheses.at(i);
+    for (; i > -1 && infos.size() > 0; --i) {
+        MarkInfo *info = infos.at(i);
         if (info->character == endStr) {
-            ++numRightParentheses;
+            ++numRightMarks;
             continue;
         }
-        if (info->character == startStr && numRightParentheses == 0) {
-            createParenthesisSelection(docPos + info->position);
+        if (info->character == startStr && numRightMarks == 0) {
+            if(startStr == ParenthesisStartStr){
+                createParenthesisSelection(docPos + info->position);
+            }
             matchLineNumber = currentBlock.blockNumber();
             matchPosition = info->position;
             qDebug() << "-24";
             return true;
         } else
-            --numRightParentheses;
+            --numRightMarks;
     }
 
     currentBlock = currentBlock.previous();
 
     if (currentBlock.isValid()){
         data = static_cast<TextBlockData *>(currentBlock.userData());
-        parentheses = data->parentheses();
+        infos = data->getInfos(startStr);
         qDebug() << "-24";
-        return matchRightParenthesis(currentBlock, parentheses.size() - 1, numRightParentheses, matchLineNumber, matchPosition);
+        return matchRightMark(currentBlock, infos.size() - 1, numRightMarks, matchLineNumber,
+                                     matchPosition, startStr, endStr);
     }
     qDebug() << "-24";
     return false;
@@ -1009,7 +1096,7 @@ void MdiChild::createParenthesisSelection(int pos)
 
     QTextCursor cursor = textCursor();
     cursor.setPosition(pos);
-    cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, startStr.size());
+    cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, ParenthesisStartStr.size());
     selection.cursor = cursor;
 
     selections.append(selection);
@@ -1025,12 +1112,12 @@ void MdiChild::changeRequirementToNote(int lineNumber)
     TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
     int end;
     if(data){
-        QVector<ParenthesisInfo *> infos = data->parentheses();  //这里先考虑每行只可以有一个匹配符的情况
+        QVector<MarkInfo *> infos = data->parentheses();  //这里先考虑每行只可以有一个匹配符的情况
         if(infos.empty()) {
             qDebug() << "-26";
             return;
         };
-        ParenthesisInfo *info = infos.at(0);
+        MarkInfo *info = infos.at(0);
         end = info->matchLineNumber;
     }
 
@@ -1042,20 +1129,20 @@ void MdiChild::changeRequirementToNote(int lineNumber)
             QTextCursor cursor(document());
             cursor.setPosition(block.position());
             QString text = block.text();
-            int index = text.indexOf(startStr);
+            int index = text.indexOf(ParenthesisStartStr);
             if(index != -1){
                 cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::MoveAnchor, index);
-                cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, startStr.length());
+                cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, ParenthesisStartStr.length());
                 cursor.insertText("//");
             }
 
             block = document()->findBlockByLineNumber(req->endLine);  //将<<<替换为
             cursor.setPosition(block.position());
             text = block.text();
-            index = text.indexOf(endStr);
+            index = text.indexOf(ParenthesisEndStr);
             if(index != -1){
                 cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::MoveAnchor, index);
-                cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, endStr.length());
+                cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, ParenthesisEndStr.length());
                 cursor.insertText("");
 
             }
@@ -1065,6 +1152,31 @@ void MdiChild::changeRequirementToNote(int lineNumber)
 
 }
 
+void MdiChild::completeToDoNote(int lineNumber)
+{
+    qDebug() << "-26";
+    QTextBlock currentBlock = document()->findBlockByLineNumber(lineNumber);
+    TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
+    if(data){
+        QVector<MarkInfo *> infos = data->todoNotes();  //这里每行只可以有一个匹配符的情况
+        if(infos.empty()) {
+            qDebug() << "-26";
+            return;
+        };
+        QString text = currentBlock.text();
+        int index = text.indexOf(RequireNoteStartStr);
+        if(index != -1){
+            QTextCursor cursor(document());
+            cursor.setPosition(currentBlock.position());
+            cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::MoveAnchor, index);
+            cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, RequireNoteStartStr.length());
+            cursor.insertText("/*");
+        }
+    }
+
+    qDebug() << "-26";
+}
+
 void MdiChild::goToLine(int lineNumber)
 {
     qDebug() << "-27";
@@ -1072,7 +1184,7 @@ void MdiChild::goToLine(int lineNumber)
     QTextBlock block = document()->findBlockByLineNumber(lineNumber);
     cursor.setPosition(block.position());
     QString text = block.text();
-    int index = text.indexOf(startStr);
+    int index = text.indexOf(ParenthesisStartStr);
     if(index != -1){
         cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::MoveAnchor, index);
     }
@@ -1083,7 +1195,7 @@ void MdiChild::goToLine(int lineNumber)
 
 void MdiChild::updateTopParenthesis()  //更新顶层括号
 {
-
+    topParenthesis.clear();
     for(int i = 0; i < parenthesis.size(); ++i){
         if(parenthesis.at(i)->isRoot){
             topParenthesis.append(parenthesis.at(i));
@@ -1171,10 +1283,10 @@ void MdiChild::updateObjectInfoInHeaderFile()
         if(block.isValid()){
             TextBlockData *data = static_cast<TextBlockData *>(block.userData());
             if (data) {
-                QVector<ParenthesisInfo *> infos = data->parentheses();
+                QVector<MarkInfo *> infos = data->parentheses();
                 //Returns the index of the block's first character within the document.
                 for (int i = 0; i < infos.size(); ++i) {
-                    ParenthesisInfo *info = infos.at(i);
+                    MarkInfo *info = infos.at(i);
                     if(info->character == "{" && info->position == posOffset){
                         matchLineNumber = info->matchLineNumber;
                         matchPos = info->matchPosition;
@@ -1260,6 +1372,8 @@ void MdiChild::updateObjectInfoInHeaderFile()
     mw_ptr->setProClassInfo(className, info);
     emit showHeaderFileIssue();
 }
+
+
 
 
 void MdiChild::updateObjectInfoInSourceFile()
@@ -1659,6 +1773,45 @@ void MdiChild::updateObjectInfoInSourceFile()
     emit showSourceFileIssue(syntaxIssueList);
 }
 
+void MdiChild::updateInformalSpecPosInFile()
+{
+    qDebug() << "MdiChild::updateInformalSpecPosInFile";
+    qDebug() << "-88";
+
+    QString text = document()->toPlainText(); // 获取文档中的所有文本
+
+    int pos = 0;
+    QList<InformalSpecInfo> informalSpecInfos;
+//    while ((pos = informalSpecPattern.indexIn(text, pos)) != -1) {
+//        // 找到了匹配的内容
+//        qDebug()  << "informalSpec: " ;
+//        qDebug() << "Matched text:" << informalSpecPattern.cap(0) << "at position:" << pos;  //type需要选择是否加上&或*，cap(2)
+//        int curLineNumber = document()->findBlock(pos).blockNumber();
+//        qDebug() << "current block: " << curLineNumber;
+//        qDebug() << "section Number: " << informalSpecPattern.cap(1);
+
+//        //1章节号，2自然语言描述
+//        informalSpecInfos.append(InformalSpecInfo(informalSpecPattern.cap(1), curLineNumber));
+//        pos += informalSpecPattern.matchedLength();
+
+//    }
+
+    QRegularExpressionMatchIterator i = informalSpecPattern.globalMatch(text);
+
+    while (i.hasNext()) {
+        QRegularExpressionMatch match = i.next();
+        qDebug() << "Match found:" << match.captured(0) << "at position:" << match.capturedStart(0);
+        int curLineNumber = document()->findBlock(pos).blockNumber();
+        qDebug() << "current block: " << curLineNumber;
+        qDebug() << "section Number: " << match.captured(1);
+
+        //1章节号，2自然语言描述
+        informalSpecInfos.append(InformalSpecInfo(match.captured(1), curLineNumber));
+    }
+
+    emit updateInformalSpecPos(currentFile(), informalSpecInfos);
+}
+
 void MdiChild::convertMethodParamToTemp(const QString& str, const int& pos)
 {
     // 以逗号分割字符串
@@ -1968,9 +2121,9 @@ void MdiChild::autoCompleteMatch()
     QTextBlock currentBlock = cursor.block();
     TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
     if(data){
-        QVector<ParenthesisInfo *> infos = data->parentheses();  //这里先考虑每行只可以有一个匹配符的情况
+        QVector<MarkInfo *> infos = data->parentheses();  //这里先考虑每行只可以有一个匹配符的情况
         if(!infos.empty()) {
-            ParenthesisInfo *info = infos.at(0);
+            MarkInfo *info = infos.at(0);
             if(info->matchLineNumber != -1) return;  //如果当前行括号有匹配，直接返回
         }
     }
@@ -1978,14 +2131,14 @@ void MdiChild::autoCompleteMatch()
     QString currentLineText = cursor.block().text();
 
     // 判断当前行是否为空行并且以">>>"结尾
-    if (currentLineText.endsWith(startStr)) {
+    if (currentLineText.endsWith(ParenthesisStartStr)) {
         //调整光标到本行末尾
         cursor.setPosition(currentBlock.position() + currentBlock.length());
         setTextCursor(cursor);
         // 插入一个新行
         cursor.insertBlock();
         // 在新行中插入"<<<"
-        cursor.insertText(endStr);
+        cursor.insertText(ParenthesisEndStr);
     }
     //qDebug()  <<  "end: " << "autoCompleteMatch";
     qDebug() << "-30";

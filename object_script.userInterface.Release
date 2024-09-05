@@ -16,6 +16,7 @@ INPUT(
 ./release\selectnewclassdialog.o
 ./release\issue.o
 ./release\issuemanager.o
+./release\guidewizard.o
 ./release\qrc_ui_images.o
 ./release\moc_mainwindow.o
 ./release\moc_mdichild.o
@@ -31,4 +32,5 @@ INPUT(
 ./release\moc_requirementtreeview.o
 ./release\moc_selectnewclassdialog.o
 ./release\moc_issuemanager.o
+./release\moc_guidewizard.o
 );

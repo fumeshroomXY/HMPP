@@ -40,3 +40,30 @@ void RequirementTreeView::mouseDoubleClickEvent(QMouseEvent *event)
     }
     QTreeView::mouseDoubleClickEvent(event);
 }
+
+ToDoTableView::ToDoTableView(QWidget *parent) : QTableView(parent)
+{
+    setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(this, &ToDoTableView::customContextMenuRequested, this, &ToDoTableView::showContextMenu);
+    //horizontalHeader()->setVisible(true);
+}
+
+ToDoTableView::~ToDoTableView()
+{
+
+}
+
+void ToDoTableView::showContextMenu(const QPoint &pos)
+{
+    QModelIndex index = indexAt(pos);
+    if (index.isValid()) {
+        QMenu menu(this);
+        QAction *action1 = menu.addAction("Complete the Requirement");
+
+        QAction *selectedAction = menu.exec(viewport()->mapToGlobal(pos));
+        if (selectedAction == action1) {
+            // 执行 Action 相应的动作
+            emit complete(index);
+        }
+    }
+}

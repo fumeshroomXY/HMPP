@@ -35,13 +35,15 @@ class projectTree{
 public:
     QString projectName;
     QString projectPath;
+    QString specificationPath;
     QString cmakeFile;
     QStringList sourceFiles;
     QStringList headerFiles;
 
-    projectTree(QString proName, QString proPath){
+    projectTree(QString proName, QString proPath, QString specPath){
         projectName = proName;
         projectPath = proPath;
+        specificationPath = specPath;
         cmakeFile = "CMakeLists.txt";
         sourceFiles.append("main.cpp");
     }
@@ -67,7 +69,7 @@ public:
 
     void setToolBarLayout();
 
-    void createProject();
+    bool createProject(const QString &proName, const QString &proDir, const QString &specDir, const QString &targetLang);
 
     bool addFileToProject(const projectTree* pro, QString fileName);
 
@@ -96,6 +98,10 @@ public:
     //清空类的源文件并重写类函数信息
     bool clearAndModifyClassSourceFile(const ClassInfo &info, QString className);
 
+    //从非正式规格书中读取数据
+    void readContentFromInformalSpecification(const QString &filePath);
+
+
 public slots:
 
     //点击Issue时跳转到对应行
@@ -106,6 +112,22 @@ public slots:
 
     //UNSPECIFIED type 问题
     void showClassUnspecifiedTypeIssue();
+
+    //获取向导中打开的文件信息
+    void receiveGuideWizardFileInfo(bool createNewFlag, const QString &proName, const QString &proDir,
+                                    const QString specDir, const QString &targetLang);
+
+    //获取新项目的信息并准备创建
+    void getNewProjectInfo();
+
+    //更新文件名对应的notes
+    void updateFileToDoRequireNotes(const QString& filePath, const QVector<RequireNote *> &notes);
+
+    //更新文件对应的自然语言描述规格的位置
+    void updateInformalSpecs(const QString& filePath, const QList<InformalSpecInfo>& informalSpecInfos);
+
+    //为当前项目导入规格书
+    void importSpecificationForCurrentPro();
 
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;    //指定重载符
@@ -141,11 +163,14 @@ private slots:
     void showSCMFaultTab(int);
     void lineEditPrompt();
     void doubleClickedProjectTree(const QModelIndex &index);
-    void doubleClickedRequirementView(const QModelIndex &index);
+    void doubleClickedSpecificationView(const QModelIndex &index);
+    void doubleClickedToDoTableView(const QModelIndex &index);
 
-    void updateRequireNotes(MdiChild* child);
-    void updateRequirementModel();
-    void completeRequirement(const QModelIndex &index);
+    void updateSpecificationModel();
+    void completeSpecification(const QModelIndex &index);
+
+    void updateToDoListModel();
+    void completeToDoNote(const QModelIndex &index);
 
 
     //设置目标语言
@@ -205,13 +230,20 @@ private:
 
     QStandardItemModel* projectModel;
 
-    QStandardItemModel* requirementModel;
+    QStandardItemModel* todoListModel;
+
+    QStandardItemModel* specificationModel;
 
     //当前文件的类信息汇总
     QHash<QString, ClassInfo> proClassInfoHash;   //key = 类名，value = 类信息
 
     //每个文件对应的类信息汇总， key = 文件名， value = 类名 + 类信息
     QHash<QString, QHash<QString, ClassInfo>> fileClassInfoHash;
+
+    //每个文件对应的todo requirement notes, key = 文件名
+    QHash<QString, QVector<RequireNote*>> fileToDoRequireNotes;
+
+    QHash<QString, QList<InformalSpecInfo>> fileInformalSpecs;
 
     //include文件中包含的类
     QStringList includedClass;
@@ -224,8 +256,10 @@ private:
     //当前项目使用的目标语言
     QString targetLanginCurrentPro;
 
-    bool loadProject(const QString &fileName);
+    bool loadProject(const QString &fileName, const QString &specDir);
     void initProjectModel(projectTree *newPro);
+
+    void initSpecificationModel(const QHash<QString, QString>& informalSpec);
 
     //初始化项目信息
     void initProjectInfo();
@@ -245,6 +279,7 @@ private:
 
     //关闭项目
     void closeProject(QString proName, QString proPath);
+
 };
 
 #endif

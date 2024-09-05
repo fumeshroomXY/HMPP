@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     syntaxrule.cpp \
     selectnewclassdialog.cpp \
     issue.cpp \
-    issuemanager.cpp
+    issuemanager.cpp \
+    guidewizard.cpp
 
 HEADERS  += mainwindow.h \
     mdichild.h \
@@ -45,7 +46,8 @@ HEADERS  += mainwindow.h \
     syntaxrule.h \
     selectnewclassdialog.h \
     issue.h \
-    issuemanager.h
+    issuemanager.h \
+    guidewizard.h
 
 RESOURCES += \
     ui_images.qrc

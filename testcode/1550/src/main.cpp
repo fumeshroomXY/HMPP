@@ -86,6 +86,11 @@ public:
     }
 };
 
+struct student
+{
+	
+}
+
 int main(){
 
 	// 创建学生对象
@@ -94,16 +99,20 @@ int main(){
 	
 	//Student* student2 = new Student("Bob", 21);
 	Student student2();
-	student2->name
 	
 	Student mary('a', 33);
 
     // 设置成绩
     student1.setGrade(0, 95.0);
+
+	
     student1.setGrade(1, 85.0);
     student1.setGrade(2, 90.0);
     student1.setGrade(3, 88.0);
     student1.setGrade(4, 92.0);
+
+	int 
+	setGrade();
 
     // 显示学生信息
     student1.displayInfo();

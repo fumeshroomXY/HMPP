@@ -5,6 +5,7 @@
 #include <QString>
 #include <QList>
 #include <QRegExp>
+#include <QRegularExpression>
 
 
 //定义C++的基础数据类型
@@ -56,6 +57,17 @@ extern const QRegExp classConstructPattern2;
 //定义类的构造函数完整函数体的规则
 extern const QString classCtrMethodStr;
 extern const QRegExp classCtrMethodPattern;
+
+//自然语言描述的规格匹配规则
+//extern const QRegExp informalSpecPattern;
+extern const QRegularExpression informalSpecPattern;
+
+//自然语言规格书的章节号匹配规则
+extern const QRegularExpression informalSpecSectionPattern;
+
+//定义C++包含头文件的语句规则
+extern const QString includeHeaderStr;
+extern const QRegExp includeHeaderPattern;
 
 //规则集
 extern const QList<QRegExp> syntaxRuleList;

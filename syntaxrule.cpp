@@ -110,6 +110,14 @@ const QString classConstructStr2 = "\\b([A-Z][A-Za-z0-9]*)[^\\S\n]+"
                                    "([A-Za-z_][A-Za-z0-9_]*)\\(([^()]*)\\)";
 const QRegExp classConstructPattern2 = QRegExp(classConstructStr2);
 
+//1章节号，2自然语言描述
+//const QRegExp informalSpecPattern = QRegExp("/\\*\\s*(\\d+\\.\\d+)\\s+(.*)\\*/");
+//const QRegExp informalSpecPattern = QRegExp("/\\*\\s*(\\d+(?:\\.\\d+){0,3}).*?\\*/");
+const QRegularExpression informalSpecPattern("\\/\\*\\s*(\\d+(?:\\.\\d+){0,3}).*?\\*\\/",
+                                             QRegularExpression::DotMatchesEverythingOption);
+
+const QRegularExpression informalSpecSectionPattern("((?:\\d+\\.){1,3}\\d*)\\s+", QRegularExpression::DotMatchesEverythingOption);
+
 
 //规则集中的规则必须按顺序定义
 const QList<QRegExp> syntaxRuleList = {basicVarPattern, definedMethodPattern, classCtrMethodPattern,

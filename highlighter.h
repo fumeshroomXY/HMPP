@@ -12,10 +12,14 @@ class QString;
 QT_END_NAMESPACE
 
 //匹配符可以根据需求更改
-extern const QString startStr;
-extern const QString endStr;
+extern const QString ParenthesisStartStr;
+extern const QString ParenthesisEndStr;
 
-struct ParenthesisInfo
+extern const QString RequireNoteStartStr;
+extern const QString RequireNoteEndStr;
+
+
+struct MarkInfo
 {
     QString character;
     int position;    //存的是指定字符在这一行文本中的相对位置
@@ -23,16 +27,21 @@ struct ParenthesisInfo
     int matchPosition = -1;
 };
 
+
 class TextBlockData : public QTextBlockUserData
 {
 public:
     TextBlockData();
 
-    QVector<ParenthesisInfo *> parentheses();
-    void insert(ParenthesisInfo *info);
+    QVector<MarkInfo *> parentheses();
+    QVector<MarkInfo *> todoNotes();
+    QVector<MarkInfo *> getInfos(QString targetStr);
+    void insertParenthesisInfo(MarkInfo *info);
+    void insertToDoNoteInfo(MarkInfo *info);
 
 private:
-    QVector<ParenthesisInfo *> m_parentheses;
+    QVector<MarkInfo *> m_parentheses;  //用于存匹配大括号的信息{}
+    QVector<MarkInfo *> m_todoNotes;  //用于存需求注释的信息/*todo: */
 };
 
 //! [0]

@@ -74,13 +74,15 @@ public:
     QAction *codePredictAct;
     QAction *testAct;
     QAction *SCMDemoAct;
+    QAction *importSpecAct;
     QWidget *centralwidget;
     QHBoxLayout *horizontalLayout;
     QStackedWidget *stackedWidget;
     QWidget *pageProject;
     QVBoxLayout *verticalLayout_2;
+    ToDoTableView *toDoTableView;
     QTreeView *projectTreeView;
-    RequirementTreeView *requirementView;
+    RequirementTreeView *specificationView;
     QTreeWidget *treeClassView;
     QProgressBar *progressBar;
     QWidget *pageRunDebug;
@@ -269,6 +271,8 @@ public:
         testAct->setObjectName(QStringLiteral("testAct"));
         SCMDemoAct = new QAction(MainWindow);
         SCMDemoAct->setObjectName(QStringLiteral("SCMDemoAct"));
+        importSpecAct = new QAction(MainWindow);
+        importSpecAct->setObjectName(QStringLiteral("importSpecAct"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         horizontalLayout = new QHBoxLayout(centralwidget);
@@ -281,15 +285,24 @@ public:
         verticalLayout_2 = new QVBoxLayout(pageProject);
         verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
         verticalLayout_2->setContentsMargins(0, 0, 0, 0);
+        toDoTableView = new ToDoTableView(pageProject);
+        toDoTableView->setObjectName(QStringLiteral("toDoTableView"));
+        toDoTableView->horizontalHeader()->setVisible(false);
+        toDoTableView->horizontalHeader()->setStretchLastSection(true);
+        toDoTableView->verticalHeader()->setVisible(false);
+
+        verticalLayout_2->addWidget(toDoTableView);
+
         projectTreeView = new QTreeView(pageProject);
         projectTreeView->setObjectName(QStringLiteral("projectTreeView"));
+        projectTreeView->header()->setStretchLastSection(true);
 
         verticalLayout_2->addWidget(projectTreeView);
 
-        requirementView = new RequirementTreeView(pageProject);
-        requirementView->setObjectName(QStringLiteral("requirementView"));
+        specificationView = new RequirementTreeView(pageProject);
+        specificationView->setObjectName(QStringLiteral("specificationView"));
 
-        verticalLayout_2->addWidget(requirementView);
+        verticalLayout_2->addWidget(specificationView);
 
         treeClassView = new QTreeWidget(pageProject);
         QIcon icon18;
@@ -749,6 +762,7 @@ public:
         menuConfiguration->addAction(manageSetAct);
         menuConfiguration->addAction(allRuleDescriptAct);
         menuConfiguration->addAction(menuChooseTargetLanguage->menuAction());
+        menuConfiguration->addAction(importSpecAct);
         menuChooseTargetLanguage->addAction(actionCplus);
         menuChooseTargetLanguage->addAction(actionJava);
         menuChooseTargetLanguage->addAction(actionCsharp);
@@ -770,7 +784,7 @@ public:
         retranslateUi(MainWindow);
 
         stackedWidget->setCurrentIndex(0);
-        tabProgramOutput->setCurrentIndex(0);
+        tabProgramOutput->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -893,6 +907,10 @@ public:
 #endif // QT_NO_TOOLTIP
         testAct->setText(QApplication::translate("MainWindow", "testAction", 0));
         SCMDemoAct->setText(QApplication::translate("MainWindow", "SCM Demo", 0));
+        importSpecAct->setText(QApplication::translate("MainWindow", "Import Specification", 0));
+#ifndef QT_NO_TOOLTIP
+        importSpecAct->setToolTip(QApplication::translate("MainWindow", "Import Specification for Current Project", 0));
+#endif // QT_NO_TOOLTIP
         QTreeWidgetItem *___qtreewidgetitem = treeClassView->headerItem();
         ___qtreewidgetitem->setText(0, QApplication::translate("MainWindow", "Class View", 0));
 

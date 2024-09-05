@@ -3,20 +3,39 @@
 #include <QTextDocument>
 #include <QAbstractTextDocumentLayout>
 
-const QString startStr = "{";
-const QString endStr = "}";
+const QString ParenthesisStartStr = "{";
+const QString ParenthesisEndStr = "}";
+
+const QString RequireNoteStartStr = "/* todo:";
+const QString RequireNoteEndStr = "*/";
 
 TextBlockData::TextBlockData()
 {
     // Nothing to do
 }
 
-QVector<ParenthesisInfo *> TextBlockData::parentheses()
+QVector<MarkInfo *> TextBlockData::parentheses()
 {
     return m_parentheses;
 }
 
-void TextBlockData::insert(ParenthesisInfo *info)
+QVector<MarkInfo *> TextBlockData::todoNotes()
+{
+    return m_todoNotes;
+}
+
+QVector<MarkInfo *> TextBlockData::getInfos(QString targetStr)
+{
+    if(targetStr == ParenthesisStartStr){
+        return parentheses();
+    }else if(targetStr == RequireNoteStartStr){
+        return todoNotes();
+    }else{
+        return QVector<MarkInfo*>();
+    }
+}
+
+void TextBlockData::insertParenthesisInfo(MarkInfo *info)
 {
     int i = 0;
     while (i < m_parentheses.size() &&
@@ -25,6 +44,17 @@ void TextBlockData::insert(ParenthesisInfo *info)
 
     m_parentheses.insert(i, info);
 }
+
+void TextBlockData::insertToDoNoteInfo(MarkInfo *info)
+{
+    int i = 0;
+    while (i < m_todoNotes.size() &&
+        info->position > m_todoNotes.at(i)->position)
+        ++i;
+
+    m_todoNotes.insert(i, info);
+}
+
 
 //! [0]
 Highlighter::Highlighter(QTextDocument *parent)
@@ -196,25 +226,46 @@ void Highlighter::highlightBlock(const QString &text)  //After a QSyntaxHighligh
     //匹配双尖括号
     TextBlockData *data = new TextBlockData;
 
-    int leftPos = text.indexOf(startStr);
+    int leftPos = text.indexOf(ParenthesisStartStr);
     while (leftPos != -1) {
-        ParenthesisInfo *info = new ParenthesisInfo;
-        info->character = startStr;
+        MarkInfo *info = new MarkInfo;
+        info->character = ParenthesisStartStr;
         info->position = leftPos;
 
-        data->insert(info);
-        leftPos = text.indexOf(startStr, leftPos + startStr.size());
+        data->insertParenthesisInfo(info);
+        leftPos = text.indexOf(ParenthesisStartStr, leftPos + ParenthesisStartStr.size());
     }
 
-    int rightPos = text.indexOf(endStr);
+    leftPos = text.indexOf(RequireNoteStartStr);
+    while(leftPos != -1){
+        MarkInfo *info = new MarkInfo;
+        info->character = RequireNoteStartStr;
+        info->position = leftPos;
+
+        data->insertToDoNoteInfo(info);
+        leftPos = text.indexOf(RequireNoteStartStr, leftPos + RequireNoteStartStr.size());
+    }
+
+    int rightPos = text.indexOf(ParenthesisEndStr);
     while (rightPos != -1) {
-        ParenthesisInfo *info = new ParenthesisInfo;
-        info->character = endStr;
+        MarkInfo *info = new MarkInfo;
+        info->character = ParenthesisEndStr;
         info->position = rightPos;
 
-        data->insert(info);
+        data->insertParenthesisInfo(info);
 
-        rightPos = text.indexOf(endStr, rightPos + endStr.size());
+        rightPos = text.indexOf(ParenthesisEndStr, rightPos + ParenthesisEndStr.size());
+    }
+
+    rightPos = text.indexOf(RequireNoteEndStr);
+    while (rightPos != -1) {
+        MarkInfo *info = new MarkInfo;
+        info->character = RequireNoteEndStr;
+        info->position = rightPos;
+
+        data->insertToDoNoteInfo(info);
+
+        rightPos = text.indexOf(RequireNoteEndStr, rightPos + RequireNoteEndStr.size());
     }
 
     setCurrentBlockUserData(data);

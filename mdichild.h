@@ -36,6 +36,7 @@ enum SCOPE
 struct Variable;
 struct Method;
 struct ClassInfo;
+struct InformalSpecInfo;
 
 
 
@@ -130,8 +131,16 @@ public:
     MainWindow *getMainWindowPtr() const;
     void setMainWindowPtr(MainWindow *value);
 
+    //更新需求注释的具体内容
+    void updateRequireNoteContent();
+
+    //将todo需求伪码改为注释
+    void completeToDoNote(int lineNumber);
+
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;   //关闭事件
+
+    void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;   //用于检测快捷按键
 
 
     //void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
@@ -145,6 +154,8 @@ public slots:
     void faultFixOkClicked();
 
     void highlightCurrentLine();
+
+
 
 private slots:
     void documentWasModified();    //文件被更改时显示更改窗口状态
@@ -167,6 +178,9 @@ private slots:
 
     //更新需求括号的匹配
     void updateMatch();
+
+    //更新文件中的自然语言规格的位置
+    void updateInformalSpecPosInFile();
 
     //当检测到>>>，自动插入<<<
     void autoCompleteMatch();
@@ -207,10 +221,12 @@ private:
     bool faultflag = true;
     bool fixedfalg = false;
 
-    bool matchLeftParenthesis(QTextBlock currentBlock, int index,
-                              int numRightParentheses, int &matchLineNumber, int &matchPosition);
-    bool matchRightParenthesis(QTextBlock currentBlock, int index,
-                               int numLeftParentheses, int &matchLineNumber, int &matchPosition);
+    bool matchLeftMark(QTextBlock currentBlock, int index,
+                              int numRightParentheses, int &matchLineNumber, int &matchPosition,
+                              QString startStr, QString endStr);
+    bool matchRightMark(QTextBlock currentBlock, int index,
+                               int numLeftParentheses, int &matchLineNumber, int &matchPosition,
+                               QString startStr, QString endStr);
     void createParenthesisSelection(int pos);
 
     inline int findParenthesisStartPos(Parenthesis* p){
@@ -285,8 +301,13 @@ signals:
     void showHeaderFileIssue();
     void showSourceFileIssue(const QList<ClassUndefinedSyntaxIssue> & list);
 
+    void updateToDoRequireNote(const QString& filePath, const QVector<RequireNote*>& note);
+
     //通知主窗口更新类文件
     void updateClassFiles(QString filePath, QHash<QString, ClassInfo>& classInfoHash);
+
+    //通知主窗口更新自然语言规格位置
+    void updateInformalSpecPos(QString filePath, QList<InformalSpecInfo>& informalSpecInfos);
 
 };
 
@@ -445,6 +466,15 @@ struct ClassInfo
 
     ClassInfo() : vars(new QList<Variable>()), methods(new QList<Method>()), name(""){}
     ClassInfo(QString name): vars(new QList<Variable>()), methods(new QList<Method>()), name(name){}
+};
+
+struct InformalSpecInfo
+{
+    QString sectionNumber;
+    int lineNumber;
+
+    InformalSpecInfo() : sectionNumber(""), lineNumber(0){}
+    InformalSpecInfo(QString _sectionNum, int _lineNum) : sectionNumber(_sectionNum), lineNumber(_lineNum){}
 };
 
 #endif

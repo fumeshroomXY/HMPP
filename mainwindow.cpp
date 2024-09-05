@@ -5,6 +5,7 @@
 #include <QInputDialog>
 #include <QErrorMessage>
 #include <QStandardItemModel>
+#include <algorithm>
 
 #include "mainwindow.h"
 #include "mdichild.h"
@@ -18,6 +19,7 @@
 #include "selectnewclassdialog.h"
 #include "syntaxrule.h"
 #include "issuemanager.h"
+#include "screenfactor.h"
 
 const QString iconFilePath = "/images/toolbar_images";
 
@@ -74,6 +76,8 @@ MainWindow::MainWindow()
     connect(ui->actionJava, &QAction::triggered, this, &MainWindow::setTargetLangToJava);
     connect(ui->actionCsharp, &QAction::triggered, this, &MainWindow::setTargetLangToCsharp);
 
+    connect(ui->importSpecAct, &QAction::triggered, this, &MainWindow::importSpecificationForCurrentPro);
+
     screenFactor = getScreenFactor();
 
     connect(ui->projectShowAct, &QAction::triggered, this, &MainWindow::showProjectView);
@@ -92,11 +96,17 @@ MainWindow::MainWindow()
 
     //openFile(QString("./document1.txt"));
 
-    connect(ui->newProjectAct, &QAction::triggered, this, &MainWindow::createProject);  //todo：实现菜单栏创建项目动作
+    connect(ui->newProjectAct, &QAction::triggered, this, &MainWindow::getNewProjectInfo);  //todo：实现菜单栏创建项目动作
 
     errordlg = new QErrorMessage(this);
 
     projectModel = new QStandardItemModel(this);
+
+    todoListModel = new QStandardItemModel(this);
+
+
+    //这里先把ClassView给隐藏起来
+    ui->treeClassView->hide();
 
     //项目栏Model初始化设置
     projectModel->setColumnCount(1);
@@ -104,37 +114,51 @@ MainWindow::MainWindow()
     ui->projectTreeView->setModel(projectModel);
     ui->projectTreeView->setContextMenuPolicy(Qt::CustomContextMenu);
 
-    requirementModel = new QStandardItemModel(this);
+
+    //to-do List初始化设置
+    todoListModel->setColumnCount(1);
+    todoListModel->setHeaderData(0, Qt::Horizontal, " To-do List");
+    ui->toDoTableView->setModel(todoListModel);
+    ui->toDoTableView->setContextMenuPolicy(Qt::CustomContextMenu);
+    ui->toDoTableView->horizontalHeader()->setVisible(true);
+
+
+    specificationModel = new QStandardItemModel(this);
 
     //需求栏Model初始化设置
-    requirementModel->setColumnCount(1);
-    requirementModel->setHeaderData(0, Qt::Horizontal, " Requirements");
+    specificationModel->setColumnCount(1);
+    specificationModel->setHeaderData(0, Qt::Horizontal, " Requirements");
 
-    ui->requirementView->setModel(requirementModel);
+    ui->specificationView->setModel(specificationModel);
 
     // 设置项不可编辑
     ui->projectTreeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->toDoTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+
     // 获取QHeaderView
     QHeaderView *projectHeader = ui->projectTreeView->header();
 
-    // 设置Header的样式
-//    QString styleSheet = "QHeaderView::section { background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
-//                         "stop:0 #E0E0E0, stop:1 #F0F0F0); border: 1px solid gray; }";
-//    header->setStyleSheet(styleSheet);
-
     projectHeader->setStyleSheet("QHeaderView::section { background-color: rgb(242, 242, 242); border: 1px solid gray; }");
 
-    ui->requirementView->expandAll();   //自动展开所有项
+    QHeaderView *todoListHeader = ui->toDoTableView->horizontalHeader();
+
+    todoListHeader->setStyleSheet("QHeaderView::section { background-color: rgb(242, 242, 242); border: 1px solid gray; }");
+
+    todoListHeader->setDefaultAlignment(Qt::AlignLeft);
+
+    ui->specificationView->expandAll();   //自动展开所有项
 
     // 设置项不可编辑
-    ui->requirementView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->specificationView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     // 获取QHeaderView
-    QHeaderView *requirementHeader = ui->requirementView->header();
+    QHeaderView *requirementHeader = ui->specificationView->header();
 
     // 设置Header的样式
     requirementHeader->setStyleSheet("QHeaderView::section { background-color: rgb(242, 242, 242); border: 1px solid gray; }");
 
-    connect(ui->requirementView, &RequirementTreeView::complete, this, &MainWindow::completeRequirement);
+    connect(ui->specificationView, &RequirementTreeView::complete, this, &MainWindow::completeSpecification);
+    connect(ui->toDoTableView, &ToDoTableView::complete, this, &MainWindow::completeToDoNote);
 
     appDir = QDir(QCoreApplication::applicationDirPath());  //保存项目工作目录
     appDir.cdUp();
@@ -142,7 +166,8 @@ MainWindow::MainWindow()
 
     connect(ui->projectTreeView, &QTreeView::doubleClicked, this, &MainWindow::doubleClickedProjectTree);
     connect(ui->projectTreeView, &QTreeView::customContextMenuRequested, this, &MainWindow::projectViewMenuRequest);
-    connect(ui->requirementView, &RequirementTreeView::clicked, this, &MainWindow::doubleClickedRequirementView);
+    connect(ui->specificationView, &RequirementTreeView::clicked, this, &MainWindow::doubleClickedSpecificationView);
+    connect(ui->toDoTableView, &QTableView::doubleClicked, this, &MainWindow::doubleClickedToDoTableView);
 
     // 连接每个QTextEdit的textChanged()信号到槽函数，先不用这个函数，20240412
 //    connect(ui->mdiArea, &QMdiArea::subWindowActivated, [this](QMdiSubWindow *subWindow) {
@@ -311,7 +336,7 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
 
 bool MainWindow::delAndAddInfoInClassHeaderFile(const ClassInfo& delInfo, const ClassInfo& addInfo, QString className)
 {
-    if(info.name.isEmpty()) return false;
+    if(delInfo.name.isEmpty() || addInfo.name.isEmpty()) return false;
     if(currentPro == nullptr) {
         qDebug() << "currentPro is nullptr.";
         return false;
@@ -342,7 +367,6 @@ bool MainWindow::delAndAddInfoInClassHeaderFile(const ClassInfo& delInfo, const 
             // 找到了匹配的内容
             qDebug()  << "classVarInHeader: " ;
             qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;  //type需要选择是否加上&或*，cap(2)
-            qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
 
             content.replace(pos, reg.cap(0).length(), "");
         }else{
@@ -366,7 +390,6 @@ bool MainWindow::delAndAddInfoInClassHeaderFile(const ClassInfo& delInfo, const 
             // 找到了匹配的内容
             qDebug()  << "classVarInHeader: " ;
             qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;
-            qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
 
             content.replace(pos, reg.cap(0).length(), "");
         }else{
@@ -389,7 +412,6 @@ bool MainWindow::delAndAddInfoInClassHeaderFile(const ClassInfo& delInfo, const 
         int pos = 0;
         if((pos = privateReg.indexIn(content, pos)) != -1){
             qDebug() << "Matched text at position:" << pos;
-            qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
 
             content.insert(pos + privateReg.cap(0).length(), insertStr);
         }else{
@@ -406,7 +428,6 @@ bool MainWindow::delAndAddInfoInClassHeaderFile(const ClassInfo& delInfo, const 
         int pos = 0;
         if((pos = publicReg.indexIn(content, pos)) != -1){
             qDebug() << "Matched text at position:" << pos;
-            qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
 
             content.insert(pos + publicReg.cap(0).length(), insertStr);
         }else{
@@ -420,7 +441,6 @@ bool MainWindow::delAndAddInfoInClassHeaderFile(const ClassInfo& delInfo, const 
         qDebug() << file.errorString();
         return false;
     }
-    QTextStream stream(&file);
     stream << content;
     file.close();
     return true;
@@ -495,6 +515,111 @@ void MainWindow::showClassUnspecifiedTypeIssue()
              << proIssueManager->getUnspecifiedIssueList().size();
     showClassEncapsulateIssueTab();
 }
+
+bool MainWindow::createProject(const QString &proName, const QString &proDir, const QString &specDir,
+                               const QString &targetLang)
+{
+    qDebug() << "fileName:" << proName;
+    qDebug() << "filePath:" << proDir;
+    qDebug() << "targatLang:" << targetLang;
+    if(proName.isEmpty() || proDir.isEmpty() || targetLang.isEmpty()){
+        qDebug() << "project info is empty.";
+        return false;
+    }
+
+    targetLanginCurrentPro = targetLang;
+
+    if(targetLanginCurrentPro == "C++"){
+        ui->actionCplus->setChecked(true);
+        ui->actionJava->setChecked(false);
+        ui->actionCsharp->setChecked(false);
+    }else if(targetLanginCurrentPro == "Java"){
+        ui->actionCplus->setChecked(false);
+        ui->actionJava->setChecked(true);
+        ui->actionCsharp->setChecked(false);
+    }else if(targetLanginCurrentPro == "C#"){
+        ui->actionCplus->setChecked(false);
+        ui->actionJava->setChecked(false);
+        ui->actionCsharp->setChecked(true);
+    }
+
+    QString newProDir = proDir;
+    if (!proName.isEmpty()){
+        if(QDir::setCurrent(proDir)){   //设置打开目录为当前文件夹
+            if(QDir::current().mkdir(proName)){   //在打开目录下创建一个项目名为名的文件夹
+                newProDir = QDir::current().filePath(proName);
+                QDir::setCurrent(newProDir);    //更换到项目文件夹下
+            }else{
+                errordlg->setWindowTitle(tr("Error Message"));
+                errordlg->showMessage(tr("Failed to create a project directory!"));
+                return false;
+            }
+        }else{
+            errordlg->setWindowTitle(tr("Error Message"));
+            errordlg->showMessage(tr("Failed to change directory when creating a project!"));
+            return false;
+        }
+    }else{
+        errordlg->setWindowTitle(tr("Error Message"));
+        errordlg->showMessage(tr("Failed to create a project!"));
+        return false;
+    }
+    projectTree* newPro = new projectTree(proName, newProDir, specDir);
+    projectTree* prePro = currentPro;
+    if(prePro) closeProject(prePro->projectName, prePro->projectPath);
+    else qDebug() << "currentPro is null.";
+
+    currentPro = newPro;
+
+    QFile cmakeFile("CMakeLists.txt");
+    if(!cmakeFile.open(QIODevice::ReadWrite | QIODevice::Text)){
+        qDebug() << cmakeFile.errorString();
+        return false;
+    }
+
+    cmakeFile.close();
+
+    if(QDir::current().mkdir("src") && QDir::current().mkdir("include")){
+        QDir::setCurrent(QDir::current().filePath("src"));    //更换到src文件夹下
+        qDebug() << "currentDir:" << QDir::current();
+        QFile mainCpp("main.cpp");
+        if(!mainCpp.open(QIODevice::ReadWrite | QIODevice::Text)){
+            qDebug() << mainCpp.errorString();
+            return false;
+        }
+
+
+        mainCpp.close();
+
+        bool flag = openFile("main.cpp");
+        if(!flag){
+            errordlg->setWindowTitle(tr("Error Message"));
+            errordlg->showMessage(tr("Failed to open main.cpp"));
+            return false;
+        }
+        initCMakeFile(newPro);   //更改CMakeList文件内容，初始化
+        QDir::setCurrent(newProDir);    //更换回项目文件夹下
+    }
+//    QFileInfo mainInfo(mainCpp);
+//    qDebug() << QObject::tr("absolute path:") << mainInfo.absoluteFilePath();
+
+    initProjectModel(newPro);
+    readContentFromInformalSpecification(specDir);
+    return true;
+}
+
+void MainWindow::receiveGuideWizardFileInfo(bool createNewFlag, const QString &proName, const QString &proDir, const QString specDir,
+                                            const QString &targetLang)
+{
+    if(createNewFlag){
+        createProject(proName, proDir, specDir, targetLang);
+    }else{
+        loadProject(proDir + "/" + proName, specDir);
+    }
+}
+
+
+
 
 
 bool MainWindow::clearAndModifyClassHeaderFile(const ClassInfo& info, QString className)
@@ -612,13 +737,66 @@ bool MainWindow::clearAndModifyClassSourceFile(const ClassInfo& info, QString cl
     for(int i = 0; i < info.methods->size(); ++i){
         const Method& method = info.methods->at(i);
         stream << QString("%1::%2 %3(%4){").arg(method.returnType, method.className, method.name, method.paramStr);
-        stream << "\n\n}";
+        stream << "\n//The method waits to be completed.\n}";
         stream << "\n\n";
     }
     //为变量设置set和get函数
 
     file.close();
     return true;
+}
+
+void MainWindow::readContentFromInformalSpecification(const QString& filePath)
+{
+    if(!filePath.endsWith("txt")){
+        qDebug() << "Specification read error.";
+        return;
+    }
+    QFile file(filePath);
+    QString content;
+
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream in(&file);
+        content = in.readAll();
+        file.close();
+    } else {
+        qWarning() << "Failed to open file:" << file.errorString();
+    }
+
+    QHash<QString, QString> informalSpec;
+
+    QRegularExpressionMatchIterator iterator = informalSpecSectionPattern.globalMatch(content);
+
+    if (iterator.hasNext()) {
+        // Get the start position of the first match
+        QRegularExpressionMatch firstMatch = iterator.next();
+        QString sectionNum = firstMatch.captured().trimmed();
+        int lastPosition = firstMatch.capturedEnd(); // End position of the first match
+
+        while (iterator.hasNext()) {
+            QRegularExpressionMatch nextMatch = iterator.next();
+            int currentPosition = nextMatch.capturedStart(); // Start position of the next match
+
+            // Extract the text between the last match and the current match
+            QString sectionContent = content.mid(lastPosition, currentPosition - lastPosition).trimmed();
+            informalSpec.insert(sectionNum, sectionContent);
+            sectionNum = nextMatch.captured().trimmed();
+
+            lastPosition = nextMatch.capturedEnd(); // Update the last position to the end of the current match
+        }
+
+        // If needed, handle text after the last match
+        // Uncomment the following lines if you want to include text after the last match
+        informalSpec.insert(sectionNum, content.mid(lastPosition).trimmed());
+    }
+
+    qDebug() << "Section in spec.";
+    for (auto it = informalSpec.constBegin(); it != informalSpec.constEnd(); ++it) {
+        qDebug() << "Key:" << it.key();
+        qDebug() << "Value:" << it.value();
+    }
+
+    initSpecificationModel(informalSpec);
 }
 
 void MainWindow::doubleClickedProjectTree(const QModelIndex &index)
@@ -637,10 +815,6 @@ void MainWindow::doubleClickedProjectTree(const QModelIndex &index)
     qDebug() << "2";
 }
 
-void MainWindow::updateRequireNotes(MdiChild *child)
-{
-    //先在projectTree中找到child对应的文件
-}
 
 void MainWindow::showProjectView()
 {
@@ -673,7 +847,7 @@ bool MainWindow::createNewClassFiles(const QString& className)
     }
 }
 
-void MainWindow::createProject()
+void MainWindow::getNewProjectInfo()
 {
     qDebug() << "4";
     QString proDir = QFileDialog::getExistingDirectory(this, tr("Open Directory"), QDir::currentPath(),
@@ -684,78 +858,25 @@ void MainWindow::createProject()
                                          tr("Project Name:"), QLineEdit::Normal,
                                          tr("untitled"), &ok);
     initProjectInfo();
-    targetLanginCurrentPro = QInputDialog::getItem(this, tr("Choose the target language"),
+
+    QString targetLang = QInputDialog::getItem(this, tr("Choose the target language"),
                                                    tr("Target Language:"), LanguageSet, 0, false, &ok);
-    if(targetLanginCurrentPro == "C++"){
-        ui->actionCplus->setChecked(true);
-        ui->actionJava->setChecked(false);
-        ui->actionCsharp->setChecked(false);
-    }else if(targetLanginCurrentPro == "Java"){
-        ui->actionCplus->setChecked(false);
-        ui->actionJava->setChecked(true);
-        ui->actionCsharp->setChecked(false);
-    }else if(targetLanginCurrentPro == "C#"){
-        ui->actionCplus->setChecked(false);
-        ui->actionJava->setChecked(false);
-        ui->actionCsharp->setChecked(true);
+    if(ok){
+        createProject(proName, proDir, "", targetLang);
     }
 
-    if (ok && !proName.isEmpty()){
-        if(QDir::setCurrent(proDir)){   //设置打开目录为当前文件夹
-            if(QDir::current().mkdir(proName)){   //在打开目录下创建一个项目名为名的文件夹
-                proDir =  QDir::current().filePath(proName);
-                QDir::setCurrent(proDir);    //更换到项目文件夹下
-            }else{
-                errordlg->setWindowTitle(tr("Error Message"));
-                errordlg->showMessage(tr("Failed to create a project directory!"));
-                return;
-            }
-        }else{
-            errordlg->setWindowTitle(tr("Error Message"));
-            errordlg->showMessage(tr("Failed to change directory when creating a project!"));
-            return;
-        }
-    }else{
-        errordlg->setWindowTitle(tr("Error Message"));
-        errordlg->showMessage(tr("Failed to create a project!"));
-        return;
-    }
-    projectTree* newPro = new projectTree(proName, proDir);
-    projectTree* prePro = currentPro;
-    if(prePro) closeProject(prePro->projectName, prePro->projectPath);
-    else qDebug() << "currentPro is null.";
-
-    currentPro = newPro;
-
-    QFile cmakeFile("CMakeLists.txt");
-    if(!cmakeFile.open(QIODevice::ReadWrite | QIODevice::Text))
-        qDebug() << cmakeFile.errorString();
-    cmakeFile.close();
-
-
-
-    if(QDir::current().mkdir("src") && QDir::current().mkdir("include")){
-        QDir::setCurrent(QDir::current().filePath("src"));    //更换到src文件夹下
-        qDebug() << "currentDir:" << QDir::current();
-        QFile mainCpp("main.cpp");
-        if(!mainCpp.open(QIODevice::ReadWrite | QIODevice::Text))
-            qDebug() << mainCpp.errorString();
-
-        mainCpp.close();
-
-        bool flag = openFile("main.cpp");
-        if(!flag){
-            errordlg->setWindowTitle(tr("Error Message"));
-            errordlg->showMessage(tr("Failed to open main.cpp"));
-        }
-        initCMakeFile(newPro);   //更改CMakeList文件内容，初始化
-        QDir::setCurrent(proDir);    //更换回项目文件夹下
-    }
-//    QFileInfo mainInfo(mainCpp);
-//    qDebug() << QObject::tr("absolute path:") << mainInfo.absoluteFilePath();
-
-    initProjectModel(newPro);
     qDebug() << "4";
+}
+
+void MainWindow::updateFileToDoRequireNotes(const QString& filePath, const QVector<RequireNote*> &notes)
+{
+    fileToDoRequireNotes.insert(filePath, notes);
+    updateToDoListModel();
+}
+
+void MainWindow::updateInformalSpecs(const QString& filePath, const QList<InformalSpecInfo>& informalSpecInfos)
+{
+    fileInformalSpecs.insert(filePath, informalSpecInfos);
 }
 
 void MainWindow::initProjectModel(projectTree* newPro)
@@ -839,6 +960,10 @@ void MainWindow::initProjectInfo()
 
     //每个文件对应的类信息汇总， key = 文件名， value = 类名 + 类信息
     fileClassInfoHash = QHash<QString, QHash<QString, ClassInfo>>();
+
+    fileToDoRequireNotes = QHash<QString, QVector<RequireNote*>>();
+
+    fileInformalSpecs = QHash<QString, QList<InformalSpecInfo>>();
 
     //include文件中包含的类
     includedClass = QStringList();
@@ -1069,11 +1194,68 @@ QModelIndex MainWindow::findModelItem(const QString &searchString, const QModelI
     return QModelIndex();
 }
 
+//比较规格书中的章节号
+bool sectionNumberCompare(const QString &a, const QString &b);
 
-void MainWindow::updateRequirementModel()
+void MainWindow::initSpecificationModel(const QHash<QString, QString>& informalSpec)
+{
+    //todo:
+    if(informalSpec.isEmpty()){
+        return;
+    }
+    // 删除所有项而不影响 headerData
+    specificationModel->removeRows(0, specificationModel->rowCount());
+    specificationModel->removeColumns(0, specificationModel->columnCount());
+    specificationModel->setColumnCount(1);
+    specificationModel->setHeaderData(0, Qt::Horizontal, " Requirements");
+    //获取项目工作目录下的资源目录
+    QString resFilePath = appDir.absolutePath() + "/images/toolbar_images";
+
+    QList<QString> sectionNumList = informalSpec.keys();
+    std::sort(sectionNumList.begin(), sectionNumList.end(), sectionNumberCompare);
+
+    //创建一个新项目后修改model
+    QStandardItem *parentItem = specificationModel->invisibleRootItem();
+    for(int i = 0; i < sectionNumList.size(); ++i){
+        QStandardItem* newSection = new QStandardItem;
+        QString secIndex = sectionNumList[i];
+        QString sectionContent = informalSpec[secIndex];
+        QString sectionTitle = sectionContent.left(sectionContent.indexOf('\n'));
+
+        newSection->setData(secIndex + " " + sectionTitle, Qt::DisplayRole);
+        newSection->setData(sectionContent, Qt::ToolTipRole);
+        //newSection->setData(QIcon(resFilePath + "/folder.png"), Qt::DecorationRole);
+        parentItem->appendRow(newSection);
+    }
+
+}
+
+// 自定义比较函数，用于版本号的排序
+bool sectionNumberCompare(const QString &a, const QString &b) {
+    QStringList aParts = a.split(".");
+    QStringList bParts = b.split(".");
+
+    int maxParts = std::max(aParts.size(), bParts.size());
+    for (int i = 0; i < maxParts; ++i) {
+        int aPart = (i < aParts.size()) ? aParts[i].toInt() : 0;
+        int bPart = (i < bParts.size()) ? bParts[i].toInt() : 0;
+        if (aPart < bPart) {
+            return true;
+        }
+        if (aPart > bPart) {
+            return false;
+        }
+    }
+    return false;
+}
+
+
+
+
+void MainWindow::updateSpecificationModel()
 {
     qDebug() << "8";
-    //ui->requirementView->expandAll();   //自动展开所有项
+    //ui->specificationView->expandAll();   //自动展开所有项
 
     //这里只获取了当前一个文件的requirements
     QVector<RequireNote*> requirements;
@@ -1088,8 +1270,8 @@ void MainWindow::updateRequirementModel()
         qDebug() << "8";
         return;
     }
-    requirementModel->clear();
-    QStandardItem *parentItem = requirementModel->invisibleRootItem();
+    specificationModel->clear();
+    QStandardItem *parentItem = specificationModel->invisibleRootItem();
     for(auto level1 : requirements){   //最多三级需求，需求节点深度最大为3
         if(!level1->isRoot) continue;   //如果不是顶级需求，即根节点，直接跳过
         QStandardItem* itemLevel1 = new QStandardItem;
@@ -1109,39 +1291,63 @@ void MainWindow::updateRequirementModel()
             }
         }
     }
-    requirementModel->setHeaderData(0, Qt::Horizontal, " Requirements");
-    ui->requirementView->expandAll();
+    specificationModel->setHeaderData(0, Qt::Horizontal, " Requirements");
+    ui->specificationView->expandAll();
 
 
     qDebug() << "8";
 }
 
-void MainWindow::doubleClickedRequirementView(const QModelIndex &index)
+void MainWindow::doubleClickedSpecificationView(const QModelIndex &index)
 {
     qDebug() << "9";
     // 处理双击事件，打开对应文件
     //QStandardItem* item = model.itemFromIndex(index);
-    QString pos = requirementModel->data(index, Qt::ToolTipRole).toString();
-    QString filePath = pos.left(pos.indexOf(":line"));
-    int lineNumber = pos.mid((pos.indexOf(":line")) + QString(":line").length()).toInt();
+    QString content = specificationModel->data(index, Qt::ToolTipRole).toString();
+    QString secTitle = specificationModel->data(index, Qt::DisplayRole).toString();
 
-    if(openFile(filePath)){
-        if(activeMdiChild()){
-           activeMdiChild()->goToLine(lineNumber);
-           qDebug() << "expand1";
-        }
+    //显示spec该章节对应的内容
+    QDialog dialog;
+    dialog.setWindowTitle("Specification");
 
-        ui->requirementView->expandAll();
-        qDebug()  << "expand2";
-    }
+    QLabel *label1 = new QLabel(secTitle);
+    QLabel *label2 = new QLabel(content);
+    QPushButton *okButton = new QPushButton("OK");
+    QHBoxLayout *buttonLayout = new QHBoxLayout;
+
+    buttonLayout->addSpacerItem(new QSpacerItem(20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    buttonLayout->addWidget(okButton);  // 添加按钮到水平布局中
+
+    QFont boldFont;
+    boldFont.setPointSize(14);  // 设置字体大小为 20
+    boldFont.setBold(true);     // 设置字体加粗
+
+    label1->setFont(boldFont);  // 应用字体到 label2
+
+    QFont normalFont;
+    normalFont.setPointSize(12);
+    label2->setFont(normalFont);
+    label2->setWordWrap(true);
+
+    // 创建布局，并将两个标签添加进去
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->addWidget(label1);
+    layout->addWidget(label2);
+    layout->addLayout(buttonLayout);
+
+    dialog.setLayout(layout);
+    QObject::connect(okButton, &QPushButton::clicked, &dialog, &QDialog::accept);
+    //ScreenFactor* factor = new ScreenFactor;
+    //dialog.resize(factor->getScreenFactor() * dialog.width(), factor->getScreenFactor() * dialog.height());
+    dialog.exec();
     qDebug() << "9";
 }
 
-void MainWindow::completeRequirement(const QModelIndex &index)
+void MainWindow::completeSpecification(const QModelIndex &index)
 {
     qDebug() << "10";
     qDebug() << "completeRequirement";
-    QStandardItem *item = requirementModel->itemFromIndex(index);  // 获取 QModelIndex 对应的项
+    QStandardItem *item = specificationModel->itemFromIndex(index);  // 获取 QModelIndex 对应的项
     if (item) {
         //获取文件位置以及行号
         QString pos = item->data(Qt::ToolTipRole).toString();
@@ -1171,6 +1377,75 @@ void MainWindow::completeRequirement(const QModelIndex &index)
         // 无效的 QModelIndex，对应的项不存在
     }
     qDebug() << "10";
+}
+
+void MainWindow::updateToDoListModel()
+{
+    qDebug() << "78";
+    //ui->specificationView->expandAll();   //自动展开所有项
+
+    if(fileToDoRequireNotes.empty()){
+        qDebug() << "78";
+        return;
+    }
+    todoListModel->clear();
+    QStandardItem *parentItem = todoListModel->invisibleRootItem();
+    QString resFilePath = appDir.absolutePath() + "/images/toolbar_images";
+
+    for(auto it = fileToDoRequireNotes.begin(); it != fileToDoRequireNotes.end(); ++it){
+        const QVector<RequireNote*> & notes = it.value();
+        for(int i = 0; i < notes.size(); ++i){
+            QStandardItem* item = new QStandardItem;
+            item->setData(notes[i]->note, Qt::DisplayRole);
+            item->setData(QIcon(resFilePath + "/todo.svg"), Qt::DecorationRole);
+            item->setData(notes[i]->filePath + ":line" + QString::number(notes[i]->startLine), Qt::ToolTipRole);
+            parentItem->appendRow(item);
+        }
+    }
+    todoListModel->setHeaderData(0, Qt::Horizontal, "  To-do List");
+    //ui->toDoTableView->expandAll();
+
+
+    qDebug() << "78";
+}
+
+void MainWindow::completeToDoNote(const QModelIndex &index)
+{
+    qDebug() << "10";
+    qDebug() << "completeToDoNote";
+    QStandardItem *item = todoListModel->itemFromIndex(index);  // 获取 QModelIndex 对应的项
+    if (item) {
+        //获取文件位置以及行号
+        QString pos = item->data(Qt::ToolTipRole).toString();
+        QString filePath = pos.left(pos.indexOf(":line"));
+        int lineNumber = pos.mid((pos.indexOf(":line")) + QString(":line").length()).toInt();
+        if(openFile(filePath)){
+            if(activeMdiChild()) activeMdiChild()->completeToDoNote(lineNumber);
+        }
+    } else{
+        // 无效的 QModelIndex，对应的项不存在
+    }
+    qDebug() << "10";
+}
+
+void MainWindow::doubleClickedToDoTableView(const QModelIndex &index)
+{
+    qDebug() << "9";
+    // 处理双击事件，打开对应文件
+    //QStandardItem* item = model.itemFromIndex(index);
+    QString pos = todoListModel->data(index, Qt::ToolTipRole).toString();
+    QString filePath = pos.left(pos.indexOf(":line"));
+    int lineNumber = pos.mid((pos.indexOf(":line")) + QString(":line").length()).toInt();
+
+    if(openFile(filePath)){
+        if(activeMdiChild()){
+           activeMdiChild()->goToLine(lineNumber);
+           qDebug() << "expand1";
+        }
+
+        qDebug()  << "expand2";
+    }
+    qDebug() << "9";
 }
 
 void MainWindow::setToolBarLayout()
@@ -1225,7 +1500,7 @@ void MainWindow::open()
     const QString fileName = QFileDialog::getOpenFileName(this);    //打开文件对话框
     if (!fileName.isEmpty()){
         openFile(fileName);
-        loadProject(fileName);
+        loadProject(fileName, "");
     }
     qDebug() << "15";
 
@@ -1253,7 +1528,7 @@ bool MainWindow::loadFile(const QString &fileName)
     qDebug() << "loadFile: " << fileName;
     const bool succeeded = child->loadFile(fileName);
     if (succeeded){
-        child->show();
+        child->showMaximized();
         //loadProject(fileName);
     }else
         child->close();
@@ -1262,7 +1537,7 @@ bool MainWindow::loadFile(const QString &fileName)
     return succeeded;
 }
 
-bool MainWindow::loadProject(const QString &fileName)
+bool MainWindow::loadProject(const QString &fileName, const QString &specDir)
 {
     qDebug() << "18";
     //判断是否是CMakeList.txt，判断文件格式是否符合CMakeList
@@ -1346,7 +1621,7 @@ bool MainWindow::loadProject(const QString &fileName)
 
         if(projectName == "") return false;    //如果没找到项目名
 
-        projectTree* pro = new projectTree(projectName, proPath);
+        projectTree* pro = new projectTree(projectName, proPath, specDir);
         pro->headerFiles = headerFiles;
         pro->sourceFiles = sourceFiles;
         initProjectModel(pro);
@@ -1354,6 +1629,7 @@ bool MainWindow::loadProject(const QString &fileName)
         if(prePro) closeProject(currentPro->projectName, currentPro->projectPath);
         else qDebug() << "currentPro is null.";
         currentPro = pro;
+        readContentFromInformalSpecification(specDir);
         qDebug() << "18";
         return true;
 
@@ -1623,6 +1899,12 @@ MdiChild *MainWindow::createMdiChild()
 
     //根据源文件类信息，更新类文件
     connect(child, &MdiChild::updateClassFiles, this, &MainWindow::updateProjectClassInfo);
+
+    //根据文件信息，更新todo notes
+    connect(child, &MdiChild::updateToDoRequireNote, this, &MainWindow::updateFileToDoRequireNotes);
+
+    //根据文件信息，更新自然语言规格位置
+    connect(child, &MdiChild::updateInformalSpecPos, this, &MainWindow::updateInformalSpecs);
     qDebug() << "30";
     return child;
 }
@@ -1978,7 +2260,9 @@ void MainWindow::init()
 
     projectModel = new QStandardItemModel;
 
-    requirementModel = new QStandardItemModel;
+    todoListModel = new QStandardItemModel;
+
+    specificationModel = new QStandardItemModel;
 
     //当前文件的类信息汇总
     proClassInfoHash = QHash<QString, ClassInfo>();   //key = 类名，value = 类信息
@@ -2215,11 +2499,22 @@ void MainWindow::closeProject(QString proName, QString proPath)
     }
 }
 
+void MainWindow::importSpecificationForCurrentPro()
+{
+    QString specFilePath = QFileDialog::getOpenFileName(this, tr("Import new specification for current project"));
+    if(!specFilePath.isEmpty()){
+        currentPro->specificationPath = specFilePath;
+        readContentFromInformalSpecification(specFilePath);
+    }
+}
+
 void MainWindow::testSlot()
 {
-    QString str = "test";
-    ui->tabProgramOutput->show();
-
+    QString filePath = QFileDialog::getOpenFileName(this);    //打开文件对话框
+    if (!filePath.isEmpty()){
+        qDebug() << filePath;
+        readContentFromInformalSpecification(filePath);
+    }
 }
 
 //展示Software Construction Monitoring

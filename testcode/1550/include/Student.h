@@ -13,7 +13,7 @@ public:
 
 	Student Student(char c, int integer);
 
-	void setGrade(int integer, double decimal);
+	UNSPECIFIED setGrade(int integer, double decimal);
 
 	UNSPECIFIED displayInfo();
 
