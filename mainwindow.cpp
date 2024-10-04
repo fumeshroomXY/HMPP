@@ -20,6 +20,7 @@
 #include "syntaxrule.h"
 #include "issuemanager.h"
 #include "screenfactor.h"
+#include "chatgptclient.h"
 
 const QString iconFilePath = "/images/toolbar_images";
 
@@ -77,6 +78,7 @@ MainWindow::MainWindow()
     connect(ui->actionCsharp, &QAction::triggered, this, &MainWindow::setTargetLangToCsharp);
 
     connect(ui->importSpecAct, &QAction::triggered, this, &MainWindow::importSpecificationForCurrentPro);
+    connect(ui->specBuildAct, &QAction::triggered, this, &MainWindow::buildFilesFromSpecification);
 
     screenFactor = getScreenFactor();
 
@@ -127,7 +129,7 @@ MainWindow::MainWindow()
 
     //需求栏Model初始化设置
     specificationModel->setColumnCount(1);
-    specificationModel->setHeaderData(0, Qt::Horizontal, " Requirements");
+    specificationModel->setHeaderData(0, Qt::Horizontal, " Specification");
 
     ui->specificationView->setModel(specificationModel);
 
@@ -796,7 +798,9 @@ void MainWindow::readContentFromInformalSpecification(const QString& filePath)
         qDebug() << "Value:" << it.value();
     }
 
-    initSpecificationModel(informalSpec);
+    currentPro->proInformalSpec = informalSpec;
+
+    updateSpecificationModel(informalSpec);
 }
 
 void MainWindow::doubleClickedProjectTree(const QModelIndex &index)
@@ -1197,7 +1201,7 @@ QModelIndex MainWindow::findModelItem(const QString &searchString, const QModelI
 //比较规格书中的章节号
 bool sectionNumberCompare(const QString &a, const QString &b);
 
-void MainWindow::initSpecificationModel(const QHash<QString, QString>& informalSpec)
+void MainWindow::updateSpecificationModel(const QHash<QString, QString>& informalSpec)
 {
     //todo:
     if(informalSpec.isEmpty()){
@@ -1207,7 +1211,7 @@ void MainWindow::initSpecificationModel(const QHash<QString, QString>& informalS
     specificationModel->removeRows(0, specificationModel->rowCount());
     specificationModel->removeColumns(0, specificationModel->columnCount());
     specificationModel->setColumnCount(1);
-    specificationModel->setHeaderData(0, Qt::Horizontal, " Requirements");
+    specificationModel->setHeaderData(0, Qt::Horizontal, " Specification");
     //获取项目工作目录下的资源目录
     QString resFilePath = appDir.absolutePath() + "/images/toolbar_images";
 
@@ -1252,51 +1256,51 @@ bool sectionNumberCompare(const QString &a, const QString &b) {
 
 
 
-void MainWindow::updateSpecificationModel()
-{
-    qDebug() << "8";
-    //ui->specificationView->expandAll();   //自动展开所有项
+//void MainWindow::updateSpecificationModel()
+//{
+//    qDebug() << "8";
+//    //ui->specificationView->expandAll();   //自动展开所有项
 
-    //这里只获取了当前一个文件的requirements
-    QVector<RequireNote*> requirements;
-    if(MdiChild* child = activeMdiChild()){
-       requirements = child->getRequireNotes();
-    }else{
-        qDebug() << "8";
-        return;
-    }
+//    //这里只获取了当前一个文件的requirements
+//    QVector<RequireNote*> requirements;
+//    if(MdiChild* child = activeMdiChild()){
+//       requirements = child->getRequireNotes();
+//    }else{
+//        qDebug() << "8";
+//        return;
+//    }
 
-    if(requirements.empty()){
-        qDebug() << "8";
-        return;
-    }
-    specificationModel->clear();
-    QStandardItem *parentItem = specificationModel->invisibleRootItem();
-    for(auto level1 : requirements){   //最多三级需求，需求节点深度最大为3
-        if(!level1->isRoot) continue;   //如果不是顶级需求，即根节点，直接跳过
-        QStandardItem* itemLevel1 = new QStandardItem;
-        itemLevel1->setData(level1->note, Qt::DisplayRole);
-        itemLevel1->setData(level1->filePath + ":line" + QString::number(level1->startLine), Qt::ToolTipRole);
-        parentItem->appendRow(itemLevel1);
-        for(auto level2: level1->children){
-            QStandardItem* itemLevel2 = new QStandardItem;
-            itemLevel2->setData(level2->note, Qt::DisplayRole);
-            itemLevel2->setData(level2->filePath + ":line" + QString::number(level2->startLine), Qt::ToolTipRole);
-            itemLevel1->appendRow(itemLevel2);
-            for(auto level3: level2->children){
-                QStandardItem* itemLevel3 = new QStandardItem;
-                itemLevel3->setData(level3->note, Qt::DisplayRole);
-                itemLevel3->setData(level3->filePath + ":line" + QString::number(level3->startLine), Qt::ToolTipRole);
-                itemLevel2->appendRow(itemLevel3);
-            }
-        }
-    }
-    specificationModel->setHeaderData(0, Qt::Horizontal, " Requirements");
-    ui->specificationView->expandAll();
+//    if(requirements.empty()){
+//        qDebug() << "8";
+//        return;
+//    }
+//    specificationModel->clear();
+//    QStandardItem *parentItem = specificationModel->invisibleRootItem();
+//    for(auto level1 : requirements){   //最多三级需求，需求节点深度最大为3
+//        if(!level1->isRoot) continue;   //如果不是顶级需求，即根节点，直接跳过
+//        QStandardItem* itemLevel1 = new QStandardItem;
+//        itemLevel1->setData(level1->note, Qt::DisplayRole);
+//        itemLevel1->setData(level1->filePath + ":line" + QString::number(level1->startLine), Qt::ToolTipRole);
+//        parentItem->appendRow(itemLevel1);
+//        for(auto level2: level1->children){
+//            QStandardItem* itemLevel2 = new QStandardItem;
+//            itemLevel2->setData(level2->note, Qt::DisplayRole);
+//            itemLevel2->setData(level2->filePath + ":line" + QString::number(level2->startLine), Qt::ToolTipRole);
+//            itemLevel1->appendRow(itemLevel2);
+//            for(auto level3: level2->children){
+//                QStandardItem* itemLevel3 = new QStandardItem;
+//                itemLevel3->setData(level3->note, Qt::DisplayRole);
+//                itemLevel3->setData(level3->filePath + ":line" + QString::number(level3->startLine), Qt::ToolTipRole);
+//                itemLevel2->appendRow(itemLevel3);
+//            }
+//        }
+//    }
+//    specificationModel->setHeaderData(0, Qt::Horizontal, " Specification");
+//    ui->specificationView->expandAll();
 
 
-    qDebug() << "8";
-}
+//    qDebug() << "8";
+//}
 
 void MainWindow::doubleClickedSpecificationView(const QModelIndex &index)
 {
@@ -2508,13 +2512,26 @@ void MainWindow::importSpecificationForCurrentPro()
     }
 }
 
+void MainWindow::buildFilesFromSpecification()
+{
+    //根据项目spec，生成对话框
+    //对话框的内容：一个树包含类及其函数
+    //操作：降级为独立函数，降级为某个类的函数，升级为类，修改项的名称
+    //操作2：新建类项，
+    //已创建的类的项名不能修改，修改名称的项需要特别显示
+
+    //创建文件
+    //构建文件内容
+
+}
+
 void MainWindow::testSlot()
 {
-    QString filePath = QFileDialog::getOpenFileName(this);    //打开文件对话框
-    if (!filePath.isEmpty()){
-        qDebug() << filePath;
-        readContentFromInformalSpecification(filePath);
-    }
+    ChatgptClient* client = new ChatgptClient(this);
+    client->sendUserMessage("go language");
+    qDebug() << "Chatgpt is showing.";
+    //client->show();
+    qDebug() << client->getChatgptReply();
 }
 
 //展示Software Construction Monitoring

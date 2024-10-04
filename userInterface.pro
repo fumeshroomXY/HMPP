@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     selectnewclassdialog.cpp \
     issue.cpp \
     issuemanager.cpp \
-    guidewizard.cpp
+    guidewizard.cpp \
+    chatgptclient.cpp
 
 HEADERS  += mainwindow.h \
     mdichild.h \
@@ -47,7 +48,8 @@ HEADERS  += mainwindow.h \
     selectnewclassdialog.h \
     issue.h \
     issuemanager.h \
-    guidewizard.h
+    guidewizard.h \
+    chatgptclient.h
 
 RESOURCES += \
     ui_images.qrc

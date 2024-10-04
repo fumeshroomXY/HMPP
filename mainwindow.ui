@@ -21,7 +21,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="pageProject">
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -229,8 +229,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>172</width>
-             <height>900</height>
+             <width>214</width>
+             <height>772</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -849,27 +849,28 @@ p, li { white-space: pre-wrap; }
     <addaction name="runDebugAct"/>
     <addaction name="codeAnalysisAct"/>
     <addaction name="hmppAct"/>
+    <addaction name="specBuildAct"/>
    </widget>
    <widget class="QMenu" name="menuTest">
     <property name="title">
-     <string>Test</string>
+     <string>Test(&amp;S)</string>
     </property>
     <addaction name="testAct"/>
    </widget>
    <widget class="QMenu" name="menuDemo">
     <property name="title">
-     <string>Demo</string>
+     <string>Demo(&amp;D)</string>
     </property>
     <addaction name="SCMDemoAct"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuWindow"/>
-   <addaction name="menuHelp"/>
    <addaction name="menuConfiguration"/>
    <addaction name="menuTools_T"/>
    <addaction name="menuDemo"/>
    <addaction name="menuTest"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
    <property name="sizePolicy">
@@ -1296,6 +1297,11 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="toolTip">
     <string>Import Specification for Current Project</string>
+   </property>
+  </action>
+  <action name="specBuildAct">
+   <property name="text">
+    <string>Build Project From Specification</string>
    </property>
   </action>
  </widget>

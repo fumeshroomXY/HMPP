@@ -17,6 +17,7 @@ INPUT(
 ./release\issue.o
 ./release\issuemanager.o
 ./release\guidewizard.o
+./release\chatgptclient.o
 ./release\qrc_ui_images.o
 ./release\moc_mainwindow.o
 ./release\moc_mdichild.o
@@ -33,4 +34,5 @@ INPUT(
 ./release\moc_selectnewclassdialog.o
 ./release\moc_issuemanager.o
 ./release\moc_guidewizard.o
+./release\moc_chatgptclient.o
 );

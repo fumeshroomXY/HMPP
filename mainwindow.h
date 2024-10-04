@@ -40,6 +40,9 @@ public:
     QStringList sourceFiles;
     QStringList headerFiles;
 
+    //当前项目对应的informal spec
+    QHash<QString, QString> proInformalSpec;
+
     projectTree(QString proName, QString proPath, QString specPath){
         projectName = proName;
         projectPath = proPath;
@@ -129,6 +132,9 @@ public slots:
     //为当前项目导入规格书
     void importSpecificationForCurrentPro();
 
+    //根据规格书构建项目文件
+    void buildFilesFromSpecification();
+
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;    //指定重载符
 
@@ -166,7 +172,7 @@ private slots:
     void doubleClickedSpecificationView(const QModelIndex &index);
     void doubleClickedToDoTableView(const QModelIndex &index);
 
-    void updateSpecificationModel();
+    //void updateSpecificationModel();
     void completeSpecification(const QModelIndex &index);
 
     void updateToDoListModel();
@@ -245,6 +251,8 @@ private:
 
     QHash<QString, QList<InformalSpecInfo>> fileInformalSpecs;
 
+
+
     //include文件中包含的类
     QStringList includedClass;
 
@@ -259,7 +267,7 @@ private:
     bool loadProject(const QString &fileName, const QString &specDir);
     void initProjectModel(projectTree *newPro);
 
-    void initSpecificationModel(const QHash<QString, QString>& informalSpec);
+    void updateSpecificationModel(const QHash<QString, QString>& informalSpec);
 
     //初始化项目信息
     void initProjectInfo();
