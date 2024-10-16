@@ -187,6 +187,9 @@ private slots:
     //更新项目的类信息
     void updateProjectClassInfo(QString filePath, QHash<QString, ClassInfo>& newClassInfoHash);
 
+    //插入新的类信息
+    void insertProjectClassInfo(const QList<ClassInfo>& insertClassInfos);
+
     //测试用槽函数
     void testSlot();
 

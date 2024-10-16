@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(include)
 
-set(SOURCE_FILES src/Student.cpp src/main.cpp)
+set(SOURCE_FILES src/Test.cpp src/Student.cpp src/main.cpp)
 
 set(HEADER_FILES)
 

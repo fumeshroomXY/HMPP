@@ -21,6 +21,7 @@
 #include "issuemanager.h"
 #include "screenfactor.h"
 #include "chatgptclient.h"
+#include "requirementtreeview.h"
 
 const QString iconFilePath = "/images/toolbar_images";
 
@@ -196,6 +197,41 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::insertProjectClassInfo(const QList<ClassInfo>& insertClassInfos)
+{
+    QHash<QString, ClassInfo> insertClassInfoHash;
+    for(ClassInfo info : insertClassInfos){
+        insertClassInfoHash.insert(info.name, info);
+    }
+
+    QStringList newClassNames = insertClassInfoHash.uniqueKeys();
+    for(QString name: newClassNames){
+        if(includedClass.contains(name)){
+            newClassNames.removeOne(name);
+        }
+    }
+
+    includedClass = includedClass + newClassNames;
+
+    //1. 新类要创建头文件和源文件，更改项目文件
+    for(auto className : newClassNames){
+        if(proClassInfoHash.isEmpty() || !proClassInfoHash.contains(className)){  //项目原来的类信息不包括新类名
+            if(createNewClassFiles(className)){  //为新类创建类文件
+                addFileStrToCmakeFile(className + ".cpp");
+                ClassInfo newInfo = insertClassInfoHash.value(className);
+                proClassInfoHash.insert(className, newInfo);
+                clearAndModifyClassHeaderFile(newInfo, className);
+                clearAndModifyClassSourceFile(newInfo, className);
+                includedClass.append(className);
+            }else{
+                qDebug() << "updateProjectClassInfo: failed to create a new class: " << className;
+            }
+        }
+    }
+    showClassUnspecifiedTypeIssue();
+
+}
+
 void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassInfo>& updateClassInfoHash)
 {
     //includedClass: included files里面非用户定义的类； 用户在本项目中定义的类
@@ -206,7 +242,6 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
     }else{
         newClassNames = updateClassInfoHash.uniqueKeys();
     }
-
 
     QStringList proClassNames = (proClassInfoHash.isEmpty()) ? QStringList() : proClassInfoHash.uniqueKeys();
 
@@ -738,8 +773,8 @@ bool MainWindow::clearAndModifyClassSourceFile(const ClassInfo& info, QString cl
     //依次写入函数
     for(int i = 0; i < info.methods->size(); ++i){
         const Method& method = info.methods->at(i);
-        stream << QString("%1::%2 %3(%4){").arg(method.returnType, method.className, method.name, method.paramStr);
-        stream << "\n//The method waits to be completed.\n}";
+        stream << QString("%1 %2::%3(%4){").arg(method.returnType, method.className, method.name, method.paramStr);
+        stream << QString("\n" + RequireNoteStartStr + "\t%1\n" + RequireNoteEndStr + "\n}").arg(method.name);
         stream << "\n\n";
     }
     //为变量设置set和get函数
@@ -973,6 +1008,12 @@ void MainWindow::initProjectInfo()
     includedClass = QStringList();
 
     targetLanginCurrentPro = QString();
+
+//    projectModel = new QStandardItemModel(this);
+
+//    todoListModel = new QStandardItemModel(this);
+
+//    specificationModel = new QStandardItemModel(this);
 }
 
 void MainWindow::removeNodeAndChildrenInModel(QStandardItemModel *model, const QModelIndex &index) {
@@ -1203,15 +1244,15 @@ bool sectionNumberCompare(const QString &a, const QString &b);
 
 void MainWindow::updateSpecificationModel(const QHash<QString, QString>& informalSpec)
 {
-    //todo:
-    if(informalSpec.isEmpty()){
-        return;
-    }
     // 删除所有项而不影响 headerData
     specificationModel->removeRows(0, specificationModel->rowCount());
     specificationModel->removeColumns(0, specificationModel->columnCount());
     specificationModel->setColumnCount(1);
     specificationModel->setHeaderData(0, Qt::Horizontal, " Specification");
+    //todo:
+    if(informalSpec.isEmpty()){
+        return;
+    }
     //获取项目工作目录下的资源目录
     QString resFilePath = appDir.absolutePath() + "/images/toolbar_images";
 
@@ -1387,15 +1428,18 @@ void MainWindow::updateToDoListModel()
 {
     qDebug() << "78";
     //ui->specificationView->expandAll();   //自动展开所有项
+    todoListModel->removeRows(0, todoListModel->rowCount());
+    todoListModel->removeColumns(0, todoListModel->columnCount());
+    todoListModel->setColumnCount(1);
+    todoListModel->setHeaderData(0, Qt::Horizontal, "  To-do List");
 
     if(fileToDoRequireNotes.empty()){
         qDebug() << "78";
         return;
     }
-    todoListModel->clear();
-    QStandardItem *parentItem = todoListModel->invisibleRootItem();
-    QString resFilePath = appDir.absolutePath() + "/images/toolbar_images";
 
+    QString resFilePath = appDir.absolutePath() + "/images/toolbar_images";
+    QStandardItem *parentItem = todoListModel->invisibleRootItem();
     for(auto it = fileToDoRequireNotes.begin(); it != fileToDoRequireNotes.end(); ++it){
         const QVector<RequireNote*> & notes = it.value();
         for(int i = 0; i < notes.size(); ++i){
@@ -1406,7 +1450,7 @@ void MainWindow::updateToDoListModel()
             parentItem->appendRow(item);
         }
     }
-    todoListModel->setHeaderData(0, Qt::Horizontal, "  To-do List");
+
     //ui->toDoTableView->expandAll();
 
 
@@ -1559,6 +1603,12 @@ bool MainWindow::loadProject(const QString &fileName, const QString &specDir)
         }
 
         initProjectInfo();
+        updateToDoListModel();
+        if(!specDir.isEmpty()){
+            readContentFromInformalSpecification(specDir);
+        }else{
+            updateSpecificationModel(QHash<QString, QString>());
+        }
         QStringList sourceFiles;
         QStringList filters;
         filters << "*.cpp";
@@ -1629,11 +1679,13 @@ bool MainWindow::loadProject(const QString &fileName, const QString &specDir)
         pro->headerFiles = headerFiles;
         pro->sourceFiles = sourceFiles;
         initProjectModel(pro);
+
         projectTree* prePro = currentPro;
         if(prePro) closeProject(currentPro->projectName, currentPro->projectPath);
         else qDebug() << "currentPro is null.";
         currentPro = pro;
-        readContentFromInformalSpecification(specDir);
+
+
         qDebug() << "18";
         return true;
 
@@ -2514,14 +2566,31 @@ void MainWindow::importSpecificationForCurrentPro()
 
 void MainWindow::buildFilesFromSpecification()
 {
+
     //根据项目spec，生成对话框
     //对话框的内容：一个树包含类及其函数
     //操作：降级为独立函数，降级为某个类的函数，升级为类，修改项的名称
     //操作2：新建类项，
     //已创建的类的项名不能修改，修改名称的项需要特别显示
+    QStringList existingClasses = proClassInfoHash.keys();
+    BuildProFromSpecDialog* dialog = new BuildProFromSpecDialog(currentPro->proInformalSpec, existingClasses, this);
+    ScreenFactor factor;
+    dialog->resize(dialog->width() * factor.getScreenFactor(), dialog->height() * factor.getScreenFactor());
+    dialog->show();
+    connect(dialog, &BuildProFromSpecDialog::treeStructureReady, this, [this](const QList<ClassInfo>& structure){
+        //创建文件
+        //构建文件内容
+        qDebug() << "print the tree structure: ";
+        for (ClassInfo info : structure){
+            qDebug() << "ClassName: " << info.name;
+            qDebug() << "Methods:";
+            for(int i = 0; i < info.methods->size(); ++i){
+                qDebug() << (*info.methods)[i].name;
+            }
+        }
+        insertProjectClassInfo(structure);
 
-    //创建文件
-    //构建文件内容
+    });
 
 }
 

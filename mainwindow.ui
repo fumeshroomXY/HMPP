@@ -21,7 +21,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="pageProject">
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -276,7 +276,7 @@
                  <bool>false</bool>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">background-color: rgb(255, 240, 66);
+                 <string notr="true">background-color: rgb(120, 180, 210);
 padding: 10px</string>
                 </property>
                 <property name="text">
@@ -294,7 +294,7 @@ padding: 10px</string>
               <item>
                <widget class="QLabel" name="label2">
                 <property name="styleSheet">
-                 <string notr="true">background-color: rgb(52, 130, 255);
+                 <string notr="true">background-color: rgb(251, 200, 150);
 padding: 10px</string>
                 </property>
                 <property name="text">
@@ -386,7 +386,7 @@ padding: 10px</string>
               <item>
                <widget class="QLabel" name="label3">
                 <property name="styleSheet">
-                 <string notr="true">background-color: rgb(255, 240, 66);
+                 <string notr="true">background-color: rgb(120, 180, 210);
 padding: 10px</string>
                 </property>
                 <property name="text">
@@ -404,7 +404,7 @@ padding: 10px</string>
               <item>
                <widget class="QLabel" name="label4">
                 <property name="styleSheet">
-                 <string notr="true">background-color: rgb(52, 130, 255);
+                 <string notr="true">background-color: rgb(251, 200, 150);
 padding: 10px</string>
                 </property>
                 <property name="text">
@@ -496,7 +496,7 @@ padding: 10px</string>
               <item>
                <widget class="QLabel" name="label5">
                 <property name="styleSheet">
-                 <string notr="true">background-color: rgb(255, 240, 66);
+                 <string notr="true">background-color: rgb(120, 180, 210);
 padding: 10px</string>
                 </property>
                 <property name="text">

@@ -10,6 +10,8 @@
 #include <QHash>
 #include <QStringList>
 
+#include <mdichild.h>
+
 //在这里有许多自定义widget的类定义
 
 
@@ -54,19 +56,29 @@ class BuildProFromSpecDialog : public QDialog {
 
 public:
     BuildProFromSpecDialog(const QHash<QString, QString>& hashValues, const QStringList& stringList, QWidget* parent = nullptr);
+    const QString classUserRole = "class";
+    const QString classFunctionUserRole = "function";
+    const QString globalFunctionUserRole = "GlobalFunction";
 
 private:
     QTreeWidget* treeWidget;
-    QStringList originalList;
+    QStringList existingClassList;
 
     void addItemsFromHash(const QHash<QString, QString>& hashValues);
     void addItemsFromStringList(const QStringList& stringList);
-    void demoteToFunctionRoot();
+    bool isItemFromExistingClassList(QTreeWidgetItem* item);
+    void demoteToIndependentFunction();
     void demoteToClassFunction();
-    void promoteToClassRoot();
-    void createNewClassRoot();
+    void promoteToClass();
+    void createNewClass();
     void renameItem(QTreeWidgetItem* item, int column);
     QList<QTreeWidgetItem*> getClassItems();
+
+    QList<ClassInfo> getClassStructure();
+
+signals:
+    // Signal to pass the tree structure as a QList of QHash items when "OK" is clicked
+    void treeStructureReady(const QList<ClassInfo>& treeStructure);
 
 private slots:
     void onOkClicked();

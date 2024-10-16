@@ -25,7 +25,7 @@ private:
     QString chatgptReply;
     QString userInput;
     QNetworkAccessManager* networkManager;
-    const QString apiKey = "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"; // 替换为你的API密钥
+    const QString apiKey = ""; // 替换为你的API密钥
 };
 
 #endif // CHATGPTCLIENT_H

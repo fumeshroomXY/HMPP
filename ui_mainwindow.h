@@ -75,6 +75,7 @@ public:
     QAction *testAct;
     QAction *SCMDemoAct;
     QAction *importSpecAct;
+    QAction *specBuildAct;
     QWidget *centralwidget;
     QHBoxLayout *horizontalLayout;
     QStackedWidget *stackedWidget;
@@ -273,6 +274,8 @@ public:
         SCMDemoAct->setObjectName(QStringLiteral("SCMDemoAct"));
         importSpecAct = new QAction(MainWindow);
         importSpecAct->setObjectName(QStringLiteral("importSpecAct"));
+        specBuildAct = new QAction(MainWindow);
+        specBuildAct->setObjectName(QStringLiteral("specBuildAct"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         horizontalLayout = new QHBoxLayout(centralwidget);
@@ -386,7 +389,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QStringLiteral("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 172, 900));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 214, 772));
         verticalLayout_8 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_8->setObjectName(QStringLiteral("verticalLayout_8"));
         horizontalLayout_3 = new QHBoxLayout();
@@ -411,7 +414,7 @@ public:
         label1 = new QLabel(scrollAreaWidgetContents);
         label1->setObjectName(QStringLiteral("label1"));
         label1->setAutoFillBackground(false);
-        label1->setStyleSheet(QLatin1String("background-color: rgb(255, 240, 66);\n"
+        label1->setStyleSheet(QLatin1String("background-color: rgb(120, 180, 210);\n"
 "padding: 10px"));
         label1->setWordWrap(true);
 
@@ -424,7 +427,7 @@ public:
         horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
         label2 = new QLabel(scrollAreaWidgetContents);
         label2->setObjectName(QStringLiteral("label2"));
-        label2->setStyleSheet(QLatin1String("background-color: rgb(52, 130, 255);\n"
+        label2->setStyleSheet(QLatin1String("background-color: rgb(251, 200, 150);\n"
 "padding: 10px"));
         label2->setWordWrap(true);
 
@@ -474,7 +477,7 @@ public:
 
         label3 = new QLabel(scrollAreaWidgetContents);
         label3->setObjectName(QStringLiteral("label3"));
-        label3->setStyleSheet(QLatin1String("background-color: rgb(255, 240, 66);\n"
+        label3->setStyleSheet(QLatin1String("background-color: rgb(120, 180, 210);\n"
 "padding: 10px"));
         label3->setWordWrap(true);
 
@@ -487,7 +490,7 @@ public:
         horizontalLayout_6->setObjectName(QStringLiteral("horizontalLayout_6"));
         label4 = new QLabel(scrollAreaWidgetContents);
         label4->setObjectName(QStringLiteral("label4"));
-        label4->setStyleSheet(QLatin1String("background-color: rgb(52, 130, 255);\n"
+        label4->setStyleSheet(QLatin1String("background-color: rgb(251, 200, 150);\n"
 "padding: 10px"));
         label4->setWordWrap(true);
 
@@ -535,7 +538,7 @@ public:
 
         label5 = new QLabel(scrollAreaWidgetContents);
         label5->setObjectName(QStringLiteral("label5"));
-        label5->setStyleSheet(QLatin1String("background-color: rgb(255, 240, 66);\n"
+        label5->setStyleSheet(QLatin1String("background-color: rgb(120, 180, 210);\n"
 "padding: 10px"));
         label5->setWordWrap(true);
 
@@ -731,11 +734,11 @@ public:
         menubar->addAction(menuFile->menuAction());
         menubar->addAction(menuEdit->menuAction());
         menubar->addAction(menuWindow->menuAction());
-        menubar->addAction(menuHelp->menuAction());
         menubar->addAction(menuConfiguration->menuAction());
         menubar->addAction(menuTools_T->menuAction());
         menubar->addAction(menuDemo->menuAction());
         menubar->addAction(menuTest->menuAction());
+        menubar->addAction(menuHelp->menuAction());
         menuFile->addAction(newAct);
         menuFile->addAction(newProjectAct);
         menuFile->addAction(openAct);
@@ -769,6 +772,7 @@ public:
         menuTools_T->addAction(runDebugAct);
         menuTools_T->addAction(codeAnalysisAct);
         menuTools_T->addAction(hmppAct);
+        menuTools_T->addAction(specBuildAct);
         menuTest->addAction(testAct);
         menuDemo->addAction(SCMDemoAct);
         toolBar->addAction(projectShowAct);
@@ -911,6 +915,7 @@ public:
 #ifndef QT_NO_TOOLTIP
         importSpecAct->setToolTip(QApplication::translate("MainWindow", "Import Specification for Current Project", 0));
 #endif // QT_NO_TOOLTIP
+        specBuildAct->setText(QApplication::translate("MainWindow", "Build Project From Specification", 0));
         QTreeWidgetItem *___qtreewidgetitem = treeClassView->headerItem();
         ___qtreewidgetitem->setText(0, QApplication::translate("MainWindow", "Class View", 0));
 
@@ -1032,8 +1037,8 @@ public:
         menuConfiguration->setTitle(QApplication::translate("MainWindow", "Configuration(&I)", 0));
         menuChooseTargetLanguage->setTitle(QApplication::translate("MainWindow", "Choose Target Language", 0));
         menuTools_T->setTitle(QApplication::translate("MainWindow", "Tools(&T)", 0));
-        menuTest->setTitle(QApplication::translate("MainWindow", "Test", 0));
-        menuDemo->setTitle(QApplication::translate("MainWindow", "Demo", 0));
+        menuTest->setTitle(QApplication::translate("MainWindow", "Test(&S)", 0));
+        menuDemo->setTitle(QApplication::translate("MainWindow", "Demo(&D)", 0));
         toolBar->setWindowTitle(QApplication::translate("MainWindow", "toolBar", 0));
     } // retranslateUi
 
