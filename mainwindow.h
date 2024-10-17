@@ -82,6 +82,11 @@ public:
     //当新添加类时，修改CmakeFile，添加类的源文件
     bool addFileStrToCmakeFile(const QString& fileName);
 
+    //读取打开的项目信息，主要是IncludedClass和Specification Path
+    bool readProjectInfoFromCmakeFile(const projectTree* pro, QStringList& includedClass);
+
+    //写入项目信息
+    bool writeProjectInfoIntoCmakeFile(const projectTree* pro, const QStringList& includedClass);
 
     //展示Class封装问题的面板
     void showClassEncapsulateIssueTab();

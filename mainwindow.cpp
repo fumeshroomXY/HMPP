@@ -1060,6 +1060,10 @@ void MainWindow::initCMakeFile(const projectTree* pro)
     stream << "\n";
     stream << QString("\nadd_executable(${PROJECT_NAME} ${SOURCE_FILES})");
     stream << "\n";
+    stream << "# Project Info: \n";
+    stream << "# IncludedClass: \n";
+    stream << "# Specification Path: \n";
+    stream << "\n";
     cmakeFile.close();
     qDebug() << "6";
 }
@@ -1118,6 +1122,93 @@ bool MainWindow::addFileStrToCmakeFile(const QString &fileNameStr)
     return true;
 
 }
+
+bool MainWindow::readProjectInfoFromCmakeFile(const projectTree *pro, QStringList &includedClass)
+{
+    QDir::setCurrent(pro->projectPath);
+    QFile cmakeFile(pro->cmakeFile);
+    if(!cmakeFile.open(QIODevice::WriteOnly | QIODevice::Text)){
+        qDebug() << cmakeFile.errorString();
+        return false;
+    }
+    // 读取文件内容到 QString
+    QTextStream in(&cmakeFile);
+    QString content = in.readAll();
+    cmakeFile.close();
+
+    QString target = "# IncludedClass:";  //读取位置
+    // 查找 target 字符串的位置
+    int pos = content.indexOf(target);
+    if (pos == -1) {
+        qWarning() << "Target string not found in the file.";
+        return false;
+    }
+    pos += target.size();
+
+    int endPos = content.indexOf("\n", pos);
+    if(endPos == -1){
+        qDebug() << "Error in insert target string in the file.";
+        return false;
+    }else{
+        QString classNames = content.mid(pos, endPos - pos);
+        QStringList names = classNames.split(",", QString::SkipEmptyParts);
+        for(QString str : names){
+            str = str.trimmed();
+        }
+        includedClass = names;
+    }
+    return true;
+}
+
+bool MainWindow::writeProjectInfoIntoCmakeFile(const projectTree *pro, const QStringList &includedClass)
+{
+    QDir::setCurrent(pro->projectPath);
+    QFile cmakeFile(pro->cmakeFile);
+    if(!cmakeFile.open(QIODevice::WriteOnly | QIODevice::Text)){
+        qDebug() << cmakeFile.errorString();
+        return false;
+    }
+    // 读取文件内容到 QString
+    QTextStream in(&cmakeFile);
+    QString content = in.readAll();
+    cmakeFile.close();
+
+    QString target = "# IncludedClass:";  //插入位置
+    // 查找 target 字符串的位置
+    int pos = content.indexOf(target);
+    if (pos == -1) {
+        qWarning() << "Target string not found in the file.";
+        return false;
+    }
+    pos += target.size();
+
+    QString insertClassNames;
+    for(QString str : includedClass){
+        insertClassNames += (str + ", ");
+    }
+    int endPos = content.indexOf("\n", pos);
+    if(endPos == -1){
+        qDebug() << "Error in insert target string in the file.";
+        return false;
+    }else{
+        content.replace(pos, endPos - pos, insertClassNames);
+    }
+
+
+    // 重新打开文件以写入修改后的内容
+    if (!cmakeFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+        qWarning() << "Cannot open cmakefile for writing:" << cmakeFile.errorString();
+        return false;
+    }
+
+    // 将修改后的内容写回文件
+    QTextStream out(&cmakeFile);
+    out << content;
+    cmakeFile.close();
+    return true;
+
+}
+
 
 bool MainWindow::addFileToProject(const projectTree *pro, QString fileName)
 {
