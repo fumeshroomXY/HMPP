@@ -194,6 +194,7 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
+    closeProject(currentPro);
     delete ui;
 }
 
@@ -603,10 +604,13 @@ bool MainWindow::createProject(const QString &proName, const QString &proDir, co
     }
     projectTree* newPro = new projectTree(proName, newProDir, specDir);
     projectTree* prePro = currentPro;
-    if(prePro) closeProject(prePro->projectName, prePro->projectPath);
+    if(prePro) closeProject(prePro);
     else qDebug() << "currentPro is null.";
 
     currentPro = newPro;
+    if(!readProjectInfoFromCmakeFile(currentPro, includedClass)){
+        qDebug() << "Error in reading Project Info From CmakeFile.";
+    }
 
     QFile cmakeFile("CMakeLists.txt");
     if(!cmakeFile.open(QIODevice::ReadWrite | QIODevice::Text)){
@@ -1772,9 +1776,12 @@ bool MainWindow::loadProject(const QString &fileName, const QString &specDir)
         initProjectModel(pro);
 
         projectTree* prePro = currentPro;
-        if(prePro) closeProject(currentPro->projectName, currentPro->projectPath);
+        if(prePro) closeProject(currentPro);
         else qDebug() << "currentPro is null.";
         currentPro = pro;
+        if(!readProjectInfoFromCmakeFile(currentPro, includedClass)){
+            qDebug() << "Error in reading Project Info From CmakeFile.";
+        }
 
 
         qDebug() << "18";
@@ -2626,21 +2633,25 @@ void MainWindow::projectViewMenuRequest(const QPoint& pos)
                 qDebug() << "The close project path is not the same.";
                 return;
             }
-            MainWindow::closeProject(proName, proPath);
+            MainWindow::closeProject(pro);
         });
 
         contextMenu.exec(ui->projectTreeView->viewport()->mapToGlobal(pos));
     }
 }
 
-void MainWindow::closeProject(QString proName, QString proPath)
+void MainWindow::closeProject(projectTree* pro)
 {
+    QString proPath = pro->projectPath;
+    QString proName = pro->projectName;
+
     qDebug() << "proName: " << proName;
     qDebug() << "proPath: " << proPath;
     QModelIndex index = findModelItem(proPath, projectModel->index(0, 0), projectModel, Qt::ToolTipRole);
     qDebug() << index;
     if(index.isValid() && index.data(Qt::DisplayRole).toString() == proName){
         removeNodeAndChildrenInModel(projectModel, index);
+        writeProjectInfoIntoCmakeFile(pro, includedClass);
     }else{
         qDebug() << "Failed to find the close project.";
     }

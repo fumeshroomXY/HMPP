@@ -1,4 +1,5 @@
 #include "requirementtreeview.h"
+#include "syntaxrule.h"
 #include <QMenu>
 #include <QAction>
 #include <QVBoxLayout>
@@ -129,7 +130,7 @@ BuildProFromSpecDialog::BuildProFromSpecDialog(const QHash<QString, QString>& ha
 void BuildProFromSpecDialog::addItemsFromHash(const QHash<QString, QString>& hashValues) {
     for (const QString& key : hashValues.keys()) {
         QTreeWidgetItem* classItem = new QTreeWidgetItem(treeWidget);
-        classItem->setText(0, hashValues[key].left(hashValues[key].indexOf('\n')));
+        classItem->setText(0, toUpperCamelCase(hashValues[key].left(hashValues[key].indexOf('\n'))));
         classItem->setIcon(0, QIcon(":/images/toolbar_images/class.svg"));
         classItem->setData(0, Qt::UserRole, classUserRole);
         classItem->setData(0, Qt::UserRole + 1, false);  // Mark as modifiable
@@ -160,6 +161,7 @@ void BuildProFromSpecDialog::demoteToIndependentFunction() {
         return;  // Do nothing if the item is from QStringList
     }
     if (currentItem->data(0, Qt::UserRole).toString() == classUserRole) {
+        currentItem->setText(0, toLowerCamelCase(currentItem->text(0)));
         currentItem->setData(0, Qt::UserRole, globalFunctionUserRole);
         currentItem->setIcon(0, QIcon(":/images/toolbar_images/memberfunc.svg"));
     }else if(currentItem->data(0, Qt::UserRole).toString() == classFunctionUserRole){
@@ -212,6 +214,7 @@ void BuildProFromSpecDialog::demoteToClassFunction() {
                         treeWidget->takeTopLevelItem(index);  // Remove from top-level if it is a root item
                     }
                 }
+                currentItem->setText(0, toLowerCamelCase(currentItem->text(0)));
                 currentItem->setIcon(0, QIcon(":/images/toolbar_images/memberfunc.svg"));
                 currentItem->setData(0, Qt::UserRole, classFunctionUserRole);
                 classItem->addChild(currentItem);
@@ -235,12 +238,14 @@ void BuildProFromSpecDialog::promoteToClass() {
         QTreeWidgetItem* parentItem = currentItem->parent();
         if (parentItem) {
             parentItem->removeChild(currentItem);  // Remove it from its current parent
+            currentItem->setText(0, toUpperCamelCase(currentItem->text(0)));
             currentItem->setIcon(0, QIcon(":/images/toolbar_images/class.svg"));
             currentItem->setData(0, Qt::UserRole, classUserRole);
             treeWidget->addTopLevelItem(currentItem);
         } else {
             int index = treeWidget->indexOfTopLevelItem(currentItem);
             if (index != -1) {
+                currentItem->setText(0, toUpperCamelCase(currentItem->text(0)));
                 currentItem->setIcon(0, QIcon(":/images/toolbar_images/class.svg"));
                 currentItem->setData(0, Qt::UserRole, classUserRole);
             }

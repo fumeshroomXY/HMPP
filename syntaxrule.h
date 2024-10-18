@@ -78,5 +78,12 @@ extern const QString UNSPECIFIED;
 //除0异常
 extern const QRegExp divisionByZeroPattern;
 
+// 驼峰命名法
+// lower用作函数命名
+// upper用作类命名
+QString toLowerCamelCase(const QString& target);
+QString toUpperCamelCase(const QString& target);
+
+
 #endif // SYNTAXRULE_H
 

@@ -126,3 +126,31 @@ const QList<QRegExp> syntaxRuleList = {basicVarPattern, definedMethodPattern, cl
 const QString UNSPECIFIED = "UNSPECIFIED";
 
 const QRegExp divisionByZeroPattern = QRegExp("([a-zA-Z_][a-zA-Z0-9_]*)\\s*/\\s*([a-zA-Z_][a-zA-Z0-9_]*)");
+
+QString toLowerCamelCase(const QString &target)
+{
+    QStringList words = target.split(" ", QString::SkipEmptyParts);
+    if (words.isEmpty()) return "";
+
+    // Make the first word lowercase
+    QString lowerCamel = words[0].toLower();
+
+    // Capitalize the first letter of the remaining words
+    for (int i = 1; i < words.size(); ++i) {
+        lowerCamel += words[i].left(1).toUpper() + words[i].mid(1).toLower();
+    }
+    return lowerCamel;
+}
+
+QString toUpperCamelCase(const QString &target)
+{
+    QStringList words = target.split(" ", QString::SkipEmptyParts);
+    if (words.isEmpty()) return "";
+
+    QString upperCamel;
+    // Capitalize the first letter of every word
+    for (const QString &word : words) {
+        upperCamel += word.left(1).toUpper() + word.mid(1).toLower();
+    }
+    return upperCamel;
+}

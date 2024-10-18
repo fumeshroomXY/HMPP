@@ -294,7 +294,7 @@ private:
     void removeNodeAndChildrenInModel(QStandardItemModel *model, const QModelIndex &index);
 
     //关闭项目
-    void closeProject(QString proName, QString proPath);
+    void closeProject(projectTree* pro);
 
 };
 
