@@ -196,7 +196,9 @@ void MdiChild::keyPressEvent(QKeyEvent *event)
         QRect viewportRect = this->viewport()->rect();
 
         if(viewportRect.contains(cursorRect)){
+            int pos = cursor.position();
             cursor.insertText(RequireNoteStartStr + "\n\n" + RequireNoteEndStr);
+            cursor.setPosition(pos + RequireNoteStartStr);
         }
         // 忽略事件
         event->accept();

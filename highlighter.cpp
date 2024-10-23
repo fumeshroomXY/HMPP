@@ -178,6 +178,7 @@ void Highlighter::highlightBlock(const QString &text)  //After a QSyntaxHighligh
 
 //! [9]
     int startIndex = 0;
+    // 没有/* 或 */ 对应状态0
     if (previousBlockState() != 1)
         startIndex = commentStartExpression.indexIn(text);
 
