@@ -389,7 +389,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QStringLiteral("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 214, 772));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 172, 900));
         verticalLayout_8 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_8->setObjectName(QStringLiteral("verticalLayout_8"));
         horizontalLayout_3 = new QHBoxLayout();
@@ -788,7 +788,7 @@ public:
         retranslateUi(MainWindow);
 
         stackedWidget->setCurrentIndex(0);
-        tabProgramOutput->setCurrentIndex(2);
+        tabProgramOutput->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);

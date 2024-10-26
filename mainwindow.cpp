@@ -107,6 +107,8 @@ MainWindow::MainWindow()
 
     todoListModel = new QStandardItemModel(this);
 
+    initProjectInfo();
+
 
     //这里先把ClassView给隐藏起来
     ui->treeClassView->hide();
@@ -772,6 +774,9 @@ bool MainWindow::clearAndModifyClassSourceFile(const ClassInfo& info, QString cl
     }
 
     QTextStream stream(&file);
+
+    // 包含类的头文件
+    stream << QString("#include \"%1.h\"\n\n").arg(className);
 
 
     //依次写入函数
@@ -2095,6 +2100,9 @@ void MainWindow::showClassEncapsulateIssueTab()
 
     const auto& list2 = proIssueManager->getUnspecifiedIssueList();
 
+    qDebug() << "list1.size = " << list1.size();
+    qDebug() << "list2.size = " << list2.size();
+
     if(list1.isEmpty() && list2.isEmpty()){
         qDebug() << "list is empty!";
         return;
@@ -2174,6 +2182,11 @@ void MainWindow::showClassEncapsulateIssueTab()
     // Resize cells to fit content
     ui->tableIssueWidget->resizeColumnsToContents();
     ui->tableIssueWidget->resizeRowsToContents();
+    if (!ui->tabProgramOutput) {
+        qDebug() << "tabProgramOutput is nullptr";
+        return;
+    }
+    qDebug() << "tabProgramOutputDebug";
     ui->tabProgramOutput->setCurrentIndex(0);
     ui->tabProgramOutput->show();
 }

@@ -229,8 +229,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>214</width>
-             <height>772</height>
+             <width>172</width>
+             <height>900</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -605,7 +605,7 @@ p, li { white-space: pre-wrap; }
       <item>
        <widget class="QTabWidget" name="tabProgramOutput">
         <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tabDebug">
          <attribute name="title">

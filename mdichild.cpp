@@ -198,7 +198,7 @@ void MdiChild::keyPressEvent(QKeyEvent *event)
         if(viewportRect.contains(cursorRect)){
             int pos = cursor.position();
             cursor.insertText(RequireNoteStartStr + "\n\n" + RequireNoteEndStr);
-            cursor.setPosition(pos + RequireNoteStartStr);
+            cursor.setPosition(pos + RequireNoteStartStr.length());
         }
         // 忽略事件
         event->accept();
@@ -477,9 +477,10 @@ void MdiChild::lineNumberAreaPaintEvent(QPaintEvent *event)
     int lineTop = (int)document()->documentLayout()->blockBoundingRect(faultBlock).translated(0, translate_y).top();
     qDebug() << "lineHeight: " << lineHeight;
     qDebug() << "lineTop: " << lineTop;
-    lineNumberArea->setIconPosition(0, lineTop);
+
     if(lineNumberArea->getIconPosition().x() >= 0 && lineNumberArea->getIconPosition().y() >= 0
             && faultBlock.isValid() && faultBlock.isVisible()){
+        lineNumberArea->setIconPosition(0, lineTop);
         QImage scaledPixmap = pixmap.scaled(lineHeight, lineHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         painter.drawImage(lineNumberArea->getIconPosition(), pixmap);
     }
