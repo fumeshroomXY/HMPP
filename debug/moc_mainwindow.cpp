@@ -21,8 +21,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[70];
-    char stringdata0[1148];
+    QByteArrayData data[71];
+    char stringdata0[1167];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -87,20 +87,21 @@ QT_MOC_LITERAL(52, 797, 30), // "doubleClickedSpecificationView"
 QT_MOC_LITERAL(53, 828, 26), // "doubleClickedToDoTableView"
 QT_MOC_LITERAL(54, 855, 21), // "completeSpecification"
 QT_MOC_LITERAL(55, 877, 19), // "updateToDoListModel"
-QT_MOC_LITERAL(56, 897, 16), // "completeToDoNote"
-QT_MOC_LITERAL(57, 914, 20), // "setTargetLangToCplus"
-QT_MOC_LITERAL(58, 935, 19), // "setTargetLangToJava"
-QT_MOC_LITERAL(59, 955, 21), // "setTargetLangToCsharp"
-QT_MOC_LITERAL(60, 977, 22), // "updateProjectClassInfo"
-QT_MOC_LITERAL(61, 1000, 25), // "QHash<QString,ClassInfo>&"
-QT_MOC_LITERAL(62, 1026, 16), // "newClassInfoHash"
-QT_MOC_LITERAL(63, 1043, 22), // "insertProjectClassInfo"
-QT_MOC_LITERAL(64, 1066, 16), // "QList<ClassInfo>"
-QT_MOC_LITERAL(65, 1083, 16), // "insertClassInfos"
-QT_MOC_LITERAL(66, 1100, 8), // "testSlot"
-QT_MOC_LITERAL(67, 1109, 22), // "projectViewMenuRequest"
-QT_MOC_LITERAL(68, 1132, 3), // "pos"
-QT_MOC_LITERAL(69, 1136, 11) // "showDemoSCM"
+QT_MOC_LITERAL(56, 897, 18), // "clearToDoListModel"
+QT_MOC_LITERAL(57, 916, 16), // "completeToDoNote"
+QT_MOC_LITERAL(58, 933, 20), // "setTargetLangToCplus"
+QT_MOC_LITERAL(59, 954, 19), // "setTargetLangToJava"
+QT_MOC_LITERAL(60, 974, 21), // "setTargetLangToCsharp"
+QT_MOC_LITERAL(61, 996, 22), // "updateProjectClassInfo"
+QT_MOC_LITERAL(62, 1019, 25), // "QHash<QString,ClassInfo>&"
+QT_MOC_LITERAL(63, 1045, 16), // "newClassInfoHash"
+QT_MOC_LITERAL(64, 1062, 22), // "insertProjectClassInfo"
+QT_MOC_LITERAL(65, 1085, 16), // "QList<ClassInfo>"
+QT_MOC_LITERAL(66, 1102, 16), // "insertClassInfos"
+QT_MOC_LITERAL(67, 1119, 8), // "testSlot"
+QT_MOC_LITERAL(68, 1128, 22), // "projectViewMenuRequest"
+QT_MOC_LITERAL(69, 1151, 3), // "pos"
+QT_MOC_LITERAL(70, 1155, 11) // "showDemoSCM"
 
     },
     "MainWindow\0setCursorToIssueLine\0\0"
@@ -127,13 +128,13 @@ QT_MOC_LITERAL(69, 1136, 11) // "showDemoSCM"
     "index\0doubleClickedSpecificationView\0"
     "doubleClickedToDoTableView\0"
     "completeSpecification\0updateToDoListModel\0"
-    "completeToDoNote\0setTargetLangToCplus\0"
-    "setTargetLangToJava\0setTargetLangToCsharp\0"
-    "updateProjectClassInfo\0QHash<QString,ClassInfo>&\0"
-    "newClassInfoHash\0insertProjectClassInfo\0"
-    "QList<ClassInfo>\0insertClassInfos\0"
-    "testSlot\0projectViewMenuRequest\0pos\0"
-    "showDemoSCM"
+    "clearToDoListModel\0completeToDoNote\0"
+    "setTargetLangToCplus\0setTargetLangToJava\0"
+    "setTargetLangToCsharp\0updateProjectClassInfo\0"
+    "QHash<QString,ClassInfo>&\0newClassInfoHash\0"
+    "insertProjectClassInfo\0QList<ClassInfo>\0"
+    "insertClassInfos\0testSlot\0"
+    "projectViewMenuRequest\0pos\0showDemoSCM"
 };
 #undef QT_MOC_LITERAL
 
@@ -143,7 +144,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      47,   14, // methods
+      48,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -151,53 +152,54 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    1,  249,    2, 0x0a /* Public */,
-       5,    1,  252,    2, 0x0a /* Public */,
-       8,    0,  255,    2, 0x0a /* Public */,
-       9,    5,  256,    2, 0x0a /* Public */,
-      15,    0,  267,    2, 0x0a /* Public */,
-      16,    2,  268,    2, 0x0a /* Public */,
-      20,    2,  273,    2, 0x0a /* Public */,
-      23,    0,  278,    2, 0x0a /* Public */,
-      24,    0,  279,    2, 0x0a /* Public */,
-      25,    0,  280,    2, 0x08 /* Private */,
-      26,    0,  281,    2, 0x08 /* Private */,
-      27,    0,  282,    2, 0x08 /* Private */,
-      28,    0,  283,    2, 0x08 /* Private */,
-      29,    0,  284,    2, 0x08 /* Private */,
-      30,    0,  285,    2, 0x08 /* Private */,
-      31,    0,  286,    2, 0x08 /* Private */,
-      32,    0,  287,    2, 0x08 /* Private */,
-      33,    0,  288,    2, 0x08 /* Private */,
-      34,    0,  289,    2, 0x08 /* Private */,
-      35,    0,  290,    2, 0x08 /* Private */,
-      36,    0,  291,    2, 0x08 /* Private */,
-      37,    0,  292,    2, 0x08 /* Private */,
-      38,    0,  293,    2, 0x08 /* Private */,
-      40,    0,  294,    2, 0x08 /* Private */,
-      41,    0,  295,    2, 0x08 /* Private */,
-      42,    0,  296,    2, 0x08 /* Private */,
-      43,    0,  297,    2, 0x08 /* Private */,
-      44,    0,  298,    2, 0x08 /* Private */,
-      45,    1,  299,    2, 0x08 /* Private */,
-      46,    0,  302,    2, 0x08 /* Private */,
-      47,    0,  303,    2, 0x08 /* Private */,
-      48,    1,  304,    2, 0x08 /* Private */,
-      49,    0,  307,    2, 0x08 /* Private */,
-      50,    1,  308,    2, 0x08 /* Private */,
-      52,    1,  311,    2, 0x08 /* Private */,
-      53,    1,  314,    2, 0x08 /* Private */,
-      54,    1,  317,    2, 0x08 /* Private */,
-      55,    0,  320,    2, 0x08 /* Private */,
-      56,    1,  321,    2, 0x08 /* Private */,
-      57,    0,  324,    2, 0x08 /* Private */,
-      58,    0,  325,    2, 0x08 /* Private */,
-      59,    0,  326,    2, 0x08 /* Private */,
-      60,    2,  327,    2, 0x08 /* Private */,
-      63,    1,  332,    2, 0x08 /* Private */,
-      66,    0,  335,    2, 0x08 /* Private */,
-      67,    1,  336,    2, 0x08 /* Private */,
-      69,    0,  339,    2, 0x08 /* Private */,
+       1,    1,  254,    2, 0x0a /* Public */,
+       5,    1,  257,    2, 0x0a /* Public */,
+       8,    0,  260,    2, 0x0a /* Public */,
+       9,    5,  261,    2, 0x0a /* Public */,
+      15,    0,  272,    2, 0x0a /* Public */,
+      16,    2,  273,    2, 0x0a /* Public */,
+      20,    2,  278,    2, 0x0a /* Public */,
+      23,    0,  283,    2, 0x0a /* Public */,
+      24,    0,  284,    2, 0x0a /* Public */,
+      25,    0,  285,    2, 0x08 /* Private */,
+      26,    0,  286,    2, 0x08 /* Private */,
+      27,    0,  287,    2, 0x08 /* Private */,
+      28,    0,  288,    2, 0x08 /* Private */,
+      29,    0,  289,    2, 0x08 /* Private */,
+      30,    0,  290,    2, 0x08 /* Private */,
+      31,    0,  291,    2, 0x08 /* Private */,
+      32,    0,  292,    2, 0x08 /* Private */,
+      33,    0,  293,    2, 0x08 /* Private */,
+      34,    0,  294,    2, 0x08 /* Private */,
+      35,    0,  295,    2, 0x08 /* Private */,
+      36,    0,  296,    2, 0x08 /* Private */,
+      37,    0,  297,    2, 0x08 /* Private */,
+      38,    0,  298,    2, 0x08 /* Private */,
+      40,    0,  299,    2, 0x08 /* Private */,
+      41,    0,  300,    2, 0x08 /* Private */,
+      42,    0,  301,    2, 0x08 /* Private */,
+      43,    0,  302,    2, 0x08 /* Private */,
+      44,    0,  303,    2, 0x08 /* Private */,
+      45,    1,  304,    2, 0x08 /* Private */,
+      46,    0,  307,    2, 0x08 /* Private */,
+      47,    0,  308,    2, 0x08 /* Private */,
+      48,    1,  309,    2, 0x08 /* Private */,
+      49,    0,  312,    2, 0x08 /* Private */,
+      50,    1,  313,    2, 0x08 /* Private */,
+      52,    1,  316,    2, 0x08 /* Private */,
+      53,    1,  319,    2, 0x08 /* Private */,
+      54,    1,  322,    2, 0x08 /* Private */,
+      55,    0,  325,    2, 0x08 /* Private */,
+      56,    0,  326,    2, 0x08 /* Private */,
+      57,    1,  327,    2, 0x08 /* Private */,
+      58,    0,  330,    2, 0x08 /* Private */,
+      59,    0,  331,    2, 0x08 /* Private */,
+      60,    0,  332,    2, 0x08 /* Private */,
+      61,    2,  333,    2, 0x08 /* Private */,
+      64,    1,  338,    2, 0x08 /* Private */,
+      67,    0,  341,    2, 0x08 /* Private */,
+      68,    1,  342,    2, 0x08 /* Private */,
+      70,    0,  345,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void, 0x80000000 | 3,    4,
@@ -238,14 +240,15 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void, QMetaType::QModelIndex,   51,
     QMetaType::Void, QMetaType::QModelIndex,   51,
     QMetaType::Void,
+    QMetaType::Void,
     QMetaType::Void, QMetaType::QModelIndex,   51,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString, 0x80000000 | 61,   17,   62,
-    QMetaType::Void, 0x80000000 | 64,   65,
+    QMetaType::Void, QMetaType::QString, 0x80000000 | 62,   17,   63,
+    QMetaType::Void, 0x80000000 | 65,   66,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QPoint,   68,
+    QMetaType::Void, QMetaType::QPoint,   69,
     QMetaType::Void,
 
        0        // eod
@@ -296,15 +299,16 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 35: _t->doubleClickedToDoTableView((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
         case 36: _t->completeSpecification((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
         case 37: _t->updateToDoListModel(); break;
-        case 38: _t->completeToDoNote((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
-        case 39: _t->setTargetLangToCplus(); break;
-        case 40: _t->setTargetLangToJava(); break;
-        case 41: _t->setTargetLangToCsharp(); break;
-        case 42: _t->updateProjectClassInfo((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QHash<QString,ClassInfo>(*)>(_a[2]))); break;
-        case 43: _t->insertProjectClassInfo((*reinterpret_cast< const QList<ClassInfo>(*)>(_a[1]))); break;
-        case 44: _t->testSlot(); break;
-        case 45: _t->projectViewMenuRequest((*reinterpret_cast< const QPoint(*)>(_a[1]))); break;
-        case 46: _t->showDemoSCM(); break;
+        case 38: _t->clearToDoListModel(); break;
+        case 39: _t->completeToDoNote((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
+        case 40: _t->setTargetLangToCplus(); break;
+        case 41: _t->setTargetLangToJava(); break;
+        case 42: _t->setTargetLangToCsharp(); break;
+        case 43: _t->updateProjectClassInfo((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QHash<QString,ClassInfo>(*)>(_a[2]))); break;
+        case 44: _t->insertProjectClassInfo((*reinterpret_cast< const QList<ClassInfo>(*)>(_a[1]))); break;
+        case 45: _t->testSlot(); break;
+        case 46: _t->projectViewMenuRequest((*reinterpret_cast< const QPoint(*)>(_a[1]))); break;
+        case 47: _t->showDemoSCM(); break;
         default: ;
         }
     }
@@ -335,13 +339,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 47)
+        if (_id < 48)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 47;
+        _id -= 48;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 47)
+        if (_id < 48)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 47;
+        _id -= 48;
     }
     return _id;
 }

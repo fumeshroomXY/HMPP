@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QErrorMessage>
+#include <QStringList>
 #include <QStandardItemModel>
 #include <algorithm>
 
@@ -231,6 +232,7 @@ void MainWindow::insertProjectClassInfo(const QList<ClassInfo>& insertClassInfos
             }
         }
     }
+    includedClass.removeDuplicates();
     showClassUnspecifiedTypeIssue();
 
 }
@@ -293,6 +295,7 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
             }
         }
     }
+    includedClass.removeDuplicates();
 
     //从对应文件取出preClassInfoHash
     //从proClassInfoHash删除原来的preClassInfoHash，加入新的updateClassInfoHash
@@ -583,6 +586,10 @@ bool MainWindow::createProject(const QString &proName, const QString &proDir, co
         ui->actionCsharp->setChecked(true);
     }
 
+    projectTree* prePro = currentPro;
+    if(prePro) closeProject(prePro);
+    else qDebug() << "currentPro is null.";
+
     QString newProDir = proDir;
     if (!proName.isEmpty()){
         if(QDir::setCurrent(proDir)){   //设置打开目录为当前文件夹
@@ -605,9 +612,6 @@ bool MainWindow::createProject(const QString &proName, const QString &proDir, co
         return false;
     }
     projectTree* newPro = new projectTree(proName, newProDir, specDir);
-    projectTree* prePro = currentPro;
-    if(prePro) closeProject(prePro);
-    else qDebug() << "currentPro is null.";
 
     currentPro = newPro;
     if(!readProjectInfoFromCmakeFile(currentPro, includedClass)){
@@ -783,12 +787,18 @@ bool MainWindow::clearAndModifyClassSourceFile(const ClassInfo& info, QString cl
     for(int i = 0; i < info.methods->size(); ++i){
         const Method& method = info.methods->at(i);
         stream << QString("%1 %2::%3(%4){").arg(method.returnType, method.className, method.name, method.paramStr);
-        stream << QString("\n" + RequireNoteStartStr + "\t%1\n" + RequireNoteEndStr + "\n}").arg(method.name);
+        stream << QString("\n" + RequireNoteStartStr + "\t%1::%2\n" + RequireNoteEndStr + "\n}").arg(method.className, method.name);
         stream << "\n\n";
     }
+
+    if(info.methods->size() == 0) {
+        stream << QString("\n" + RequireNoteStartStr + "\twrite algorithms for %1\n" + RequireNoteEndStr + "\n").arg(className);
+    }
+
     //为变量设置set和get函数
 
     file.close();
+    openFile(classFilePath);
     return true;
 }
 
@@ -1136,7 +1146,7 @@ bool MainWindow::readProjectInfoFromCmakeFile(const projectTree *pro, QStringLis
 {
     QDir::setCurrent(pro->projectPath);
     QFile cmakeFile(pro->cmakeFile);
-    if(!cmakeFile.open(QIODevice::WriteOnly | QIODevice::Text)){
+    if(!cmakeFile.open(QIODevice::ReadOnly | QIODevice::Text)){
         qDebug() << cmakeFile.errorString();
         return false;
     }
@@ -1173,7 +1183,7 @@ bool MainWindow::writeProjectInfoIntoCmakeFile(const projectTree *pro, const QSt
 {
     QDir::setCurrent(pro->projectPath);
     QFile cmakeFile(pro->cmakeFile);
-    if(!cmakeFile.open(QIODevice::WriteOnly | QIODevice::Text)){
+    if(!cmakeFile.open(QIODevice::ReadOnly | QIODevice::Text)){
         qDebug() << cmakeFile.errorString();
         return false;
     }
@@ -1341,6 +1351,16 @@ QModelIndex MainWindow::findModelItem(const QString &searchString, const QModelI
 
 //比较规格书中的章节号
 bool sectionNumberCompare(const QString &a, const QString &b);
+
+void MainWindow::clearSpecificationModel()
+{
+    qDebug() << "clearSpecificationModel";
+    // 删除所有项而不影响 headerData
+    specificationModel->removeRows(0, specificationModel->rowCount());
+    specificationModel->removeColumns(0, specificationModel->columnCount());
+    specificationModel->setColumnCount(1);
+    specificationModel->setHeaderData(0, Qt::Horizontal, " Specification");
+}
 
 void MainWindow::updateSpecificationModel(const QHash<QString, QString>& informalSpec)
 {
@@ -1524,6 +1544,17 @@ void MainWindow::completeSpecification(const QModelIndex &index)
     qDebug() << "10";
 }
 
+void MainWindow::clearToDoListModel()
+{
+    qDebug() << "clearToDoListModel";
+    todoListModel->removeRows(0, todoListModel->rowCount());
+    todoListModel->removeColumns(0, todoListModel->columnCount());
+    todoListModel->setColumnCount(1);
+    todoListModel->setHeaderData(0, Qt::Horizontal, "  To-do List");
+
+    fileToDoRequireNotes.clear();
+}
+
 void MainWindow::updateToDoListModel()
 {
     qDebug() << "78";
@@ -1702,6 +1733,10 @@ bool MainWindow::loadProject(const QString &fileName, const QString &specDir)
             return false;
         }
 
+        projectTree* prePro = currentPro;
+        if(prePro) closeProject(currentPro);
+        else qDebug() << "currentPro is null.";
+
         initProjectInfo();
         updateToDoListModel();
         if(!specDir.isEmpty()){
@@ -1780,9 +1815,6 @@ bool MainWindow::loadProject(const QString &fileName, const QString &specDir)
         pro->sourceFiles = sourceFiles;
         initProjectModel(pro);
 
-        projectTree* prePro = currentPro;
-        if(prePro) closeProject(currentPro);
-        else qDebug() << "currentPro is null.";
         currentPro = pro;
         if(!readProjectInfoFromCmakeFile(currentPro, includedClass)){
             qDebug() << "Error in reading Project Info From CmakeFile.";
@@ -2635,18 +2667,17 @@ void MainWindow::projectViewMenuRequest(const QPoint& pos)
         QString proName = index.data(Qt::DisplayRole).toString();
         QString proPath = index.data(Qt::ToolTipRole).toString();
         connect(closeProAct, &QAction::triggered, this, [=]() {
-            if(!projects.contains(proName)){
-                qDebug() << "Failed to find the close project.";
-                return;
-            }
-            projectTree* pro = projects.value(proName);
-            if(pro->projectPath == proPath){
-                removeNodeAndChildrenInModel(projectModel, index);
+//            if(!projects.contains(proName)){
+//                qDebug() << "Failed to find the close project.";
+//                return;
+//            }
+//            projectTree* pro = projects.value(proName);
+            if(currentPro->projectPath == proPath){
+                closeProject(currentPro);
             }else{
                 qDebug() << "The close project path is not the same.";
                 return;
             }
-            MainWindow::closeProject(pro);
         });
 
         contextMenu.exec(ui->projectTreeView->viewport()->mapToGlobal(pos));
@@ -2655,6 +2686,7 @@ void MainWindow::projectViewMenuRequest(const QPoint& pos)
 
 void MainWindow::closeProject(projectTree* pro)
 {
+    qDebug() << "close project: " << pro->projectName;
     QString proPath = pro->projectPath;
     QString proName = pro->projectName;
 
@@ -2664,6 +2696,10 @@ void MainWindow::closeProject(projectTree* pro)
     qDebug() << index;
     if(index.isValid() && index.data(Qt::DisplayRole).toString() == proName){
         removeNodeAndChildrenInModel(projectModel, index);
+        clearToDoListModel();
+        clearSpecificationModel();
+        //removeNodeAndChildrenInModel(todoListModel, index);
+        //removeNodeAndChildrenInModel(specificationModel, index);
         writeProjectInfoIntoCmakeFile(pro, includedClass);
     }else{
         qDebug() << "Failed to find the close project.";

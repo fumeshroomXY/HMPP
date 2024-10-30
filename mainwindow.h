@@ -181,6 +181,7 @@ private slots:
     void completeSpecification(const QModelIndex &index);
 
     void updateToDoListModel();
+    void clearToDoListModel();
     void completeToDoNote(const QModelIndex &index);
 
 
@@ -275,6 +276,7 @@ private:
     bool loadProject(const QString &fileName, const QString &specDir);
     void initProjectModel(projectTree *newPro);
 
+    void clearSpecificationModel();
     void updateSpecificationModel(const QHash<QString, QString>& informalSpec);
 
     //初始化项目信息
