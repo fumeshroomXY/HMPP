@@ -268,6 +268,8 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
     //新来的类信息，由用户定义哪些类是新的
     //对话框，由用户勾选项的信息
     QStringList checkedItems, uncheckedItems;
+    includedClass.removeAll(UNSPECIFIED);
+    newClassNames.removeAll(UNSPECIFIED);
     SelectNewClassDialog dialog(newClassNames, includedClass, this);
     if (dialog.exec() == QDialog::Accepted) {
         checkedItems = dialog.checkedItems();
