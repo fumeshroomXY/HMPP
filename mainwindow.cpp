@@ -209,13 +209,14 @@ void MainWindow::insertProjectClassInfo(const QList<ClassInfo>& insertClassInfos
     }
 
     QStringList newClassNames = insertClassInfoHash.uniqueKeys();
-    for(QString name: newClassNames){
-        if(includedClass.contains(name)){
+    for(QString& name: newClassNames){
+        name = name.trimmed();
+        if(includedClass.contains(name) || name.isEmpty()){
             newClassNames.removeOne(name);
         }
     }
 
-    includedClass = includedClass + newClassNames;
+    //includedClass = includedClass + newClassNames;
 
     //1. 新类要创建头文件和源文件，更改项目文件
     for(auto className : newClassNames){
@@ -251,11 +252,12 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
     QStringList proClassNames = (proClassInfoHash.isEmpty()) ? QStringList() : proClassInfoHash.uniqueKeys();
 
     QStringList updateClassNames;   //需要更新类信息的类名
-    for(QString name: newClassNames){
-        if(includedClass.contains(name)){
+    for(QString& name: newClassNames){
+        name = name.trimmed();
+        if(includedClass.contains(name) || name.isEmpty()){
             newClassNames.removeOne(name);
         }
-        if(proClassNames.contains(name)){
+        if(proClassNames.contains(name) && !name.isEmpty()){
             updateClassNames.append(name);
         }
     }
@@ -1176,6 +1178,7 @@ bool MainWindow::readProjectInfoFromCmakeFile(const projectTree *pro, QStringLis
         for(QString str : names){
             str = str.trimmed();
         }
+        names.removeAll("");
         includedClass = names;
     }
     return true;
@@ -1205,7 +1208,7 @@ bool MainWindow::writeProjectInfoIntoCmakeFile(const projectTree *pro, const QSt
 
     QString insertClassNames;
     for(QString str : includedClass){
-        insertClassNames += (str + ", ");
+        insertClassNames += (str + ",");
     }
     int endPos = content.indexOf("\n", pos);
     if(endPos == -1){
@@ -2797,6 +2800,7 @@ ClassInfo MainWindow::getProClassInfo(QString className)
 
 void MainWindow::setProClassInfo(QString className, const ClassInfo& info)
 {
+    qDebug() << "MainWindow::setProClassInfo";
     if(proClassInfoHash.contains(className)){
         proClassInfoHash[className] = info;
         synchronizeClassInfoFromProToFile(className);
@@ -2806,6 +2810,7 @@ void MainWindow::setProClassInfo(QString className, const ClassInfo& info)
 
 void MainWindow::synchronizeClassInfoFromProToFile(QString className)
 {
+    qDebug() << "MainWindow::synchronizeClassInfoFromProToFile";
     if(!proClassInfoHash.contains(className)){
         qDebug() << "proClassInfoHash does not contains " << className;
         return;
@@ -2835,4 +2840,5 @@ void MainWindow::synchronizeClassInfoFromProToFile(QString className)
             }
         }
     }
+    qDebug() << "MainWindow::synchronizeClassInfoFromProToFile";
 }

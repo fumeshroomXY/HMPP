@@ -1371,7 +1371,7 @@ void MdiChild::updateObjectInfoInHeaderFile()
             m.paramStr = paramStr;
         }
     }
-
+    //qDebug() << "20241107";
     mw_ptr->setProClassInfo(className, info);
     emit showHeaderFileIssue();
 }
@@ -1817,6 +1817,9 @@ void MdiChild::updateInformalSpecPosInFile()
 
 void MdiChild::convertMethodParamToTemp(const QString& str, const int& pos)
 {
+    if(str.isEmpty()) {
+        return;
+    }
     // 以逗号分割字符串
     QStringList paramList = str.split(",", QString::SkipEmptyParts);
     // 去除每个子字符串的前后空格并分离变量类型
@@ -1844,6 +1847,9 @@ QList<QString> MdiChild::onlyGetMethodParamType(const QString& str)
 {
     qDebug() << "onlyGetMethodParamType: str = " << str;
     // 以逗号分割字符串
+    if(str.isEmpty()) {
+        return QList<QString>();
+    }
     QStringList paramList = str.split(",", QString::SkipEmptyParts);
 
     QList<QString> res;
@@ -1864,6 +1870,9 @@ QString MdiChild::completeMethodParamType(const QString& str, const int& pos)
 {
     qDebug() << "stringToParameter: str = " << str;
     // 以逗号分割字符串
+    if(str.isEmpty()) {
+        return "";
+    }
     QStringList paramList = str.split(",", QString::SkipEmptyParts);
 
     // 去除每个子字符串的前后空格

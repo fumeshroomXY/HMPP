@@ -60,6 +60,7 @@ public:
     const QString classFunctionUserRole = "function";
     const QString globalFunctionUserRole = "GlobalFunction";
 
+
 private:
     QTreeWidget* treeWidget;
     QStringList existingClassList;
@@ -72,6 +73,7 @@ private:
     void promoteToClass();
     void createNewClass();
     void renameItem(QTreeWidgetItem* item, int column);
+    void deleteSelectedItem();
     QList<QTreeWidgetItem*> getClassItems();
 
     QList<ClassInfo> getClassStructure();

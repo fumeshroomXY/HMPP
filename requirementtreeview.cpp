@@ -6,6 +6,7 @@
 #include <QHBoxLayout>
 #include <QInputDialog>
 #include <QFont>
+#include <QMessageBox>
 
 RequirementTreeView::RequirementTreeView(QWidget *parent) : QTreeView(parent)
 {
@@ -93,10 +94,11 @@ BuildProFromSpecDialog::BuildProFromSpecDialog(const QHash<QString, QString>& ha
     addItemsFromStringList(stringList);
 
     // Buttons
-    QPushButton* btn1 = new QPushButton("Demote to Global Function", this);
-    QPushButton* btn2 = new QPushButton("Demote to Class Function", this);
-    QPushButton* btn3 = new QPushButton("Promote to Class", this);
-    QPushButton* btn4 = new QPushButton("Create New Class", this);
+    QPushButton* btn1 = new QPushButton("Demote to Global Method", this);
+    QPushButton* btn2 = new QPushButton("Demote to Class Method", this);
+    QPushButton* btn3 = new QPushButton("Promote", this);
+    QPushButton* btn4 = new QPushButton("New...", this);
+    QPushButton* btn5 = new QPushButton("Delete", this);
     QPushButton* okButton = new QPushButton("OK", this);
     QPushButton* cancelButton = new QPushButton("Cancel", this);
 
@@ -108,6 +110,7 @@ BuildProFromSpecDialog::BuildProFromSpecDialog(const QHash<QString, QString>& ha
     buttonLayout->addWidget(btn2);
     buttonLayout->addWidget(btn3);
     buttonLayout->addWidget(btn4);
+    buttonLayout->addWidget(btn5);
     buttonLayout2->addStretch();
     buttonLayout2->addWidget(okButton);
     buttonLayout2->addWidget(cancelButton);
@@ -121,6 +124,7 @@ BuildProFromSpecDialog::BuildProFromSpecDialog(const QHash<QString, QString>& ha
     connect(btn2, &QPushButton::clicked, this, &BuildProFromSpecDialog::demoteToClassFunction);
     connect(btn3, &QPushButton::clicked, this, &BuildProFromSpecDialog::promoteToClass);
     connect(btn4, &QPushButton::clicked, this, &BuildProFromSpecDialog::createNewClass);
+    connect(btn5, &QPushButton::clicked, this, &BuildProFromSpecDialog::deleteSelectedItem);
     connect(treeWidget, &QTreeWidget::itemDoubleClicked, this, &BuildProFromSpecDialog::renameItem);
     connect(okButton, &QPushButton::clicked, this, &BuildProFromSpecDialog::onOkClicked);
     connect(cancelButton, &QPushButton::clicked, this, &BuildProFromSpecDialog::onCancelClicked);
@@ -283,6 +287,29 @@ void BuildProFromSpecDialog::renameItem(QTreeWidgetItem* item, int column) {
         item->setFont(0, font);
         treeWidget->setCurrentItem(item);
     }
+}
+
+void BuildProFromSpecDialog::deleteSelectedItem() {
+    QTreeWidgetItem* selectedItem = treeWidget->currentItem();
+    if (!selectedItem) {
+        QMessageBox::information(this, "No Selection", "Please select an item to delete.");
+        return;
+    }
+
+    QTreeWidgetItem* parentItem = selectedItem->parent();
+    if (parentItem) {
+        // If the item has a parent, remove it from its parent
+        parentItem->removeChild(selectedItem);
+    } else {
+        // If the item is a top-level item, remove it from the tree widget
+        int index = treeWidget->indexOfTopLevelItem(selectedItem);
+        if (index != -1) {
+            treeWidget->takeTopLevelItem(index);
+        }
+    }
+
+    // Delete the selected item and its children
+    delete selectedItem;  // Deleting the item automatically deletes all its children
 }
 
 // Get all class items from the tree
