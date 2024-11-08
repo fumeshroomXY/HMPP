@@ -447,12 +447,12 @@ struct Method
         bool res1 = (name == other.name && className == other.className && scope == other.scope
                      && parameters.size() == other.parameters.size());
         bool res2 = (other.returnType == UNSPECIFIED) || (returnType == other.returnType);
-        bool res3 = true;
-        for(int i = 0; i < parameters.size(); ++i){
+        bool res3 = res1 && res2;
+        for(int i = 0; res3 && i < parameters.size(); ++i){
             bool res = (parameters[i] == other.parameters[i]) || (other.parameters[i] == UNSPECIFIED);
             res3 = res3 && res;
         }
-        return res1 && res2 && res3;
+        return res3;
     }
 };
 

@@ -242,6 +242,7 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
 {
     //includedClass: included files里面非用户定义的类； 用户在本项目中定义的类
     //proClassInfoHash: 用户在本项目中定义的类
+    qDebug() << "MainWindow::updateProjectClassInfo";
     QStringList newClassNames;
     if(updateClassInfoHash.isEmpty()){
         newClassNames = QStringList();
@@ -254,6 +255,7 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
     QStringList updateClassNames;   //需要更新类信息的类名
     for(QString& name: newClassNames){
         name = name.trimmed();
+        qDebug() << "newClassNames: " < name;
         if(includedClass.contains(name) || name.isEmpty()){
             newClassNames.removeOne(name);
         }
@@ -310,6 +312,7 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
 
     //2. 所有用户定义的类都要更改头文件，根据原来的类信息，一一比对
     for(auto className : updateClassNames){
+        qDebug() << "updateClassNames: " << className;
         ClassInfo& preInfo = preClassInfoHash[className];
         ClassInfo& newInfo = updateClassInfoHash[className];
         ClassInfo& proClassInfo = proClassInfoHash[className];
@@ -325,10 +328,10 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
 
         for(int i = 0; i < preInfo.methods->size(); i++){
             Method m = preInfo.methods->at(i);
-            if(!newInfo.methods->contains(m)){   //如果旧信息中没有新信息同样的函数，说明需要添加
+            if(!newInfo.methods->contains(m)){   //如果旧信息中没有新信息同样的函数，说明需要删除
                 for(int j = 0; j < newInfo.methods->size(); j++){
-                    if(m >= newInfo.methods->at(i)){  //将旧信息中类型更全的函数更新到新信息中
-                        (*newInfo.methods)[i] = m;
+                    if(m >= newInfo.methods->at(j)){  //将旧信息中类型更全的函数更新到新信息中
+                        (*newInfo.methods)[j] = m;
                     }
                 }
                 delInfo.methods->append(m);
@@ -378,7 +381,7 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
 
     //3. 消失的类要删除头文件，更改项目文件
     //此项情况暂时不处理
-
+    qDebug() << "MainWindow::updateProjectClassInfo";
 }
 
 bool MainWindow::delAndAddInfoInClassHeaderFile(const ClassInfo& delInfo, const ClassInfo& addInfo, QString className)
@@ -403,6 +406,7 @@ bool MainWindow::delAndAddInfoInClassHeaderFile(const ClassInfo& delInfo, const 
     QRegExp reg;
     for(int i = 0; i < delInfo.vars->size(); ++i){
         const Variable& v = delInfo.vars->at(i);
+        qDebug() << "delInfo.vars: " << v.name;
         if(v.type.contains("[")){
             QString type = v.type.left(v.type.indexOf("["));
             reg = QRegExp(QString("%1[^\\S\n]+%2[^\\S\n]*\\[[\\d\\s]+\\][^\\S\n]*;").arg(type).arg(v.name));
@@ -423,6 +427,7 @@ bool MainWindow::delAndAddInfoInClassHeaderFile(const ClassInfo& delInfo, const 
 
     for(int i = 0; i < delInfo.methods->size(); ++i){
         const Method& m = delInfo.methods->at(i);
+        qDebug() << "delInfo.methods: " << m.name;
         QString paramReg;
         for(int j = 0; j < m.parameters.size(); j++){
             if(j > 0){
@@ -449,6 +454,7 @@ bool MainWindow::delAndAddInfoInClassHeaderFile(const ClassInfo& delInfo, const 
     QRegExp privateReg(QString("\\bprivate[^\\S\n]*:\n"));
     for(int i = 0; i < addInfo.vars->size(); ++i){
         const Variable& v = addInfo.vars->at(i);
+        qDebug() << "addInfo.vars: " << v.name;
         QString insertStr;
         if(v.type.contains("[")){
             QString type = v.type.left(v.type.indexOf("["));
@@ -470,6 +476,7 @@ bool MainWindow::delAndAddInfoInClassHeaderFile(const ClassInfo& delInfo, const 
     QRegExp publicReg(QString("\\bpublic[^\\S\n]*:\n"));
     for(int i = 0; i < addInfo.methods->size(); ++i){
         const Method& m = addInfo.methods->at(i);
+        qDebug() << "delInfo.methods: " << m.name;
         QString insertStr = QString("%1 %2(%3);").arg(m.returnType).arg(m.name).arg(m.paramStr);
 
         int pos = 0;
@@ -2819,10 +2826,18 @@ void MainWindow::synchronizeClassInfoFromProToFile(QString className)
 
     for(auto it = fileClassInfoHash.begin(); it != fileClassInfoHash.end(); it++){
         QHash<QString, ClassInfo>& hash = it.value();
+        qDebug() << it.key();
         if(hash.contains(className)){
             ClassInfo& oldInfo = hash[className];
+            qDebug() << "oldinfo.vars.size = " << oldInfo.vars->size();
+            qDebug() << "oldinfo.methods.size = " << oldInfo.methods->size();
+            qDebug() << "info.vars.size = " << info.vars->size();
+            qDebug() << "info.methods.size = " << info.methods->size();
+
             for(int i = 0; i < oldInfo.vars->size(); ++i){
                 for(int j = 0; j < info.vars->size(); ++j){
+                    qDebug() << "oldInfo.var:" << oldInfo.vars->at(i).name;
+                    qDebug() << "info.var:" << info.vars->at(j).name;
                     if(info.vars->at(j) >= oldInfo.vars->at(i)){
                         (*oldInfo.vars)[i] = info.vars->at(j);
                         break;
@@ -2832,6 +2847,8 @@ void MainWindow::synchronizeClassInfoFromProToFile(QString className)
 
             for(int i = 0; i < oldInfo.methods->size(); ++i){
                 for(int j = 0; j < info.methods->size(); ++j){
+                    qDebug() << "oldInfo.method:" << oldInfo.methods->at(i).name;
+                    qDebug() << "info.method:" << info.methods->at(j).name;
                     if(info.methods->at(j) >= oldInfo.methods->at(i)){
                         (*oldInfo.methods)[i] = info.methods->at(j);
                         break;
