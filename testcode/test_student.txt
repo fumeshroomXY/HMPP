@@ -88,11 +88,9 @@ public:
 
 int main(){
 
-	// 创建学生对象
-    //Student student1("Alice", 20);
+    	Student student1("Alice", 20);
 
 	
-	//Student* student2 = new Student("Bob", 21);
 	Student student2();
 	student2->setName();
 	

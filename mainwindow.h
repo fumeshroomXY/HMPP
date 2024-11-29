@@ -101,7 +101,7 @@ public:
     void synchronizeClassInfoFromProToFile(QString className);
 
     //删除和新增头文件中对应的类成员
-    bool delAndAddInfoInClassHeaderFile(const ClassInfo &delInfo, const ClassInfo &addInfo, QString className);
+    bool delAndAddInfoInClassSourceFile(const ClassInfo &delInfo, const ClassInfo &addInfo, QString className);
 
     //清空类的源文件并重写类函数信息
     bool clearAndModifyClassSourceFile(const ClassInfo &info, QString className);

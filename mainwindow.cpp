@@ -255,7 +255,7 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
     QStringList updateClassNames;   //需要更新类信息的类名
     for(QString& name: newClassNames){
         name = name.trimmed();
-        qDebug() << "newClassNames: " < name;
+        qDebug() << "newClassNames: " << name;
         if(includedClass.contains(name) || name.isEmpty()){
             newClassNames.removeOne(name);
         }
@@ -317,6 +317,50 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
         ClassInfo& newInfo = updateClassInfoHash[className];
         ClassInfo& proClassInfo = proClassInfoHash[className];
 
+        qDebug() << "**************************************";
+        qDebug() << "preInfo:";
+        for(int j = 0; j < preInfo.vars->size(); j++){
+            qDebug() << preInfo.vars->at(j).type << " " <<
+                        preInfo.vars->at(j).className << "::" <<preInfo.vars->at(j).name;
+        }
+
+        for(int j = 0; j < preInfo.methods->size(); j++){
+            qDebug() << preInfo.methods->at(j).returnType << " "
+                     << preInfo.methods->at(j).className << "::" <<preInfo.methods->at(j).name
+                     << "(" << preInfo.methods->at(j).paramStr << ")";
+        }
+
+        qDebug() << "**************************************";
+        qDebug() << "newInfo:";
+        for(int j = 0; j < newInfo.vars->size(); j++){
+            qDebug() << newInfo.vars->at(j).type << " " <<
+                        newInfo.vars->at(j).className << "::" <<newInfo.vars->at(j).name;
+        }
+
+        for(int j = 0; j < newInfo.methods->size(); j++){
+            qDebug() << newInfo.methods->at(j).returnType << " "
+                     << newInfo.methods->at(j).className << "::" <<newInfo.methods->at(j).name
+                     << "(" << newInfo.methods->at(j).paramStr << ")";
+        }
+
+        qDebug() << "**************************************";
+        qDebug() << "proClassInfo:";
+        for(int j = 0; j < proClassInfo.vars->size(); j++){
+            qDebug() << proClassInfo.vars->at(j).type << " " <<
+                        proClassInfo.vars->at(j).className << "::" <<proClassInfo.vars->at(j).name;
+        }
+
+        qDebug() << "Methods:";
+        for(int j = 0; j < proClassInfo.methods->size(); j++){
+            qDebug() << proClassInfo.methods->at(j).returnType << " "
+                     << proClassInfo.methods->at(j).className << "::" <<proClassInfo.methods->at(j).name
+                     << "(" << proClassInfo.methods->at(j).paramStr << ")";
+        }
+
+
+
+
+
         //这里有几种情况
         //1. 在原来同一个函数的基础上做了改动
         //2. 删除了原来的同名函数
@@ -343,8 +387,8 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
             Variable v = preInfo.vars->at(i);
             if(!newInfo.vars->contains(v)){
                 for(int j = 0; j < newInfo.vars->size(); j++){
-                    if(v >= newInfo.vars->at(i)){  //将旧信息中类型更全的变量更新到新信息中
-                        (*newInfo.vars)[i] = v;
+                    if(v >= newInfo.vars->at(j)){  //将旧信息中类型更全的变量更新到新信息中
+                        (*newInfo.vars)[j] = v;
                     }
                 }
                 delInfo.vars->append(v);
@@ -370,9 +414,26 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
             }
         }
 
+        qDebug() << "**************************************";
+        qDebug() << "delInfo: Methods:";
+        for(int j = 0; j < delInfo.methods->size(); j++){
+            qDebug() << delInfo.methods->at(j).returnType << " "
+                     << delInfo.methods->at(j).className << "::" << delInfo.methods->at(j).name
+                     << "(" << delInfo.methods->at(j).paramStr << ")";
+        }
+
+        qDebug() << "addInfo: Methods:";
+        for(int j = 0; j < addInfo.methods->size(); j++){
+            qDebug() << addInfo.methods->at(j).returnType << " "
+                     << addInfo.methods->at(j).className << "::" << addInfo.methods->at(j).name
+                     << "(" << addInfo.methods->at(j).paramStr << ")";
+        }
+
         //由于情况复杂，这里直接粗暴的重写对应文件
         //如果遇到那种改动很小的情况，这种粗暴的方式不一定很高效
-        delAndAddInfoInClassHeaderFile(delInfo, addInfo, className);
+        clearAndModifyClassHeaderFile(proClassInfo, className);
+
+        delAndAddInfoInClassSourceFile(delInfo, addInfo, className);
 
     }
 
@@ -384,25 +445,34 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
     qDebug() << "MainWindow::updateProjectClassInfo";
 }
 
-bool MainWindow::delAndAddInfoInClassHeaderFile(const ClassInfo& delInfo, const ClassInfo& addInfo, QString className)
+bool MainWindow::delAndAddInfoInClassSourceFile(const ClassInfo& delInfo, const ClassInfo& addInfo, QString className)
 {
-    if(delInfo.name.isEmpty() || addInfo.name.isEmpty()) return false;
+    qDebug() << "delAndAddInfoInClassSourceFile";
+    if(delInfo.name.isEmpty() || addInfo.name.isEmpty()) {
+        qDebug() << "info.name is empty.";
+        return false;
+    }
     if(currentPro == nullptr) {
         qDebug() << "currentPro is nullptr.";
         return false;
     }
     //为指定的类的头文件中加入类的成员信息
-    QString classFilePath = currentPro->projectPath + "/" + headDir + "/" + className + ".h";
+    QString classFilePath = currentPro->projectPath + "/" + srcDir + "/" + className + ".cpp";
     QFile file(classFilePath);
-    if(!QFile::exists(classFilePath) || !file.open(QIODevice::ReadOnly | QIODevice::Text)){
+    if(!QFile::exists(classFilePath) || !file.open(QIODevice::Append | QIODevice::Text)){
         qDebug() << file.errorString();
         return false;
     }
 
     QTextStream stream(&file);
     QString content = stream.readAll();
-    file.close();
 
+    // 这里应该处理类A的成员函数被其他对象调用时，调用处参数改变的情况：
+    // 1. 成员函数的参数或返回值改变，源文件中应该更改对应参数
+    // 2. 成员函数不再被调用，源文件中成员函数应该被删除
+    // 此处暂时未考虑同名函数，不同参数的问题
+    // delInfo 包括需要更改的成员函数的信息
+    /*
     QRegExp reg;
     for(int i = 0; i < delInfo.vars->size(); ++i){
         const Variable& v = delInfo.vars->at(i);
@@ -440,7 +510,7 @@ bool MainWindow::delAndAddInfoInClassHeaderFile(const ClassInfo& delInfo, const 
         int pos = 0;
         if ((pos = reg.indexIn(content, pos)) != -1) {
             // 找到了匹配的内容
-            qDebug()  << "classVarInHeader: " ;
+            qDebug()  << "classMethodInHeader: " ;
             qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;
 
             content.replace(pos, reg.cap(0).length(), "");
@@ -449,8 +519,18 @@ bool MainWindow::delAndAddInfoInClassHeaderFile(const ClassInfo& delInfo, const 
                      << " " << "(" << m.paramStr << ")";
         }
     }
+    */
 
+    stream << "\n\n";
 
+    for(int i = 0; i < addInfo.methods->size(); ++i){
+        const Method& method = addInfo.methods->at(i);
+        stream << QString("%1 %2::%3(%4){").arg(method.returnType, method.className, method.name, method.paramStr);
+        stream << QString("\n" + RequireNoteStartStr + "\t%1::%2\n" + RequireNoteEndStr + "\n}").arg(method.className, method.name);
+        stream << "\n\n";
+    }
+
+    /*
     QRegExp privateReg(QString("\\bprivate[^\\S\n]*:\n"));
     for(int i = 0; i < addInfo.vars->size(); ++i){
         const Variable& v = addInfo.vars->at(i);
@@ -476,7 +556,7 @@ bool MainWindow::delAndAddInfoInClassHeaderFile(const ClassInfo& delInfo, const 
     QRegExp publicReg(QString("\\bpublic[^\\S\n]*:\n"));
     for(int i = 0; i < addInfo.methods->size(); ++i){
         const Method& m = addInfo.methods->at(i);
-        qDebug() << "delInfo.methods: " << m.name;
+        qDebug() << "addInfo.methods: " << m.name;
         QString insertStr = QString("%1 %2(%3);").arg(m.returnType).arg(m.name).arg(m.paramStr);
 
         int pos = 0;
@@ -489,14 +569,12 @@ bool MainWindow::delAndAddInfoInClassHeaderFile(const ClassInfo& delInfo, const 
                      << " " << "(" << m.paramStr << ")";
         }
     }
+    */
 
 
-    if(!QFile::exists(classFilePath) || !file.open(QIODevice::WriteOnly | QIODevice::Text)){
-        qDebug() << file.errorString();
-        return false;
-    }
-    stream << content;
     file.close();
+    openFile(classFilePath);
+    qDebug() << "delAndAddInfoInClassSourceFile";
     return true;
 
 }
@@ -682,7 +760,11 @@ void MainWindow::receiveGuideWizardFileInfo(bool createNewFlag, const QString &p
 
 bool MainWindow::clearAndModifyClassHeaderFile(const ClassInfo& info, QString className)
 {
-    if(info.name.isEmpty()) return false;
+    qDebug() << "clearAndModifyClassHeaderFile";
+    if(info.name.isEmpty()) {
+        qDebug() << "info.name is empty.";
+        return false;
+    }
     if(currentPro == nullptr) {
         qDebug() << "currentPro is nullptr.";
         return false;
@@ -769,6 +851,8 @@ bool MainWindow::clearAndModifyClassHeaderFile(const ClassInfo& info, QString cl
     stream << QString("#endif //%1_H").arg(upper);
     stream << "\n";
     file.close();
+    openFile(classFilePath);
+    qDebug() << "clearAndModifyClassHeaderFile";
     return true;
 }
 
@@ -1701,9 +1785,8 @@ bool MainWindow::openFile(const QString &fileName)
 {
     qDebug() << "16";
     if (QMdiSubWindow *existing = findMdiChild(fileName)) {  //
-        ui->mdiArea->setActiveSubWindow(existing);
-        qDebug() << "16";
-        return true;
+        //ui->mdiArea->setActiveSubWindow(existing);
+        ui->mdiArea->removeSubWindow(existing);
     }
     const bool succeeded = loadFile(fileName);
     if (succeeded)

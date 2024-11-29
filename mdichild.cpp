@@ -115,7 +115,7 @@ bool MdiChild::save()
         bool flag = saveAs();
         if(flag) {
             updateObjectInfoInSourceFile();
-            updateObjectInfoInHeaderFile();
+            //updateObjectInfoInHeaderFile();
         }
         qDebug() << "-4";
         return flag;
@@ -123,7 +123,7 @@ bool MdiChild::save()
         bool flag = saveFile(curFile);
         if(flag) {
             updateObjectInfoInSourceFile();
-            updateObjectInfoInHeaderFile();
+            //updateObjectInfoInHeaderFile();
         }
         qDebug() << "-4";
         return flag;
@@ -1372,7 +1372,7 @@ void MdiChild::updateObjectInfoInHeaderFile()
         }
     }
     //qDebug() << "20241107";
-    mw_ptr->setProClassInfo(className, info);
+    //mw_ptr->setProClassInfo(className, info);
     emit showHeaderFileIssue();
 }
 
