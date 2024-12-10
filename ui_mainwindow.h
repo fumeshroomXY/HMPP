@@ -109,21 +109,12 @@ public:
     QSpacerItem *verticalSpacer_2;
     QHBoxLayout *horizontalLayout_5;
     QVBoxLayout *verticalLayout_5;
-    QPushButton *pushButton_5;
+    QPushButton *hmppIconButton;
     QSpacerItem *verticalSpacer_3;
     QLabel *label3;
     QHBoxLayout *horizontalLayout_6;
-    QLabel *label4;
-    QVBoxLayout *verticalLayout_7;
-    QPushButton *pushButton_6;
-    QSpacerItem *verticalSpacer_5;
-    QHBoxLayout *horizontalLayout_7;
-    QVBoxLayout *verticalLayout_6;
-    QPushButton *pushButton_7;
-    QSpacerItem *verticalSpacer_4;
-    QLabel *label5;
-    QPushButton *pushButton;
-    QTextBrowser *textBrowser;
+    QPushButton *copyCodeButton;
+    QTextBrowser *codeBrowser;
     QVBoxLayout *verticalLayout;
     QMdiArea *mdiArea;
     QTabWidget *tabProgramOutput;
@@ -389,7 +380,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QStringLiteral("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 172, 900));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 228, 489));
         verticalLayout_8 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_8->setObjectName(QStringLiteral("verticalLayout_8"));
         horizontalLayout_3 = new QHBoxLayout();
@@ -460,13 +451,13 @@ public:
         horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
         verticalLayout_5 = new QVBoxLayout();
         verticalLayout_5->setObjectName(QStringLiteral("verticalLayout_5"));
-        pushButton_5 = new QPushButton(scrollAreaWidgetContents);
-        pushButton_5->setObjectName(QStringLiteral("pushButton_5"));
-        sizePolicy.setHeightForWidth(pushButton_5->sizePolicy().hasHeightForWidth());
-        pushButton_5->setSizePolicy(sizePolicy);
-        pushButton_5->setIcon(icon21);
+        hmppIconButton = new QPushButton(scrollAreaWidgetContents);
+        hmppIconButton->setObjectName(QStringLiteral("hmppIconButton"));
+        sizePolicy.setHeightForWidth(hmppIconButton->sizePolicy().hasHeightForWidth());
+        hmppIconButton->setSizePolicy(sizePolicy);
+        hmppIconButton->setIcon(icon21);
 
-        verticalLayout_5->addWidget(pushButton_5);
+        verticalLayout_5->addWidget(hmppIconButton);
 
         verticalSpacer_3 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
@@ -488,76 +479,23 @@ public:
 
         horizontalLayout_6 = new QHBoxLayout();
         horizontalLayout_6->setObjectName(QStringLiteral("horizontalLayout_6"));
-        label4 = new QLabel(scrollAreaWidgetContents);
-        label4->setObjectName(QStringLiteral("label4"));
-        label4->setStyleSheet(QLatin1String("background-color: rgb(251, 200, 150);\n"
-"padding: 10px"));
-        label4->setWordWrap(true);
-
-        horizontalLayout_6->addWidget(label4);
-
-        verticalLayout_7 = new QVBoxLayout();
-        verticalLayout_7->setObjectName(QStringLiteral("verticalLayout_7"));
-        pushButton_6 = new QPushButton(scrollAreaWidgetContents);
-        pushButton_6->setObjectName(QStringLiteral("pushButton_6"));
-        sizePolicy.setHeightForWidth(pushButton_6->sizePolicy().hasHeightForWidth());
-        pushButton_6->setSizePolicy(sizePolicy);
-        pushButton_6->setBaseSize(QSize(16, 16));
-        pushButton_6->setIcon(icon22);
-
-        verticalLayout_7->addWidget(pushButton_6);
-
-        verticalSpacer_5 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-        verticalLayout_7->addItem(verticalSpacer_5);
-
-
-        horizontalLayout_6->addLayout(verticalLayout_7);
-
 
         verticalLayout_8->addLayout(horizontalLayout_6);
 
-        horizontalLayout_7 = new QHBoxLayout();
-        horizontalLayout_7->setObjectName(QStringLiteral("horizontalLayout_7"));
-        verticalLayout_6 = new QVBoxLayout();
-        verticalLayout_6->setObjectName(QStringLiteral("verticalLayout_6"));
-        pushButton_7 = new QPushButton(scrollAreaWidgetContents);
-        pushButton_7->setObjectName(QStringLiteral("pushButton_7"));
-        sizePolicy.setHeightForWidth(pushButton_7->sizePolicy().hasHeightForWidth());
-        pushButton_7->setSizePolicy(sizePolicy);
-        pushButton_7->setIcon(icon21);
+        copyCodeButton = new QPushButton(scrollAreaWidgetContents);
+        copyCodeButton->setObjectName(QStringLiteral("copyCodeButton"));
+        copyCodeButton->setIcon(icon8);
 
-        verticalLayout_6->addWidget(pushButton_7);
+        verticalLayout_8->addWidget(copyCodeButton);
 
-        verticalSpacer_4 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        codeBrowser = new QTextBrowser(scrollAreaWidgetContents);
+        codeBrowser->setObjectName(QStringLiteral("codeBrowser"));
+        codeBrowser->setStyleSheet(QStringLiteral(""));
+        codeBrowser->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        codeBrowser->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+        codeBrowser->setLineWrapMode(QTextEdit::NoWrap);
 
-        verticalLayout_6->addItem(verticalSpacer_4);
-
-
-        horizontalLayout_7->addLayout(verticalLayout_6);
-
-        label5 = new QLabel(scrollAreaWidgetContents);
-        label5->setObjectName(QStringLiteral("label5"));
-        label5->setStyleSheet(QLatin1String("background-color: rgb(120, 180, 210);\n"
-"padding: 10px"));
-        label5->setWordWrap(true);
-
-        horizontalLayout_7->addWidget(label5);
-
-
-        verticalLayout_8->addLayout(horizontalLayout_7);
-
-        pushButton = new QPushButton(scrollAreaWidgetContents);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
-        pushButton->setIcon(icon8);
-
-        verticalLayout_8->addWidget(pushButton);
-
-        textBrowser = new QTextBrowser(scrollAreaWidgetContents);
-        textBrowser->setObjectName(QStringLiteral("textBrowser"));
-        textBrowser->setStyleSheet(QStringLiteral(""));
-
-        verticalLayout_8->addWidget(textBrowser);
+        verticalLayout_8->addWidget(codeBrowser);
 
         scrollArea->setWidget(scrollAreaWidgetContents);
 
@@ -959,55 +897,38 @@ public:
         label1->setText(QApplication::translate("MainWindow", "Great! How can I assist you today? Do you have any code-related questions or problems that I can help you with?", 0));
         label2->setText(QApplication::translate("MainWindow", "create a calculate class", 0));
         pushButton_4->setText(QString());
-        pushButton_5->setText(QString());
-        label3->setText(QApplication::translate("MainWindow", "Sure! I can help you create a Calculate class. Could you please provide more details about what functionality or methods you would like the class to have?", 0));
-        label4->setText(QApplication::translate("MainWindow", "the class can achieve add, sub, multiply, divide", 0));
-        pushButton_6->setText(QString());
-        pushButton_7->setText(QString());
-        label5->setText(QApplication::translate("MainWindow", "Got it! Here's an example of a Calculate class that has methods for addition, subtraction, multiplication, and division:", 0));
-        pushButton->setText(QApplication::translate("MainWindow", "Copy code", 0));
-        textBrowser->setHtml(QApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        hmppIconButton->setText(QString());
+        label3->setText(QApplication::translate("MainWindow", "<html><head/><body><p>The code you provided has some problems. Here is the modified version. If you want me to explain further, feel free to ask any question. </p></body></html>", 0));
+        copyCodeButton->setText(QApplication::translate("MainWindow", "Copy code", 0));
+        codeBrowser->setHtml(QApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'SimSun'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; line-height:19px; background-color:#1f1f1f;\"><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#569cd6;\">class</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#4ec9b0;\">Calculate</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> {</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0;"
-                        " text-indent:0px;\"><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#569cd6;\">public:</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">\302\240 \302\240 </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#569cd6;\">int</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#dcdcaa;\">add</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">(</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#569cd6;\">int</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,C"
-                        "ourier New,monospace'; font-size:8pt; color:#9cdcfe;\">a</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">, </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#569cd6;\">int</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#9cdcfe;\">b</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">) {</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">\302\240 \302\240 \302\240 \302\240 </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#c586c0;\">return</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; colo"
-                        "r:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#9cdcfe;\">a</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#d4d4d4;\">+</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#9cdcfe;\">b</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">;</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">\302\240 \302\240 }</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font"
-                        "-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"><br /></span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">\302\240 \302\240 </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#569cd6;\">int</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#dcdcaa;\">subtract</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">(</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#569cd6;\">int</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8p"
-                        "t; color:#9cdcfe;\">a</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">, </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#569cd6;\">int</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#9cdcfe;\">b</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">) {</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">\302\240 \302\240 \302\240 \302\240 </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#c586c0;\">return</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\""
-                        " font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#9cdcfe;\">a</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#d4d4d4;\">-</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#9cdcfe;\">b</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">;</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">\302\240 \302\240 }</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Consolas,Courier New,monos"
-                        "pace'; font-size:8pt; color:#cccccc;\"><br /></span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">\302\240 \302\240 </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#569cd6;\">int</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#dcdcaa;\">multiply</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">(</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#569cd6;\">int</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#9cdcfe;\">a</span><span s"
-                        "tyle=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">, </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#569cd6;\">int</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#9cdcfe;\">b</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">) {</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">\302\240 \302\240 \302\240 \302\240 </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#c586c0;\">return</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,"
-                        "monospace'; font-size:8pt; color:#9cdcfe;\">a</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#d4d4d4;\">*</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#9cdcfe;\">b</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">;</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">\302\240 \302\240 }</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc"
-                        ";\"><br /></span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">\302\240 \302\240 </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#569cd6;\">double</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#dcdcaa;\">divide</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">(</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#569cd6;\">int</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#9cdcfe;\">a</span><span style=\" font-family:'Consolas,Cour"
-                        "ier New,monospace'; font-size:8pt; color:#cccccc;\">, </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#569cd6;\">int</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#9cdcfe;\">b</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">) {</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">\302\240 \302\240 \302\240 \302\240 </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#c586c0;\">if</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> (</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#9cd"
-                        "cfe;\">b</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#d4d4d4;\">!=</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#b5cea8;\">0</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">) {</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#c586c0;\">return</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style"
-                        "=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#569cd6;\">static_cast</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#d4d4d4;\">&lt;</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#569cd6;\">double</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#d4d4d4;\">&gt;</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">(</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#9cdcfe;\">a</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">) </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#d4d4d4;\">/</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#9cdcfe;\">b</span><spa"
-                        "n style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">;</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">\302\240 \302\240 \302\240 \302\240 } </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#c586c0;\">else</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\"> {</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#c586c0;\">throw</span><span style=\" font-family:'Consolas,Courier New,monospace'; font"
-                        "-size:8pt; color:#cccccc;\"> </span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#4ec9b0;\">std</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">::</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#dcdcaa;\">runtime_error</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">(</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#ce9178;\">&quot;Cannot divide by zero.&quot;</span><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">);</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">\302\240 \302\240 \302\240 \302\240 }</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left"
-                        ":0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">\302\240 \302\240 }</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Consolas,Courier New,monospace'; font-size:8pt; color:#cccccc;\">};</span></p></body></html>", 0));
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">#include &quot;Camera.h&quot;</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">#include &quot;EncryptionModule.h&quot;</p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">int main() {</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0p"
+                        "x; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">    std::string storagePath = &quot;./encrypted_videos&quot;;</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">    EncryptionModule encryptionModule;</p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">    // Create storage directory if it doesn't exist</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">    std::system((&quot;mkdir -p &quot; + storagePath).c_str());</p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
+"<p style=\" margin-top:0px; mar"
+                        "gin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">    // Initialize Camera</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">    Camera camera(storagePath, encryptionModule);</p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">    // Simulate a video file path</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">    std::string videoFilePath = &quot;./sample_video.mp4&quot;;</p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px"
+                        "; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">    // Encrypt and store the video</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">    camera.encryptAndStoreVideo(videoFilePath);</p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">    return 0;</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">}</p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", 0));
         tabProgramOutput->setTabText(tabProgramOutput->indexOf(tabDebug), QApplication::translate("MainWindow", "Issue Report", 0));
         QTableWidgetItem *___qtablewidgetitem = tableWidgetReport->horizontalHeaderItem(0);
         ___qtablewidgetitem->setText(QApplication::translate("MainWindow", "Locate", 0));

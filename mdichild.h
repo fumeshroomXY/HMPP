@@ -123,7 +123,7 @@ public:
     QList<ClassMemberUnspecifiedIssue> getUnspecifiedTypeIssueList();
 
     //更新头文件的issue信息
-    void updateIssueInfoInHeaderFile();
+    void updateIssueInfoInSourceFile();
 
     //更新头文件的类信息
     void updateObjectInfoInHeaderFile();
@@ -141,6 +141,8 @@ protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;   //关闭事件
 
     void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;   //用于检测快捷按键
+
+    void contextMenuEvent(QContextMenuEvent* event) Q_DECL_OVERRIDE;
 
 
     //void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
@@ -174,6 +176,8 @@ private slots:
     void clearPreview();
 
     void highlightMatch();
+
+    void askChatGPTTriggered();
 
 
     //更新需求括号的匹配
@@ -308,6 +312,8 @@ signals:
 
     //通知主窗口更新自然语言规格位置
     void updateInformalSpecPos(QString filePath, QList<InformalSpecInfo>& informalSpecInfos);
+
+    void startChatGPTDialog(QString);
 
 };
 

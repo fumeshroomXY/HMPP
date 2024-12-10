@@ -7,6 +7,7 @@
 #include <QInputDialog>
 #include <QFont>
 #include <QMessageBox>
+#include <QLabel>
 
 RequirementTreeView::RequirementTreeView(QWidget *parent) : QTreeView(parent)
 {
@@ -357,4 +358,71 @@ void BuildProFromSpecDialog::onOkClicked() {
 // Cancel button clicked
 void BuildProFromSpecDialog::onCancelClicked() {
     reject();
+}
+
+SameNameMethodHandleDialog::SameNameMethodHandleDialog(const QStringList& oldMethodList,
+                                                       const QStringList& newMethodList,
+                                                       QWidget* parent)
+    : QDialog(parent) {
+    setWindowTitle("Handle the methods with the same name");
+
+    // Create UI components
+    QLabel* lblOriginalMethods = new QLabel("The original methods are as follows:", this);
+    listA = new QListWidget(this);
+    QLabel* lblNewMethod = new QLabel("The new method is:", this);
+    listB = new QListWidget(this);
+
+    QPushButton* btnReplace = new QPushButton("Replace", this);
+    QPushButton* btnAddNew = new QPushButton("Add New", this);
+    QPushButton* btnCancel = new QPushButton("Cancel", this);
+
+    // Layout setup
+    QVBoxLayout* mainLayout = new QVBoxLayout(this);
+    QHBoxLayout* buttonLayout = new QHBoxLayout;
+
+    // Add components to layout
+    mainLayout->addWidget(lblOriginalMethods);
+    mainLayout->addWidget(listA);
+    mainLayout->addWidget(lblNewMethod);
+    mainLayout->addWidget(listB);
+
+    buttonLayout->addWidget(btnReplace);
+    buttonLayout->addWidget(btnAddNew);
+    buttonLayout->addWidget(btnCancel);
+
+    mainLayout->addLayout(buttonLayout);
+
+    // Populate lists with provided data
+    listA->addItems(oldMethodList);
+    listB->addItems(newMethodList);
+
+    // Connect signals to slots
+    connect(btnReplace, &QPushButton::clicked, this, &SameNameMethodHandleDialog::onReplaceClicked);
+    connect(btnAddNew, &QPushButton::clicked, this, &SameNameMethodHandleDialog::onAddNewClicked);
+    connect(btnCancel, &QPushButton::clicked, this, &SameNameMethodHandleDialog::onCancelClicked);
+}
+
+SameNameMethodHandleDialog::DialogResult SameNameMethodHandleDialog::getResult() const {
+    return resultData;
+}
+
+void SameNameMethodHandleDialog::onReplaceClicked() {
+    saveResult("Replace");
+    accept();
+}
+
+void SameNameMethodHandleDialog::onAddNewClicked() {
+    saveResult("Add New");
+    accept();
+}
+
+void SameNameMethodHandleDialog::onCancelClicked() {
+    saveResult("Cancel");
+    reject();
+}
+
+void SameNameMethodHandleDialog::saveResult(const QString& buttonClicked) {
+    resultData.buttonClicked = buttonClicked;
+    resultData.indexA = listA->currentRow() < 0 ? 0 : listA->currentRow();
+    resultData.indexB = listB->currentRow() < 0 ? 0 : listB->currentRow();
 }

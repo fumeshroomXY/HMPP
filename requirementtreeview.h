@@ -9,6 +9,8 @@
 #include <QPushButton>
 #include <QHash>
 #include <QStringList>
+#include <QListWidget>
+
 
 #include <mdichild.h>
 
@@ -86,6 +88,37 @@ private slots:
     void onOkClicked();
     void onCancelClicked();
 };
+
+class SameNameMethodHandleDialog : public QDialog {
+    Q_OBJECT
+
+public:
+    struct DialogResult {
+        QString buttonClicked;
+        int indexA;
+        int indexB;
+    };
+
+    explicit SameNameMethodHandleDialog(const QStringList& oldMethodList,
+                                        const QStringList& newMethodList,
+                                        QWidget* parent = nullptr);
+
+    DialogResult getResult() const;
+
+private slots:
+    void onReplaceClicked();
+    void onAddNewClicked();
+    void onCancelClicked();
+
+private:
+    void saveResult(const QString& buttonClicked);
+
+    QListWidget* listA;
+    QListWidget* listB;
+    DialogResult resultData{"Cancel", 0, 0}; // Initialize indices to -1 (no selection)
+};
+
+
 
 
 #endif // TREEVIEW_H

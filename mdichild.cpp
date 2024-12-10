@@ -115,7 +115,7 @@ bool MdiChild::save()
         bool flag = saveAs();
         if(flag) {
             updateObjectInfoInSourceFile();
-            //updateObjectInfoInHeaderFile();
+            updateObjectInfoInHeaderFile();
         }
         qDebug() << "-4";
         return flag;
@@ -123,7 +123,7 @@ bool MdiChild::save()
         bool flag = saveFile(curFile);
         if(flag) {
             updateObjectInfoInSourceFile();
-            //updateObjectInfoInHeaderFile();
+            updateObjectInfoInHeaderFile();
         }
         qDebug() << "-4";
         return flag;
@@ -208,6 +208,24 @@ void MdiChild::keyPressEvent(QKeyEvent *event)
     }
 }
 
+void MdiChild::contextMenuEvent(QContextMenuEvent *event)
+{
+    // Call the base class method to get the default context menu
+    QMenu* menu = createStandardContextMenu();
+
+    // Add custom action to the menu
+    QAction* customAction = menu->addAction("Ask ChatGPT about this...");
+
+    // Connect the action to a custom slot
+    connect(customAction, &QAction::triggered, this, &MdiChild::askChatGPTTriggered);
+
+    // Show the menu at the cursor's position
+    menu->exec(event->globalPos());
+
+    // Don't forget to delete the menu after it's used
+    delete menu;
+}
+
 void MdiChild::documentWasModified()
 {
     qDebug() << "-8";
@@ -274,7 +292,7 @@ void MdiChild::setMainWindowPtr(MainWindow *value)
 
 QList<ClassMemberUnspecifiedIssue> MdiChild::getUnspecifiedTypeIssueList()
 {
-    updateIssueInfoInHeaderFile();
+    updateIssueInfoInSourceFile();
     return unspecifiedTypeIssueList;
 }
 
@@ -855,6 +873,19 @@ void MdiChild::highlightMatch()
     qDebug() << "-20";
 }
 
+void MdiChild::askChatGPTTriggered()
+{
+    // Get the selected text from the QTextEdit
+    QString selectedText = textCursor().selectedText();
+
+    // If there is selected text, return it (e.g., show in a message box)
+    if (!selectedText.isEmpty()) {
+        emit startChatGPTDialog(selectedText);
+    } else {
+        QMessageBox::information(this, "No Selection", "No text selected.");
+    }
+}
+
 void MdiChild::updateMatch()
 {
     qDebug() << "-21";
@@ -1206,13 +1237,13 @@ void MdiChild::updateTopParenthesis()  //更新顶层括号
     }
 }
 
-void MdiChild::updateIssueInfoInHeaderFile()
+void MdiChild::updateIssueInfoInSourceFile()
 {
-    qDebug() << "MdiChild::updateIssueInfoInHeaderFile";
+    qDebug() << "MdiChild::updateIssueInfoInSourceFile";
     qDebug() << "-71";
 
     qDebug() << "curFile: " << curFile;
-    if(!curFile.endsWith(".h")) {
+    if(!curFile.endsWith(".cpp")) {
         qDebug() << "-71";
         return;   //如果不是.cpp文件，则直接跳过
     }
@@ -1265,6 +1296,8 @@ void MdiChild::updateObjectInfoInHeaderFile()
     updateTopParenthesis();
     syntaxIssueList.clear();
 
+    /*
+
     QString text = document()->toPlainText(); // 获取文档中的所有文本
 
     QString classBodyStart = QString("\\bclass[^\\S\n]+%1[^\\{]*(\\{)").arg(className);
@@ -1309,15 +1342,21 @@ void MdiChild::updateObjectInfoInHeaderFile()
     qDebug() << "startPos" << startPos;
     qDebug() << "endPos" << endPos;
 
+    */
+
     MainWindow* mw_ptr = getMainWindowPtr();
     if(mw_ptr == nullptr){
         qDebug() << "Parent MainWindow does not exist.";
         return;
     }
+
+
     qDebug() << "static_cast";
 
     qDebug() << "getProClassInfo.";
     ClassInfo info = mw_ptr->getProClassInfo(className);
+
+    /*
     // 遍历正则表达式列表，并检测文本是否符合
     QRegExp reg;
 
@@ -1371,8 +1410,9 @@ void MdiChild::updateObjectInfoInHeaderFile()
             m.paramStr = paramStr;
         }
     }
+    */
     //qDebug() << "20241107";
-    //mw_ptr->setProClassInfo(className, info);
+    mw_ptr->setProClassInfo(className, info);
     emit showHeaderFileIssue();
 }
 
@@ -1393,6 +1433,16 @@ void MdiChild::updateObjectInfoInSourceFile()
     //找到全局作用域
     updateTopParenthesis();
     syntaxIssueList.clear();
+    classInfoHash->clear();
+    QString fileName = userFriendlyCurrentFile();
+    QString fileClassName;
+    int dotIndex = fileName.lastIndexOf('.');
+    if(dotIndex <= 0) {
+        qDebug() << "Cannot resolve the file className";
+    }else{
+        fileClassName = fileName.left(dotIndex);
+    }
+    classInfoHash->insert(fileClassName, ClassInfo(fileClassName));
 
     QString text = document()->toPlainText(); // 获取文档中的所有文本
     // 遍历正则表达式列表，并检测文本是否符合
@@ -1447,6 +1497,7 @@ void MdiChild::updateObjectInfoInSourceFile()
                         QString paramStr = completeMethodParamType(regCtr.cap(3), pos);
                         QStringList params = onlyGetMethodParamType(paramStr);
                         qDebug() << "params: " << params;
+                        qDebug() << "paramStr: " << paramStr;
                         Method classCtr(regCtr.cap(1), regCtr.cap(1), regCtr.cap(1), params, paramStr, CLASS);
                         ClassInfo& i = (*classInfoHash)[reg.cap(1)];    //用引用修改值
                         if(!i.methods->contains(classCtr)){
@@ -1494,12 +1545,24 @@ void MdiChild::updateObjectInfoInSourceFile()
                 qDebug()  << "classVar: " ;
                 qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;
                 qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
-                if(classes.contains(reg.cap(1))){
-                    QString className = classes.value(reg.cap(1));
+                if(classes.contains(reg.cap(1)) || reg.cap(1) == "this"){
+                    QString className;
+                    if(reg.cap(1) == "this"){
+                        className = fileClassName;
+                        if(fileClassName == "main"){
+                            qDebug() << "Cannot use this pointer in main.cpp";
+                            continue;
+                        }
+                    }else{
+                        className = classes.value(reg.cap(1));
+                    }
                     QString expression = reg.cap(5).trimmed();
                     int pos = reg.pos(5);
                     QString varType = getExpressionType(expression, pos);
                     Variable var(reg.cap(3), className, varType, CLASS);  //type未指定, className = 实例的类变量名
+                    if(!classInfoHash->contains(className)){
+                        classInfoHash->insert(className, ClassInfo(className));
+                    }
                     ClassInfo info = classInfoHash->value(className);
                     //怎么保证不重复插入
                     bool flag = false;  //用于标记是否存在同名的类变量
@@ -1532,15 +1595,26 @@ void MdiChild::updateObjectInfoInSourceFile()
                 qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;
                 qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
 
-                if(classes.contains(reg.cap(1))){
-                    QString className = classes.value(reg.cap(1));
+                if(classes.contains(reg.cap(1)) || reg.cap(1) == "this"){
+                    QString className;
+                    if(reg.cap(1) == "this"){
+                        className = fileClassName;
+                        if(fileClassName == "main"){
+                            qDebug() << "Cannot use this pointer in main.cpp";
+                            continue;
+                        }
+                    }else{
+                        className = classes.value(reg.cap(1));
+                    }
+
                     QString varName = reg.cap(1);
                     QString methodName = reg.cap(3);
                     QString actual_params = reg.cap(4);
 
                     QString paramStr = completeMethodParamType(actual_params, pos);
+                    qDebug() << "classMethod:paramStr: " << paramStr;
                     QStringList params = onlyGetMethodParamType(paramStr);
-                    qDebug() << "params: " << params;
+                    qDebug() << "classMethod:params: " << params;
                     QString returnType = findMethodReturnType(methodName, className, params, CLASS);
                     Method classMethod(methodName, className, returnType, params, paramStr, CLASS);
 
@@ -1704,6 +1778,10 @@ void MdiChild::updateObjectInfoInSourceFile()
             if(classInfoHash->contains(className)){
                 ClassInfo info = classInfoHash->value(className);
                 if(!info.methods->contains(definedMethods->at(i))) info.methods->append(definedMethods->at(i));
+            }else{
+                ClassInfo info(className);
+                info.methods->append(definedMethods->at(i));
+                classInfoHash->insert(className, info);
             }
         }
     }
@@ -1857,10 +1935,8 @@ QList<QString> MdiChild::onlyGetMethodParamType(const QString& str)
     for (int i = 0; i < paramList.size(); ++i) {
         //1变量类型，2*&，3变量名
         paramList[i] = paramList[i].trimmed();
-        if(varPattern.exactMatch(paramList[i])){
-            QString type = varPattern.cap(1) + varPattern.cap(2);
-            res.append(type);
-        }
+        QString type = paramList[i].split(' ').first();
+        res.append(type);
     }
     qDebug() << res;
     return res;
@@ -1892,20 +1968,12 @@ QString MdiChild::completeMethodParamType(const QString& str, const int& pos)
         QString expType = getExpressionType(param, pos);
         QString varWithType;
 
-        if(expType == "char*"){
-            varWithType = "char* str";
-        }else if(expType == "int"){
-            varWithType = "int integer";
-        }else if(expType == "bool"){
-            varWithType = "bool flag";
-        }else if(expType == "char"){
-            varWithType = "char c";
-        }else if(expType == "double"){
-            varWithType = "double decimal";
-        }else if(expType == ""){
-            varWithType = "void param";
+        if(expType == ""){
+            varWithType = "void " + param;
+        }else if(expType == UNSPECIFIED){
+            varWithType = UNSPECIFIED + " " + param;
         }else{
-            varWithType = expType + " param";
+            varWithType = expType + " " + param;
         }
         result += varWithType;
     }
@@ -2050,24 +2118,26 @@ QString MdiChild::findMethodReturnType(const QString& methodName, const QString&
             type = m.returnType;
         }
     }
-    if(type.isEmpty()) type = UNSPECIFIED;
+    if(type.isEmpty()) type = "void";
     return type;
 }
 
 QString MdiChild::findVarType(const QString& varName, const QString& className, const int& pos)
 {
     QString res = "";
-
+    qDebug() << "MdiChild::findVarType";
     if(className.isEmpty()){
         //如果className为空，表明是一个普通变量要在上下文中找到其定义时的类型
         QMultiHash<Variable, int>::const_iterator it;
         for (it = tmpVars.constBegin(); it != tmpVars.constEnd(); ++it) {
             qDebug() << "type:" << it.key().type << " name:" << it.key().name << " pos:" << it.value();
+            qDebug() << "target pos" << pos;
             if(it.value() >= pos){   //如果定义位置大于要确定的变量的位置，直接跳过
                 continue;
             }else{
                 if(it.key().name == varName){
                     if(isInSameScope(it.value(), pos)){
+                        qDebug() << "inSameScope";
                         res = it.key().type;
                     }
                 }
@@ -2094,6 +2164,7 @@ QString MdiChild::findVarType(const QString& varName, const QString& className, 
         }
     }
     if(res.isEmpty()) res = UNSPECIFIED;  //无论如何，一个变量的类型不能为空
+    qDebug() << "res: " << res;
     return res;
 }
 
@@ -2113,7 +2184,7 @@ bool MdiChild::isInSameScope(const int& defPos, const int& accessPos)
             resEnd = endPos;
         }
     }
-    if(!includePtr){  //局部变量
+    if(includePtr != nullptr){  //局部变量
         if(resStart <= accessPos && accessPos <= resEnd){
             return true;   //定义位置的括号包含访问位置，返回true
         }else{

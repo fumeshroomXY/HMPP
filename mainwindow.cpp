@@ -7,6 +7,7 @@
 #include <QStringList>
 #include <QStandardItemModel>
 #include <algorithm>
+#include <utility>
 
 #include "mainwindow.h"
 #include "mdichild.h"
@@ -101,6 +102,8 @@ MainWindow::MainWindow()
     //openFile(QString("./document1.txt"));
 
     connect(ui->newProjectAct, &QAction::triggered, this, &MainWindow::getNewProjectInfo);  //todo：实现菜单栏创建项目动作
+
+    connect(ui->copyCodeButton, &QPushButton::clicked, this, &MainWindow::on_copyCodeButton_clicked);
 
     errordlg = new QErrorMessage(this);
 
@@ -243,9 +246,9 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
     //includedClass: included files里面非用户定义的类； 用户在本项目中定义的类
     //proClassInfoHash: 用户在本项目中定义的类
     qDebug() << "MainWindow::updateProjectClassInfo";
-    QStringList newClassNames;
+    QStringList newClassNames = QStringList();;
     if(updateClassInfoHash.isEmpty()){
-        newClassNames = QStringList();
+        qDebug() << "updateClassInfoHash is empty!";
     }else{
         newClassNames = updateClassInfoHash.uniqueKeys();
     }
@@ -253,15 +256,20 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
     QStringList proClassNames = (proClassInfoHash.isEmpty()) ? QStringList() : proClassInfoHash.uniqueKeys();
 
     QStringList updateClassNames;   //需要更新类信息的类名
+    QStringList removeList;
     for(QString& name: newClassNames){
         name = name.trimmed();
         qDebug() << "newClassNames: " << name;
         if(includedClass.contains(name) || name.isEmpty()){
-            newClassNames.removeOne(name);
+            removeList.append(name);
         }
         if(proClassNames.contains(name) && !name.isEmpty()){
             updateClassNames.append(name);
         }
+    }
+
+    for(QString name: removeList){
+        newClassNames.removeOne(name);
     }
 
     //类名分为：
@@ -306,29 +314,16 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
     //从对应文件取出preClassInfoHash
     //从proClassInfoHash删除原来的preClassInfoHash，加入新的updateClassInfoHash
     //再根据proClassInfoHash的信息重写头文件
+    qDebug() << "fileClassInfoHash: " << fileClassInfoHash.isEmpty();
     QHash<QString, ClassInfo> preClassInfoHash = fileClassInfoHash.contains(filePath) ?
                fileClassInfoHash[filePath] : QHash<QString, ClassInfo>();
-
+    qDebug() << "preClassInfoHash: " << preClassInfoHash.isEmpty();
 
     //2. 所有用户定义的类都要更改头文件，根据原来的类信息，一一比对
     for(auto className : updateClassNames){
         qDebug() << "updateClassNames: " << className;
-        ClassInfo& preInfo = preClassInfoHash[className];
         ClassInfo& newInfo = updateClassInfoHash[className];
         ClassInfo& proClassInfo = proClassInfoHash[className];
-
-        qDebug() << "**************************************";
-        qDebug() << "preInfo:";
-        for(int j = 0; j < preInfo.vars->size(); j++){
-            qDebug() << preInfo.vars->at(j).type << " " <<
-                        preInfo.vars->at(j).className << "::" <<preInfo.vars->at(j).name;
-        }
-
-        for(int j = 0; j < preInfo.methods->size(); j++){
-            qDebug() << preInfo.methods->at(j).returnType << " "
-                     << preInfo.methods->at(j).className << "::" <<preInfo.methods->at(j).name
-                     << "(" << preInfo.methods->at(j).paramStr << ")";
-        }
 
         qDebug() << "**************************************";
         qDebug() << "newInfo:";
@@ -358,70 +353,119 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
         }
 
 
-
-
-
         //这里有几种情况
-        //1. 在原来同一个函数的基础上做了改动
+        //1. 在原来同一个函数的基础上做了改动，比如参数或返回类型改变
         //2. 删除了原来的同名函数
-        //3. 重载了原来的同名函数
-        //4. 新增了函数
+        //4. 新增了函数（包括同名函数）
 
-        ClassInfo delInfo = ClassInfo();
-        delInfo.name = preInfo.name;
 
-        for(int i = 0; i < preInfo.methods->size(); i++){
-            Method m = preInfo.methods->at(i);
-            if(!newInfo.methods->contains(m)){   //如果旧信息中没有新信息同样的函数，说明需要删除
-                for(int j = 0; j < newInfo.methods->size(); j++){
-                    if(m >= newInfo.methods->at(j)){  //将旧信息中类型更全的函数更新到新信息中
-                        (*newInfo.methods)[j] = m;
-                    }
-                }
-                delInfo.methods->append(m);
-                proClassInfo.methods->removeOne(m);
-            }
-        }
-
-        for(int i = 0; i < preInfo.vars->size(); i++){
-            Variable v = preInfo.vars->at(i);
-            if(!newInfo.vars->contains(v)){
-                for(int j = 0; j < newInfo.vars->size(); j++){
-                    if(v >= newInfo.vars->at(j)){  //将旧信息中类型更全的变量更新到新信息中
-                        (*newInfo.vars)[j] = v;
-                    }
-                }
-                delInfo.vars->append(v);
-                proClassInfo.vars->removeOne(v);
-            }
-        }
+        QList<std::pair<QString, QString>> replaceInfo;
 
         ClassInfo addInfo = ClassInfo();
         addInfo.name = newInfo.name;
         for(int i = 0; i < newInfo.methods->size(); i++){
-            Method m = newInfo.methods->at(i);
-            if(!preInfo.methods->contains(m)){   //如果旧信息中没有新信息同样的函数，说明需要添加
-                addInfo.methods->append(m);
+            Method& m = (*newInfo.methods)[i];
+            qDebug() << "newInfo: parameters: " << m.parameters;
+            qDebug() << "newInfo: paramStr: " << m.paramStr;
+            QList<Method> oldMethodList = QList<Method>();
+            QList<Method> newMethodList = QList<Method>();
+            if(!proClassInfo.methods->contains(m)){   //如果旧信息中没有新信息同样的函数，说明需要添加
+                for(int j = 0; j < proClassInfo.methods->size(); j++){
+                    if(m.name == proClassInfo.methods->at(j).name) {
+                        if(m >= proClassInfo.methods->at(j)){
+                            (*proClassInfo.methods)[j] = m;
+                            qDebug() << "newInfo > proClassInfo";
+                            qDebug() << "proInfo: " << proClassInfo.methods->at(j).parameters;
+                            qDebug() << "newInfo: " << m.parameters;
+                            break;
+                        }else if (proClassInfo.methods->at(j) >= m){  //将新信息中类型更全的函数更新到旧信息中
+                            m = proClassInfo.methods->at(j);
+                            qDebug() << "newInfo < proClassInfo";
+                            qDebug() << "proInfo: " << proClassInfo.methods->at(j).parameters;
+                            qDebug() << "newInfo: " << m.parameters;
+                            break;
+                        }else{
+                            if(!oldMethodList.contains(proClassInfo.methods->at(j))){
+                                oldMethodList.append(proClassInfo.methods->at(j));
+                            }
+                            if(!newMethodList.contains(m)){
+                                newMethodList.append(m);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(!oldMethodList.isEmpty()){
+                QStringList oldMethodStringList, newMethodStringList;
+                for(auto m : oldMethodList){
+                    QString str = m.returnType + " " + m.className + "::" + m.name
+                            + "(" + m.paramStr + ")";
+                    oldMethodStringList.append(str);
+                }
+                for(auto m : newMethodList){
+                    QString str = m.returnType + " " + m.className + "::" + m.name
+                            + "(" + m.paramStr + ")";
+                    newMethodStringList.append(str);
+                }
+
+                SameNameMethodHandleDialog dialog(oldMethodStringList, newMethodStringList, this);
+                if (dialog.exec() == QDialog::Accepted) {
+                    SameNameMethodHandleDialog::DialogResult result = dialog.getResult();
+                    if(result.buttonClicked == "Replace"){
+                        qDebug() << "Selected index in oldMethodList (A):" << result.indexA;
+                        qDebug() << "Selected index in newMethodList (B):" << result.indexB;
+                        Method oldMethod = oldMethodList.at(result.indexA);
+                        Method newMethod = newMethodList.at(result.indexB);
+                        if(!proClassInfo.methods->contains(newMethod)
+                                &&proClassInfo.methods->contains(oldMethod)){
+                            proClassInfo.methods->removeOne(oldMethod);
+                            proClassInfo.methods->append(newMethod);
+                            replaceInfo.append(std::make_pair(oldMethodStringList.at(result.indexA),
+                                                              newMethodStringList.at(result.indexB)));
+                        }
+                    }else if (result.buttonClicked == "Add New"){
+                        qDebug() << "Selected index in oldMethodList (A):" << result.indexA;
+                        qDebug() << "Selected index in newMethodList (B):" << result.indexB;
+                        Method newMethod = newMethodList.at(result.indexB);
+                        if(!proClassInfo.methods->contains(newMethod)){
+                            proClassInfo.methods->append(newMethod);
+                            addInfo.methods->append(newMethod);
+                        }
+                    }else if (result.buttonClicked == "Cancel"){
+                        // do nothing
+                    }
+                }
+            }
+
+            if(!proClassInfo.methods->contains(m)){
                 proClassInfo.methods->append(m);
+                addInfo.methods->append(m);
             }
         }
 
         for(int i = 0; i < newInfo.vars->size(); i++){
-            Variable v = newInfo.vars->at(i);
-            if(!preInfo.vars->contains(v)){
-                addInfo.vars->append(v);
+            Variable& v = (*newInfo.vars)[i];
+            if(!proClassInfo.vars->contains(v)){   //如果旧信息中没有新信息同样的函数，说明需要添加
+                for(int j = 0; j < proClassInfo.vars->size(); j++){
+                    if(v.name == proClassInfo.vars->at(j).name) {
+                        if(v >= proClassInfo.vars->at(j)){
+                            (*proClassInfo.vars)[j] = v;
+                            break;
+                        }else if (proClassInfo.vars->at(j) >= v){  //将新信息中类型更全的函数更新到旧信息中
+                            v = proClassInfo.vars->at(j);
+                            break;
+                        }
+                    }
+                }
+            }
+            if(!proClassInfo.vars->contains(v)){
                 proClassInfo.vars->append(v);
+                addInfo.vars->append(v);
             }
         }
 
         qDebug() << "**************************************";
-        qDebug() << "delInfo: Methods:";
-        for(int j = 0; j < delInfo.methods->size(); j++){
-            qDebug() << delInfo.methods->at(j).returnType << " "
-                     << delInfo.methods->at(j).className << "::" << delInfo.methods->at(j).name
-                     << "(" << delInfo.methods->at(j).paramStr << ")";
-        }
-
         qDebug() << "addInfo: Methods:";
         for(int j = 0; j < addInfo.methods->size(); j++){
             qDebug() << addInfo.methods->at(j).returnType << " "
@@ -429,15 +473,29 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
                      << "(" << addInfo.methods->at(j).paramStr << ")";
         }
 
+        qDebug() << "proClassInfo:";
+        for(int j = 0; j < proClassInfo.vars->size(); j++){
+            qDebug() << proClassInfo.vars->at(j).type << " " <<
+                        proClassInfo.vars->at(j).className << "::" <<proClassInfo.vars->at(j).name;
+        }
+
+        qDebug() << "Methods:";
+        for(int j = 0; j < proClassInfo.methods->size(); j++){
+            qDebug() << proClassInfo.methods->at(j).returnType << " "
+                     << proClassInfo.methods->at(j).className << "::" <<proClassInfo.methods->at(j).name
+                     << "(" << proClassInfo.methods->at(j).paramStr << ")";
+        }
+
         //由于情况复杂，这里直接粗暴的重写对应文件
         //如果遇到那种改动很小的情况，这种粗暴的方式不一定很高效
         clearAndModifyClassHeaderFile(proClassInfo, className);
 
-        delAndAddInfoInClassSourceFile(delInfo, addInfo, className);
+        ReplaceAndAddInfoInClassSourceFile(replaceInfo, addInfo, className);
 
     }
 
     fileClassInfoHash[filePath] = updateClassInfoHash;
+    qDebug() << "fileClassInfoHash: " << fileClassInfoHash.isEmpty();
     showClassUnspecifiedTypeIssue();
 
     //3. 消失的类要删除头文件，更改项目文件
@@ -445,11 +503,11 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
     qDebug() << "MainWindow::updateProjectClassInfo";
 }
 
-bool MainWindow::delAndAddInfoInClassSourceFile(const ClassInfo& delInfo, const ClassInfo& addInfo, QString className)
+bool MainWindow::ReplaceAndAddInfoInClassSourceFile(const QList<std::pair<QString, QString>>& replaceInfo, const ClassInfo& addInfo, QString className)
 {
-    qDebug() << "delAndAddInfoInClassSourceFile";
-    if(delInfo.name.isEmpty() || addInfo.name.isEmpty()) {
-        qDebug() << "info.name is empty.";
+    qDebug() << "ReplaceAndAddInfoInClassSourceFile";
+    if(replaceInfo.isEmpty() && addInfo.name.isEmpty()) {
+        qDebug() << "info is empty.";
         return false;
     }
     if(currentPro == nullptr) {
@@ -459,75 +517,71 @@ bool MainWindow::delAndAddInfoInClassSourceFile(const ClassInfo& delInfo, const 
     //为指定的类的头文件中加入类的成员信息
     QString classFilePath = currentPro->projectPath + "/" + srcDir + "/" + className + ".cpp";
     QFile file(classFilePath);
-    if(!QFile::exists(classFilePath) || !file.open(QIODevice::Append | QIODevice::Text)){
+
+    if(!QFile::exists(classFilePath) || !file.open(QIODevice::ReadOnly | QIODevice::Text)){
+        qDebug() << file.errorString();
+        return false;
+    }
+
+    QStringList lines;
+    QTextStream in(&file);
+
+    // Read the file line by line
+    while (!in.atEnd()) {
+        lines.append(in.readLine());
+    }
+
+    file.close();
+
+    // Perform replacements
+    for (QString& line : lines) {
+        for (const auto& pair : replaceInfo) {
+            if (line.contains(pair.first)) {
+                line.replace(pair.first, pair.second);
+            }
+        }
+    }
+
+    // Write the modified content back to the file
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qDebug() << file.errorString();;
+        return false;
+    }
+
+    QTextStream out(&file);
+    for (const QString& line : lines) {
+        out << line << "\n";
+    }
+
+    file.close();
+
+
+    // 添加新信息
+    if(!QFile::exists(classFilePath) || !file.open(QIODevice::Text | QIODevice::ReadWrite)){
         qDebug() << file.errorString();
         return false;
     }
 
     QTextStream stream(&file);
-    QString content = stream.readAll();
+    QString fileContent = stream.readAll(); // Read the entire file content
 
-    // 这里应该处理类A的成员函数被其他对象调用时，调用处参数改变的情况：
-    // 1. 成员函数的参数或返回值改变，源文件中应该更改对应参数
-    // 2. 成员函数不再被调用，源文件中成员函数应该被删除
-    // 此处暂时未考虑同名函数，不同参数的问题
-    // delInfo 包括需要更改的成员函数的信息
-    /*
-    QRegExp reg;
-    for(int i = 0; i < delInfo.vars->size(); ++i){
-        const Variable& v = delInfo.vars->at(i);
-        qDebug() << "delInfo.vars: " << v.name;
-        if(v.type.contains("[")){
-            QString type = v.type.left(v.type.indexOf("["));
-            reg = QRegExp(QString("%1[^\\S\n]+%2[^\\S\n]*\\[[\\d\\s]+\\][^\\S\n]*;").arg(type).arg(v.name));
-        }else{
-            reg = QRegExp(QString("%1[^\\S\n]+%2[^\\S\n]*;").arg(v.type).arg(v.name));
-        }
-        int pos = 0;
-        if ((pos = reg.indexIn(content, pos)) != -1) {
-            // 找到了匹配的内容
-            qDebug()  << "classVarInHeader: " ;
-            qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;  //type需要选择是否加上&或*，cap(2)
-
-            content.replace(pos, reg.cap(0).length(), "");
-        }else{
-            qDebug() << "Cannot find : " << v.className << "::" << v.type << " " << v.name;
-        }
-    }
-
-    for(int i = 0; i < delInfo.methods->size(); ++i){
-        const Method& m = delInfo.methods->at(i);
-        qDebug() << "delInfo.methods: " << m.name;
-        QString paramReg;
-        for(int j = 0; j < m.parameters.size(); j++){
-            if(j > 0){
-                paramReg += "[^\\S\n]*,[^\\S\n]*";
-            }
-            paramReg += QString("%1[^\\S\n]+[A-Za-z_][A-Za-z0-9_]*").arg(m.parameters[j]);
-        }
-
-        reg = QRegExp(QString("%1[^\\S\n]+%2\\(%3\\);").arg(m.returnType).arg(m.name).arg(paramReg));
-        int pos = 0;
-        if ((pos = reg.indexIn(content, pos)) != -1) {
-            // 找到了匹配的内容
-            qDebug()  << "classMethodInHeader: " ;
-            qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;
-
-            content.replace(pos, reg.cap(0).length(), "");
-        }else{
-            qDebug() << "Cannot find : " << m.className << "::" << m.returnType << " " << m.name
-                     << " " << "(" << m.paramStr << ")";
-        }
-    }
-    */
-
+    stream.seek(file.size());
     stream << "\n\n";
 
     for(int i = 0; i < addInfo.methods->size(); ++i){
         const Method& method = addInfo.methods->at(i);
-        stream << QString("%1 %2::%3(%4){").arg(method.returnType, method.className, method.name, method.paramStr);
-        stream << QString("\n" + RequireNoteStartStr + "\t%1::%2\n" + RequireNoteEndStr + "\n}").arg(method.className, method.name);
-        stream << "\n\n";
+        QString methodBody;
+        if(method.name == method.className){
+            methodBody = QString("%2::%3(%4){").arg(method.className, method.name, method.paramStr);
+        }else{
+            methodBody = QString("%1 %2::%3(%4){").arg(method.returnType, method.className, method.name, method.paramStr);
+        }
+        if(!fileContent.contains(methodBody)) {
+            stream << methodBody;
+            stream << QString("\n" + RequireNoteStartStr + "\t%1::%2\n" + RequireNoteEndStr + "\n}").arg(method.className, method.name);
+            stream << "\n\n";
+        }
+
     }
 
     /*
@@ -626,7 +680,7 @@ void MainWindow::showClassUnspecifiedTypeIssue()
     QList<ClassMemberUnspecifiedIssue> list;
     for(auto info : issueInfos){
         QString className = info.name;
-        QString filePath = currentPro->projectPath + "/" + headDir + "/" + className + ".h";
+        QString filePath = currentPro->projectPath + "/" + srcDir + "/" + className + ".cpp";
         if(!openFile(filePath)){
             qDebug() << "Cannot open file : " << filePath;
         }
@@ -792,8 +846,14 @@ bool MainWindow::clearAndModifyClassHeaderFile(const ClassInfo& info, QString cl
     //依次写入函数
     for(int i = 0; i < info.methods->size(); ++i){
         Method method = info.methods->at(i);
+
         stream << "\t";
-        stream << QString("%1 %2(%3);").arg(method.returnType, method.name, method.paramStr);
+        if(method.name == method.className) {
+            stream << QString("%2(%3);").arg(method.name, method.paramStr);
+        }else {
+            stream << QString("%1 %2(%3);").arg(method.returnType, method.name, method.paramStr);
+        }
+
         stream << "\n\n";
     }
     //为变量设置set和get函数
@@ -881,8 +941,14 @@ bool MainWindow::clearAndModifyClassSourceFile(const ClassInfo& info, QString cl
     //依次写入函数
     for(int i = 0; i < info.methods->size(); ++i){
         const Method& method = info.methods->at(i);
-        stream << QString("%1 %2::%3(%4){").arg(method.returnType, method.className, method.name, method.paramStr);
-        stream << QString("\n" + RequireNoteStartStr + "\t%1::%2\n" + RequireNoteEndStr + "\n}").arg(method.className, method.name);
+        if(method.name == method.className) {
+            stream << QString("%2::%3(%4){").arg(method.className, method.name, method.paramStr);
+            stream << QString("\n" + RequireNoteStartStr + "\t%1::%2\n" + RequireNoteEndStr + "\n}").arg(method.className, method.name);
+        }else {
+            stream << QString("%1 %2::%3(%4){").arg(method.returnType, method.className, method.name, method.paramStr);
+            stream << QString("\n" + RequireNoteStartStr + "\t%1::%2\n" + RequireNoteEndStr + "\n}").arg(method.className, method.name);
+        }
+
         stream << "\n\n";
     }
 
@@ -2191,6 +2257,9 @@ MdiChild *MainWindow::createMdiChild()
 
     //根据文件信息，更新自然语言规格位置
     connect(child, &MdiChild::updateInformalSpecPos, this, &MainWindow::updateInformalSpecs);
+
+    //调出ChatGPT对话
+    connect(child, &MdiChild::startChatGPTDialog, this, &MainWindow::startChatGPTDialog);
     qDebug() << "30";
     return child;
 }
@@ -2223,14 +2292,14 @@ void MainWindow::showClassUndefinedSyntaxIssue(const QList<ClassUndefinedSyntaxI
 
 void MainWindow::showClassEncapsulateIssueTab()
 {
-    const auto& list1 = proIssueManager->getUndefinedIssueList();
+    const auto& undefinedIssueList = proIssueManager->getUndefinedIssueList();
 
-    const auto& list2 = proIssueManager->getUnspecifiedIssueList();
+    const auto& unspecifiedIssueList = proIssueManager->getUnspecifiedIssueList();
 
-    qDebug() << "list1.size = " << list1.size();
-    qDebug() << "list2.size = " << list2.size();
+    qDebug() << "list1.size = " << undefinedIssueList.size();
+    qDebug() << "list2.size = " << unspecifiedIssueList.size();
 
-    if(list1.isEmpty() && list2.isEmpty()){
+    if(undefinedIssueList.isEmpty() && unspecifiedIssueList.isEmpty()){
         qDebug() << "list is empty!";
         return;
     }
@@ -2240,14 +2309,14 @@ void MainWindow::showClassEncapsulateIssueTab()
     // Set number of rows and columns
     int headerSize = 4;
     ui->tableIssueWidget->setColumnCount(headerSize);
-    ui->tableIssueWidget->setRowCount(list1.size() + list2.size());
+    ui->tableIssueWidget->setRowCount(undefinedIssueList.size() + unspecifiedIssueList.size());
 
     int i = 0;
-    for(i = 0; i < list1.size(); i++){
+    for(i = 0; i < undefinedIssueList.size(); i++){
         int currentRow = i;
         qDebug() << "QTableWidget: row : " << ui->tableIssueWidget->rowCount()
                  << " col: " << ui->tableIssueWidget->columnCount();
-        auto issue = *list1[i];
+        auto issue = *undefinedIssueList[i];
         qDebug() << "showClassEncapsulateIssueTab";
         qDebug() << "curIssue: " << issue.getName() << " " << issue.getDescription() << " " << issue.getFilePath();
         QIcon icon(QPixmap::fromImage(issue.getImage()));
@@ -2268,11 +2337,11 @@ void MainWindow::showClassEncapsulateIssueTab()
         ui->tableIssueWidget->setItem(currentRow, 3, item4);
     }
 
-    for(int j = 0; j < list2.size(); j++){
+    for(int j = 0; j < unspecifiedIssueList.size(); j++){
         int currentRow = j + i;
         qDebug() << "QTableWidget: row : " << ui->tableIssueWidget->rowCount()
                  << " col: " << ui->tableIssueWidget->columnCount();
-        auto issue = *list2[j];
+        auto issue = *unspecifiedIssueList[j];
         qDebug() << "showClassEncapsulateIssueTab";
         qDebug() << "curIssue: " << issue.getName() << " " << issue.getDescription() << " " << issue.getFilePath();
         QIcon icon(QPixmap::fromImage(issue.getImage()));
@@ -2941,4 +3010,42 @@ void MainWindow::synchronizeClassInfoFromProToFile(QString className)
         }
     }
     qDebug() << "MainWindow::synchronizeClassInfoFromProToFile";
+}
+
+void MainWindow::startChatGPTDialog(QString text)
+{
+    ui->copyCodeButton->setVisible(false);
+    ui->codeBrowser->setVisible(false);
+    ui->hmppIconButton->setVisible(false);
+    ui->label3->setVisible(false);
+    showHMPPView();
+    ui->label2->setText(text);
+    // Set up the timer to show widgets consecutively
+    QTimer* timer = new QTimer(this);
+
+    // Connect the timer timeout signal to show the next widget
+    QObject::connect(timer, &QTimer::timeout, this, [this, timer]() {
+        ui->hmppIconButton->setVisible(true);
+        ui->label3->setVisible(true);
+        ui->copyCodeButton->setVisible(true);
+        ui->codeBrowser->setVisible(true);
+        timer->stop();
+
+    });
+
+    // Start the timer to trigger every second
+    timer->start(2000);  // Update every 1000 milliseconds
+
+}
+
+void MainWindow::on_copyCodeButton_clicked()
+{
+    // Get the content of QTextBrowser
+    QString content = ui->codeBrowser->toPlainText();
+
+    // Get the system clipboard
+    QClipboard *clipboard = QApplication::clipboard();
+
+    // Copy the content to clipboard
+    clipboard->setText(content);
 }

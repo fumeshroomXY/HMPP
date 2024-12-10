@@ -101,7 +101,7 @@ public:
     void synchronizeClassInfoFromProToFile(QString className);
 
     //删除和新增头文件中对应的类成员
-    bool delAndAddInfoInClassSourceFile(const ClassInfo &delInfo, const ClassInfo &addInfo, QString className);
+    bool ReplaceAndAddInfoInClassSourceFile(const QList<std::pair<QString, QString>>& replaceInfo, const ClassInfo &addInfo, QString className);
 
     //清空类的源文件并重写类函数信息
     bool clearAndModifyClassSourceFile(const ClassInfo &info, QString className);
@@ -139,6 +139,11 @@ public slots:
 
     //根据规格书构建项目文件
     void buildFilesFromSpecification();
+
+    //调出ChatGPT对话
+    void startChatGPTDialog(QString text);
+
+
 
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;    //指定重载符
@@ -195,6 +200,8 @@ private slots:
 
     //插入新的类信息
     void insertProjectClassInfo(const QList<ClassInfo>& insertClassInfos);
+
+    void on_copyCodeButton_clicked();
 
     //测试用槽函数
     void testSlot();

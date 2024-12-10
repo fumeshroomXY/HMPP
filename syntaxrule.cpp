@@ -5,7 +5,7 @@
 
 
 const QStringList basicType = {"\\bint\\b", "\\bbool\\b", "\\bchar\\b",
-                                     "\\bfloat\\b", "\\bdouble\\b", "\\bvoid\\b"};
+                                     "\\bfloat\\b", "\\bdouble\\b", "\\bvoid\\b", "\\bstd::string\\b"};
 
 //定义普通类型的临时变量
 //连续定义的无法识别，比如int a = 0, b = 0;
