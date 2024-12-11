@@ -214,6 +214,9 @@ private:
 
     FaultPromptDialog* faultPrompt;
 
+    //保存当前文件的类名，比如Student.cpp，保存Student
+    QString fileClassName;
+
 
     //用于保存语法错误，这里主要是类未定义的，还有UNSPECIFIED的语法错误
     QList<ClassUndefinedSyntaxIssue> syntaxIssueList;
@@ -314,6 +317,7 @@ signals:
     void updateInformalSpecPos(QString filePath, QList<InformalSpecInfo>& informalSpecInfos);
 
     void startChatGPTDialog(QString);
+
 
 };
 
@@ -445,7 +449,7 @@ struct Method
     bool operator==(const Method& other) const {
         return (name == other.name && className == other.className
                 && returnType == other.returnType && scope == other.scope
-                && parameters == other.parameters);
+                && parameters == other.parameters && paramStr == other.paramStr);
     }
 
     //用于覆盖类型中包括UNSPECIFIED的情况

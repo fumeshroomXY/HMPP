@@ -43,9 +43,17 @@ extern const QRegExp classPattern;
 extern const QString classVarStr;
 extern const QRegExp classVarPattern;
 
+//定义类调用成员变量并赋值的规则
+extern const QString classVarAssignStr;
+extern const QRegExp classVarAssignPattern;
+
 //定义类调用成员函数的规则
 extern const QString classMethodStr;
 extern const QRegExp classMethodPattern;
+
+//定义类调用成员函数时，函数参数嵌套调用成员函数的规则
+extern const QString classMethodEmbededCallStr;
+extern const QRegExp classMethodEmbededCallPattern;
 
 //定义类的构造函数规则
 extern const QString classConstructStr1;   //比如 Student* stu("name", age)

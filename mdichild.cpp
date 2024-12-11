@@ -31,6 +31,8 @@ MdiChild::MdiChild(QWidget *parent): QTextEdit(parent)
     definedMethods = new QList<Method>();    //已经有函数体的函数表，比如类内函数或全局函数
     Methods = new QList<Method>();   //调用的函数表
 
+
+
     connect(document(), SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
     //connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(faultLinePaint()));
 
@@ -101,6 +103,15 @@ bool MdiChild::loadFile(const QString &fileName)
 
     connect(document(), &QTextDocument::contentsChanged,
             this, &MdiChild::documentWasModified);
+
+    QString shortFileName = userFriendlyCurrentFile();
+    int dotIndex = shortFileName.lastIndexOf('.');
+    if(dotIndex <= 0) {
+        qDebug() << "Cannot resolve the file className";
+        qDebug() << "fileName: " << shortFileName;
+    }else{
+        fileClassName = shortFileName.left(dotIndex);
+    }
     qDebug() << "-3";
     return true;
 }
@@ -1296,7 +1307,7 @@ void MdiChild::updateObjectInfoInHeaderFile()
     updateTopParenthesis();
     syntaxIssueList.clear();
 
-    /*
+
 
     QString text = document()->toPlainText(); // 获取文档中的所有文本
 
@@ -1339,10 +1350,11 @@ void MdiChild::updateObjectInfoInHeaderFile()
         return;
     }
 
+    startPos = text.indexOf("private:", startPos);
     qDebug() << "startPos" << startPos;
     qDebug() << "endPos" << endPos;
 
-    */
+
 
     MainWindow* mw_ptr = getMainWindowPtr();
     if(mw_ptr == nullptr){
@@ -1356,7 +1368,7 @@ void MdiChild::updateObjectInfoInHeaderFile()
     qDebug() << "getProClassInfo.";
     ClassInfo info = mw_ptr->getProClassInfo(className);
 
-    /*
+
     // 遍历正则表达式列表，并检测文本是否符合
     QRegExp reg;
 
@@ -1388,6 +1400,7 @@ void MdiChild::updateObjectInfoInHeaderFile()
     }
 
 
+    /*
     for(int i = 0; i < info.methods->size(); ++i){
         Method& m = (*info.methods)[i];
         if(m.returnType != UNSPECIFIED && !m.parameters.contains(UNSPECIFIED)) continue;
@@ -1411,6 +1424,7 @@ void MdiChild::updateObjectInfoInHeaderFile()
         }
     }
     */
+
     //qDebug() << "20241107";
     mw_ptr->setProClassInfo(className, info);
     emit showHeaderFileIssue();
@@ -1435,14 +1449,14 @@ void MdiChild::updateObjectInfoInSourceFile()
     syntaxIssueList.clear();
     classInfoHash->clear();
     QString fileName = userFriendlyCurrentFile();
-    QString fileClassName;
     int dotIndex = fileName.lastIndexOf('.');
     if(dotIndex <= 0) {
         qDebug() << "Cannot resolve the file className";
+        qDebug() << "fileName: " << fileName;
     }else{
         fileClassName = fileName.left(dotIndex);
     }
-    classInfoHash->insert(fileClassName, ClassInfo(fileClassName));
+    if(fileClassName != "main") classInfoHash->insert(fileClassName, ClassInfo(fileClassName));
 
     QString text = document()->toPlainText(); // 获取文档中的所有文本
     // 遍历正则表达式列表，并检测文本是否符合
@@ -1537,15 +1551,18 @@ void MdiChild::updateObjectInfoInSourceFile()
             }
         }
 
-        else if(reg == classVarPattern){
+        else if(reg == classVarAssignPattern){
             int pos = 0;
             while ((pos = reg.indexIn(text, pos)) != -1) {
                 // 找到了匹配的内容
-                //1类名，2.->，3成员变量名，4[]，5赋值表达式
-                qDebug()  << "classVar: " ;
+                //1类的实例名，2.->，3成员变量名，4[]，5赋值表达式
+                qDebug()  << "classAssignVar: " ;
                 qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;
                 qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
                 if(classes.contains(reg.cap(1)) || reg.cap(1) == "this"){
+                    QString expression = reg.cap(5).trimmed();
+                    QString varType = getExpressionType(expression, reg.pos(5));
+                    if(!basicType.contains(varType)&& varType != UNSPECIFIED) classes.insert(reg.cap(3), varType);
                     QString className;
                     if(reg.cap(1) == "this"){
                         className = fileClassName;
@@ -1556,10 +1573,8 @@ void MdiChild::updateObjectInfoInSourceFile()
                     }else{
                         className = classes.value(reg.cap(1));
                     }
-                    QString expression = reg.cap(5).trimmed();
-                    int pos = reg.pos(5);
-                    QString varType = getExpressionType(expression, pos);
                     Variable var(reg.cap(3), className, varType, CLASS);  //type未指定, className = 实例的类变量名
+                    tmpVars.insert(var, pos);
                     if(!classInfoHash->contains(className)){
                         classInfoHash->insert(className, ClassInfo(className));
                     }
@@ -1585,6 +1600,65 @@ void MdiChild::updateObjectInfoInSourceFile()
 
             qDebug() << "classVarPattern ends.";
         }
+
+        else if(reg == classVarPattern){
+            int pos = 0;
+            while ((pos = reg.indexIn(text, pos)) != -1) {
+                // 找到了匹配的内容
+                //1类的实例名，2.->，3成员变量名
+                qDebug()  << "classVar: " ;
+                qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;
+                qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
+                if(reg.cap(3) == "h" || reg.cap(3) == "cpp") {
+                    pos += reg.matchedLength();
+                    continue;
+                }
+                if(classes.contains(reg.cap(1)) || reg.cap(1) == "this"){
+                    QString className;
+                    if(reg.cap(1) == "this"){
+                        className = fileClassName;
+                        if(fileClassName == "main"){
+                            qDebug() << "Cannot use this pointer in main.cpp";
+                            continue;
+                        }
+                    }else{
+                        className = getExpressionType(reg.cap(1), reg.pos(1));
+                    }
+                    if(className == UNSPECIFIED){
+                        pos += reg.matchedLength();
+                        continue;
+                    }
+                    QString varType = getMainWindowPtr()->findClassMemberType(className, reg.cap(3));
+                    if(!basicType.contains(varType) && varType != UNSPECIFIED) classes.insert(reg.cap(3), varType);
+                    Variable var(reg.cap(3), className, varType, CLASS);  //type未指定, className = 实例的类变量名
+                    tmpVars.insert(var, pos);
+                    if(!classInfoHash->contains(className)){
+                        classInfoHash->insert(className, ClassInfo(className));
+                    }
+
+                    ClassInfo info = classInfoHash->value(className);
+                    //怎么保证不重复插入
+                    bool flag = false;  //用于标记是否存在同名的类变量
+                    for(int i = 0; i < info.vars->size(); ++i){
+                        if(info.vars->at(i).name == reg.cap(3)){
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if(flag == false) info.vars->append(var);
+                }else{
+                    qDebug() << "ClassUndefined: " << reg.cap(0) << "at position:" << pos;
+                    QString filePath = curFile;
+                    int lineNumber = document()->findBlock(pos).blockNumber();
+                    ClassUndefinedSyntaxIssue curIssue(reg.cap(1), filePath, lineNumber);
+                    if(!syntaxIssueList.contains(curIssue)) syntaxIssueList.append(curIssue);
+                }
+                pos += reg.matchedLength(); // 继续查找下一个匹配位置
+            }
+
+            qDebug() << "classVarPattern ends.";
+        }
+
         //先不扫描函数，只呈现已定义好的函数
         else if(reg == classMethodPattern){
             int pos = 0;
@@ -1607,7 +1681,6 @@ void MdiChild::updateObjectInfoInSourceFile()
                         className = classes.value(reg.cap(1));
                     }
 
-                    QString varName = reg.cap(1);
                     QString methodName = reg.cap(3);
                     QString actual_params = reg.cap(4);
 
@@ -1631,14 +1704,74 @@ void MdiChild::updateObjectInfoInSourceFile()
                         qDebug() << "method size = " << i.methods->size();
                         qDebug() << i.methods;
                     }
-                }else{
-                    qDebug() << "ClassUndefined: " << reg.cap(0) << "at position:" << pos;
-                    QString filePath = curFile;
-                    int lineNumber = document()->findBlock(pos).blockNumber();
-                    ClassUndefinedSyntaxIssue curIssue(reg.cap(1), filePath, lineNumber);
-                    qDebug() << "curIssue: " << curIssue.getName() << " " << curIssue.getDescription() << " " << curIssue.getFilePath();
-                    if(!syntaxIssueList.contains(curIssue)) syntaxIssueList.append(curIssue);
-                }
+                    }else{
+                        qDebug() << "ClassUndefined: " << reg.cap(0) << "at position:" << pos;
+                        QString filePath = curFile;
+                        int lineNumber = document()->findBlock(pos).blockNumber();
+                        ClassUndefinedSyntaxIssue curIssue(reg.cap(1), filePath, lineNumber);
+                        qDebug() << "curIssue: " << curIssue.getName() << " " << curIssue.getDescription() << " " << curIssue.getFilePath();
+                        if(!syntaxIssueList.contains(curIssue)) syntaxIssueList.append(curIssue);
+                    }
+                pos += reg.matchedLength(); // 继续查找下一个匹配位置
+            }
+        }
+
+        //先不扫描函数，只呈现已定义好的函数
+        else if(reg == classMethodEmbededCallPattern){
+            int pos = 0;
+            while ((pos = reg.indexIn(text, pos)) != -1) {
+                // 找到了匹配的内容
+                //1类的变量名，2.->，3成员函数名，4参数列表
+                qDebug()  << "classMethodEmbededCall: " ;
+                qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;
+                qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
+
+                if(classes.contains(reg.cap(1)) || reg.cap(1) == "this"){
+                    QString className;
+                    if(reg.cap(1) == "this"){
+                        className = fileClassName;
+                        if(fileClassName == "main"){
+                            qDebug() << "Cannot use this pointer in main.cpp";
+                            continue;
+                        }
+                    }else{
+                        className = classes.value(reg.cap(1));
+                    }
+
+                    QString methodName = reg.cap(3);
+                    QString actual_params = reg.cap(4);
+                    if (actual_params.endsWith(')')) {
+                        actual_params.chop(1);  // Removes the last character (closing parenthesis)
+                    }
+
+                    QString paramStr = completeMethodParamType(actual_params, pos);
+                    qDebug() << "classMethod:paramStr: " << paramStr;
+                    QStringList params = onlyGetMethodParamType(paramStr);
+                    qDebug() << "classMethod:params: " << params;
+                    QString returnType = findMethodReturnType(methodName, className, params, CLASS);
+                    Method classMethod(methodName, className, returnType, params, paramStr, CLASS);
+
+
+                    //按理说，如果这里扫描到的函数没有在源文件中定义，应该补充相应定义
+                    //可能有两种情况
+                    //1. 类外调用
+                    //2. 类内调用
+                    ClassInfo& i = (*classInfoHash)[className];    //用引用修改值
+                    if(!i.methods->contains(classMethod)){
+                        qDebug() << "not contains";
+                        qDebug() << "method size = " << i.methods->size();
+                        i.methods->append(classMethod);
+                        qDebug() << "method size = " << i.methods->size();
+                        qDebug() << i.methods;
+                    }
+                    }else{
+                        qDebug() << "ClassUndefined: " << reg.cap(0) << "at position:" << pos;
+                        QString filePath = curFile;
+                        int lineNumber = document()->findBlock(pos).blockNumber();
+                        ClassUndefinedSyntaxIssue curIssue(reg.cap(1), filePath, lineNumber);
+                        qDebug() << "curIssue: " << curIssue.getName() << " " << curIssue.getDescription() << " " << curIssue.getFilePath();
+                        if(!syntaxIssueList.contains(curIssue)) syntaxIssueList.append(curIssue);
+                    }
                 pos += reg.matchedLength(); // 继续查找下一个匹配位置
             }
         }
@@ -1822,6 +1955,7 @@ void MdiChild::updateObjectInfoInSourceFile()
         qDebug() << i.key() << ":";
         qDebug() << "Variables:";
         ClassInfo info = i.value();
+        if(info.name == "") info.name = i.key();
         for(int j = 0; j < info.vars->size(); j++){
             qDebug() << info.vars->at(j).type << " " <<
                         info.vars->at(j).className << "::" <<info.vars->at(j).name;
@@ -1848,6 +1982,7 @@ void MdiChild::updateObjectInfoInSourceFile()
 
 
     qDebug() << "-28";
+
 
     //通知主窗口更新类文件
     emit updateClassFiles(currentFile(), *classInfoHash);
@@ -2019,11 +2154,16 @@ QString MdiChild::getExpressionType(const QString& exp, const int& pos)
             expType = returnType;
         }
     } else if (expType == "classVar") {
-        if(classVarPattern.exactMatch(exp)){   //student->name, student.name
+        if(classVarAssignPattern.exactMatch(exp)){   //student->name, student.name
             //1类的变量名，2.->，3成员变量名，4[]，
-            QString classVar = classVarPattern.cap(1);
-            QString varName = classVarPattern.cap(3);
-            QString classType = findVarType(classVar, "", pos);  //找到类名
+            QString classVar = classVarAssignPattern.cap(1);
+            QString varName = classVarAssignPattern.cap(3);
+            QString classType;
+            if(classVar == "this"){
+                classType = fileClassName != "main" && fileClassName != "" ? fileClassName : UNSPECIFIED;
+            }else{
+                classType = findVarType(classVar, "", pos);  //找到类名
+            }
             QString varType = findVarType(varName, classType, pos);
             expType = varType;
         }
@@ -2032,7 +2172,12 @@ QString MdiChild::getExpressionType(const QString& exp, const int& pos)
             //1类的变量名，2.->，3成员函数名，4参数列表
             QString classVar = classMethodPattern.cap(1);
             QString methodName = classMethodPattern.cap(3);
-            QString classType = findVarType(classVar, "", pos);  //找到类名
+            QString classType;
+            if(classVar == "this"){
+                classType = fileClassName != "main" && fileClassName != "" ? fileClassName : UNSPECIFIED;
+            }else{
+                classType = findVarType(classVar, "", pos);  //找到类名
+            }
             QString actual_params = classMethodPattern.cap(4);
             QString paramStr = completeMethodParamType(actual_params, pos);
             QStringList params = onlyGetMethodParamType(paramStr);
@@ -2089,7 +2234,7 @@ QString MdiChild::getExpressionType(const QString& exp)
         //1函数名，2参数列表
         expType = "method";
         qDebug() << param << "是函数调用";
-    } else if (classVarPattern.exactMatch(param)){   //student->name, student.name
+    } else if (classVarAssignPattern.exactMatch(param)){   //student->name, student.name
         //1类的变量名，2.->，3成员变量名，4[]，
         expType = "classVar";
         qDebug() << param << "类成员变量调用";

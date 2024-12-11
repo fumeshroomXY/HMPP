@@ -81,19 +81,31 @@ const QString classStr = "\\b([A-Z][A-Za-z0-9]*)(\\*|&?)[^\\S\n]+([A-Za-z_][A-Za
 
 const QRegExp classPattern = QRegExp(classStr);
 
+//1类名，2.->，3成员变量名
+const QString classVarStr = "\\b([A-Za-z_][A-Za-z0-9_]*)(\\.|->)"
+                            "([A-Za-z_][A-Za-z0-9_]*)\\b(?!\\()";
+
+const QRegExp classVarPattern = QRegExp(classVarStr);
+
 
 // 无法匹配rule.pattern.globalMatch()中后面的pattern
 //1类名，2.->，3成员变量名，4[]，5赋值表达式
-const QString classVarStr = "\\b([A-Za-z_][A-Za-z0-9_]*)(\\.|->)"
+const QString classVarAssignStr = "\\b([A-Za-z_][A-Za-z0-9_]*)(\\.|->)"
                             "([A-Za-z_][A-Za-z0-9_]*)\\b(\\[?\\]?)"
                             "[^\\S\n]*=[^\\S\n]*([^;]*);";
 
-const QRegExp classVarPattern = QRegExp(classVarStr);
+const QRegExp classVarAssignPattern = QRegExp(classVarAssignStr);
+
+
 
 //1类的变量名，2.->，3成员函数名，4参数列表
 const QString classMethodStr = "\\b([A-Za-z_][A-Za-z0-9_]*)(\\.|->)([A-Za-z_][A-Za-z0-9_]+)\\(([^()]*)\\)";
 
 const QRegExp classMethodPattern = QRegExp(classMethodStr);
+
+//1类的变量名，2.->，3成员函数名，4参数列表（嵌套调用）
+const QString classMethodEmbededCallStr = "\\b([A-Za-z_][A-Za-z0-9_]*)(\\.|->)([A-Za-z_][A-Za-z0-9_]+)\\(([^;]*);";
+const QRegExp classMethodEmbededCallPattern = QRegExp(classMethodEmbededCallStr);
 
 // 类似 Student* stu = new Student("name", age)
 // 1类的变量名，2*，3变量名，4类名，5参数列表
@@ -120,8 +132,8 @@ const QRegularExpression informalSpecSectionPattern("((?:\\d+\\.){1,3}\\d*)\\s+"
 
 
 //规则集中的规则必须按顺序定义
-const QList<QRegExp> syntaxRuleList = {basicVarPattern, definedMethodPattern, classCtrMethodPattern,
-                                       classPattern, classVarPattern, classMethodPattern};
+const QList<QRegExp> syntaxRuleList = {basicVarPattern, definedMethodPattern, classCtrMethodPattern, classVarPattern,
+                                       classPattern, classVarAssignPattern, classMethodPattern, classMethodEmbededCallPattern};
 
 const QString UNSPECIFIED = "UNSPECIFIED";
 

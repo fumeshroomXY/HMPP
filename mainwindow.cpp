@@ -466,14 +466,16 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
         }
 
         qDebug() << "**************************************";
-        qDebug() << "addInfo: Methods:";
+        qDebug() << "addInfo name: " << addInfo.name;
+        qDebug() << "Methods:";
         for(int j = 0; j < addInfo.methods->size(); j++){
             qDebug() << addInfo.methods->at(j).returnType << " "
                      << addInfo.methods->at(j).className << "::" << addInfo.methods->at(j).name
                      << "(" << addInfo.methods->at(j).paramStr << ")";
         }
 
-        qDebug() << "proClassInfo:";
+        qDebug() << "proClassInfo name:" << proClassInfo.name;
+        qDebug() << "Methods:";
         for(int j = 0; j < proClassInfo.vars->size(); j++){
             qDebug() << proClassInfo.vars->at(j).type << " " <<
                         proClassInfo.vars->at(j).className << "::" <<proClassInfo.vars->at(j).name;
@@ -506,7 +508,7 @@ void MainWindow::updateProjectClassInfo(QString filePath, QHash<QString, ClassIn
 bool MainWindow::ReplaceAndAddInfoInClassSourceFile(const QList<std::pair<QString, QString>>& replaceInfo, const ClassInfo& addInfo, QString className)
 {
     qDebug() << "ReplaceAndAddInfoInClassSourceFile";
-    if(replaceInfo.isEmpty() && addInfo.name.isEmpty()) {
+    if(replaceInfo.isEmpty() && addInfo.methods->isEmpty() && addInfo.vars->isEmpty()) {
         qDebug() << "info is empty.";
         return false;
     }
@@ -2260,6 +2262,7 @@ MdiChild *MainWindow::createMdiChild()
 
     //调出ChatGPT对话
     connect(child, &MdiChild::startChatGPTDialog, this, &MainWindow::startChatGPTDialog);
+
     qDebug() << "30";
     return child;
 }
@@ -3048,4 +3051,20 @@ void MainWindow::on_copyCodeButton_clicked()
 
     // Copy the content to clipboard
     clipboard->setText(content);
+}
+
+QString MainWindow::findClassMemberType(QString className, QString expression){
+    if(proClassInfoHash.contains(className)){
+        for(int i = 0; i < proClassInfoHash[className].methods->size(); i++){
+            if(expression == proClassInfoHash[className].methods->at(i).name){
+                return proClassInfoHash[className].methods->at(i).returnType;
+            }
+        }
+        for(int i = 0; i < proClassInfoHash[className].vars->size(); i++){
+            if(expression == proClassInfoHash[className].vars->at(i).name){
+                return proClassInfoHash[className].vars->at(i).type;
+            }
+        }
+    }
+    return UNSPECIFIED;
 }

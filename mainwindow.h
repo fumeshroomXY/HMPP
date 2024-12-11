@@ -143,7 +143,8 @@ public slots:
     //调出ChatGPT对话
     void startChatGPTDialog(QString text);
 
-
+    //查询类对象类型
+    QString findClassMemberType(QString className, QString expression);
 
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;    //指定重载符
