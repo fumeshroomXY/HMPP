@@ -1,0 +1,37 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/toolbar_images/copy.png</file>
+        <file>images/toolbar_images/cut.png</file>
+        <file>images/toolbar_images/new.png</file>
+        <file>images/toolbar_images/open.png</file>
+        <file>images/toolbar_images/paste.png</file>
+        <file>images/toolbar_images/redo.png</file>
+        <file>images/toolbar_images/save.png</file>
+        <file>images/toolbar_images/undo.png</file>
+        <file>images/toolbar_images/about.png</file>
+        <file>images/toolbar_images/exit.png</file>
+        <file>images/toolbar_images/next.png</file>
+        <file>images/toolbar_images/previous.png</file>
+        <file>images/toolbar_images/saveAs.png</file>
+        <file>images/toolbar_images/codeanalysis.png</file>
+        <file>images/toolbar_images/hmpp.png</file>
+        <file>images/toolbar_images/project.png</file>
+        <file>images/toolbar_images/rundebug.png</file>
+        <file>images/toolbar_images/error.png</file>
+        <file>images/toolbar_images/warning.png</file>
+        <file>images/toolbar_images/cpp.png</file>
+        <file>images/toolbar_images/header.svg</file>
+        <file>images/toolbar_images/folder.png</file>
+        <file>images/toolbar_images/cpp.svg</file>
+        <file>images/toolbar_images/class.svg</file>
+        <file>images/toolbar_images/memberfunc.svg</file>
+        <file>images/toolbar_images/robot16.svg</file>
+        <file>images/toolbar_images/robot16.png</file>
+        <file>images/toolbar_images/user.svg</file>
+        <file>images/toolbar_images/txt.svg</file>
+        <file>images/toolbar_images/codepredict.png</file>
+        <file>images/toolbar_images/question.png</file>
+        <file>images/toolbar_images/watermark.png</file>
+        <file>images/toolbar_images/todo.svg</file>
+    </qresource>
+</RCC>

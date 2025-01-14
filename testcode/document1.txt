@@ -1,0 +1,423 @@
+#include <QApplication>
+#include <QTextEdit>
+#include <QSyntaxHighlighter>
+#include <QRegularExpression>
+
+
+
+// 自定义的第一个语法高亮器
+class CustomHighlighter1 : public QSyntaxHighlighter {
+public:
+    CustomHighlighter1(QTextDocument* parent = nullptr) : QSyntaxHighlighter(parent) {
+        // 添加语法高亮规则
+        HighlightingRule rule;
+        QTextCharFormat keywordFormat;
+        keywordFormat.setForeground(Qt::darkBlue);
+        keywordFormat.setFontWeight(QFont::Bold);
+        QStringList keywordPatterns;
+        keywordPatterns << "\\bif\\b" << "\\belse\\b" << "\\bwhile\\b";  // 示例关键字
+        for (const QString& pattern : keywordPatterns) {
+            rule.pattern = QRegularExpression(pattern);
+            rule.format = keywordFormat;
+            highlightingRules.append(rule);
+        }
+    }
+
+protected:
+    void highlightBlock(const QString& text) override {
+        // 实现语法高亮逻辑
+        for (const HighlightingRule& rule : highlightingRules) {
+            QRegularExpressionMatchIterator matchIterator = rule.pattern.globalMatch(text);
+            while (matchIterator.hasNext()) {
+                QRegularExpressionMatch match = matchIterator.next();
+                setFormat(match.capturedStart(), match.capturedLength(), rule.format);
+            }
+        }
+    }
+
+private:
+    struct HighlightingRule {
+        QRegularExpression pattern;
+        QTextCharFormat format;
+    };
+
+    QVector<HighlightingRule> highlightingRules;
+};
+
+// 自定义的第二个语法高亮器
+class CustomHighlighter2 : public QSyntaxHighlighter {
+public:
+    CustomHighlighter2(QTextDocument* parent = nullptr) : QSyntaxHighlighter(parent) {
+        // 添加语法高亮规则（示例：高亮数字）
+        HighlightingRule rule;
+        QTextCharFormat numberFormat;
+        numberFormat.setForeground(Qt::darkMagenta);
+        rule.pattern = QRegularExpression("\\b\\d+\\b");
+        rule.format = numberFormat;
+        highlightingRules.append(rule);
+    }
+
+protected:
+    void highlightBlock(const QString& text) override {
+        // 实现语法高亮逻辑
+        for (const HighlightingRule& rule : highlightingRules) {
+            QRegularExpressionMatchIterator matchIterator = rule.pattern.globalMatch(text);
+            while (matchIterator.hasNext()) {
+                QRegularExpressionMatch match = matchIterator.next();
+                setFormat(match.capturedStart(), match.capturedLength(), rule.format);
+            }
+        }
+    }
+
+private:
+    struct HighlightingRule {
+        QRegularExpression pattern;
+        QTextCharFormat format;
+    };
+
+    QVector<HighlightingRule> highlightingRules;
+};
+
+int main(int argc, char* argv[]) {
+    QApplication a(argc, argv);
+
+    // 创建 QTextDocument 和 QTextEdit
+    QTextDocument document;
+    QTextEdit textEdit;
+    textEdit.setDocument(&document);
+
+    // 关联两个不同的语法高亮器
+    CustomHighlighter1 highlighter1(&document);
+    CustomHighlighter2 highlighter2(&document);
+
+    // 显示窗口
+    textEdit.show();
+
+    return a.exec();
+}
+
+
+
+
+Student stu;
+stu->setName("name");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

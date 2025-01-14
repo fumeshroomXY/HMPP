@@ -1,0 +1,15 @@
+1.1 Receive commands from users
+(1)Authenticate different users: customer or stock manager given the user's input.
+(2)Provide customer registration for new customers or provide customer authentication for customers
+(3)Authenticate stock managers. Provide stock registration and cancel registration for authenticated stock managers
+
+1.2 Customer login and authentication
+(1)Confirm the customer's id/phone number and password
+(2)Authentication fails if wrong password or id/phone number not exists. 
+(3)Provide purchase&sell stock and cancel registration for authenticated customers
+
+1.3 Customer registration
+(1)Get customer's registration information: name, age, bank account information, address, email address, telephone, password. 
+(2)Authenticate bank account and telephone number. 
+(3)Check if name is unique. 
+(4)Generate unique customer id if registration successes.

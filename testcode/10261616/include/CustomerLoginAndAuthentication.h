@@ -1,0 +1,12 @@
+#ifndef CUSTOMERLOGINANDAUTHENTICATION_H
+#define CUSTOMERLOGINANDAUTHENTICATION_H
+
+class CustomerLoginAndAuthentication
+{
+
+public:
+
+
+private:
+};
+#endif //CUSTOMERLOGINANDAUTHENTICATION_H

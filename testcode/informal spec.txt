@@ -1,0 +1,62 @@
+1.1 Receive commands from users
+(1)Authenticate different users: customer or stock manager given the user's input.
+(2)Provide customer registration for new customers or provide customer authentication for customers
+(3)Authenticate stock managers. Provide stock registration and cancel registration for authenticated stock managers
+
+1.2 Customer login and authentication
+(1)Confirm the customer's id/phone number and password
+(2)Authentication fails if wrong password or id/phone number not exists. 
+(3)Provide purchase&sell stock and cancel registration for authenticated customers
+
+1.3 Customer registration
+(1)Get customer's registration information: name, age, bank account information, address, email address, telephone, password. 
+(2)Authenticate bank account and telephone number. 
+(3)Check if name is unique. 
+(4)Generate unique customer id if registration successes.
+
+1.4 Cancel customer registration
+(1)Get cancel information: customer id/phone number, password, name. 
+(2)Customer authentication. 
+(3)Delete customer information if valid authentication.
+
+1.5 Stock registration
+(1)Get stock registration information: name, price, the smallest unit for sale, limit for selling to one customer. 
+(2)Check if stock name is unique and the price is JPY. 
+(3)Generate unique stock id if registration successes.
+
+1.6 Cancel stock registration
+(1)Get cancel information: stock id, name.  
+(2)Delete stock information and customer purchasing information if valid authentication
+
+1.7 Remind customer of specific stock information
+(1)Customer set interesting stock's name, id and target price.
+(2)Push prompt messages if current stock price is lower than target price
+
+1.8 Purchase stock
+(1)Get purchase stock information: stock name, stock id, stock price, purchase amount, customer information.
+(2)Check if purchase amount is greater than smallest sale unit and if customer owned amount is less than the selling limit to one customer after purchase
+(3)Calculate the total expense
+(4)Bank account authentication and expense deduction. Purchase fails if insufficient balance.
+(5)Update customer's owned stock information
+
+1.9 Sell stock
+(1)Get sold stock information and customer information: stock id, stock name, stock price, sold amount, customer owned amount, customer bank account
+(2)Check if customer owned amount is greater than sold amount
+(3)Calculate the income and tax deduction.
+(4)Bank account authentication and income increase.
+(5)Update customer's owned stock information
+
+1.10 Gain stock profit
+(1)Get customer information and owned stock information.
+(2)Calculate the total profits of owned stocks for every customer and tax deduction
+(3)Bank account authentication and income increase.
+
+1.11 Update stock price
+(1)Update the price of registered stock every day.
+
+1.12 Stock manager login and authentication
+(1)Confirm the stock manager's id and password
+(2)Authentication fails if wrong password or id not exists. 
+
+1.13 Set stock to follow
+(1)Customers set specific stocks to follow.

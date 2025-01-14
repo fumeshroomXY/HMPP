@@ -1,0 +1,20 @@
+1. Policeman Info
+(1) update and display the professional information of the policeman using the device, such as the name, title, ID number and assigned department
+2. Time Manager
+(1) set the time zone and update the corresponding timestamp.
+(2) display the time information in the video.
+3. GPS Info
+(1) return the current GPS coordinates
+4. Video Config
+(1) modify the configurations in recording videos such as frame rates, encoding standards and resolutions.
+5. Video Recorder
+(1) start recording and encoding the video in the current configuration and embed the important metadata, such as the ID number of the policeman, timestamp and GPS information.
+(2) stop recording and generate the original video file.
+6. Video Encrypter
+(1) encrypt the video file and return the encrypted file.
+(2) decrypt the encrypted video file and returns the decrypted file
+7. Video Storage
+(1) check if there is enough storage space available.
+(2) save the video file to the designated storage directory.
+
+8. Camera Controller
