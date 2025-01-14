@@ -6,6 +6,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QFile>
+#include <QDir>
 
 ChatgptClient::ChatgptClient(QWidget *parent)
     : QWidget(parent), networkManager(new QNetworkAccessManager(this)) {
@@ -38,6 +40,22 @@ void ChatgptClient::sendUserMessage(const QString &value)
 {
     userInput = value;
     QString userQuestion = userInput;
+
+    qDebug() << "project directory: " << QCoreApplication::applicationDirPath();
+    QDir currentDir(QCoreApplication::applicationDirPath());
+    currentDir.cdUp(); // Navigate to the parent directory
+    QString configFilePath = currentDir.path() + "/config/OpenAIkey.json";
+    QFile file(configFilePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qDebug() << "Failed to open openai key config file";
+        return;
+    }
+    QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
+    QString apiKey = doc.object().value("api_key").toString();
+    if (apiKey.isEmpty()) {
+        qDebug() << "API key not found in the config file";
+        return;
+    }
 
     QNetworkRequest request(QUrl("https://api.openai.com/v1/chat/completions"));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");

@@ -883,7 +883,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        stackedWidget->setCurrentIndex(3);
+        stackedWidget->setCurrentIndex(1);
         tabProgramOutput->setCurrentIndex(0);
 
 

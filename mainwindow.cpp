@@ -2241,6 +2241,24 @@ MdiChild *MainWindow::createMdiChild()
 
     child->setFont(font);
 
+    //将代码编辑区的字体应用到其他代码浏览区
+    QTextCursor sourceCursor = child->textCursor();
+    QTextBlockFormat sourceFormat = sourceCursor.blockFormat();
+    qreal lineHeight = sourceFormat.lineHeight();
+    QTextBlockFormat::LineHeightTypes lineHeightType = static_cast<QTextBlockFormat::LineHeightTypes>(sourceFormat.lineHeightType());
+
+    ui->codeBrowser->setFont(font);
+    QTextCursor cursor1 = ui->codeBrowser->textCursor();
+    QTextBlockFormat format1 = cursor1.blockFormat();
+    format1.setLineHeight(lineHeight, lineHeightType);
+    cursor1.setBlockFormat(format1);
+
+    ui->fixedCodeTextEdit->setFont(font);
+    QTextCursor cursor2 = ui->fixedCodeTextEdit->textCursor();
+    QTextBlockFormat format2 = cursor2.blockFormat();
+    format2.setLineHeight(lineHeight, lineHeightType);
+    cursor2.setBlockFormat(format2);
+
     //FaultLineHighlighter *faultHighlighter = new FaultLineHighlighter(child->document());
 //    Highlighter *highlighter = new Highlighter(child->document());
 //    connect(highlighter, &Highlighter::findFault, child, &MdiChild::faultLinePaint);
@@ -3090,25 +3108,25 @@ void MainWindow::fixCodeByChatGPT(QString text)
 
     // Waiting effect
     ui->waitingChatGPTReplyButton->setEnabled(false); // Disable interaction
-    QTimer* waitingEffectTimer = new QTimer(this);
-    int dotCount = 0;
+//    QTimer* waitingEffectTimer = new QTimer(this);
+//    int dotCount = 0;
 
-    // Connect the waiting effect timer
-    connect(waitingEffectTimer, &QTimer::timeout, [&dotCount, this]() {
-        QString text = "Waiting";
-        for (int i = 0; i < dotCount; ++i) {
-            text += ".";
-        }
-        dotCount = (dotCount + 1) % 4;
-        ui->waitingChatGPTReplyButton->setText(text);
-    });
+//    // Connect the waiting effect timer
+//    connect(waitingEffectTimer, &QTimer::timeout, [&dotCount, this]() {
+//        QString text = "Waiting";
+//        for (int i = 0; i < dotCount; ++i) {
+//            text += ".";
+//        }
+//        dotCount = (dotCount + 1) % 4;
+//        ui->waitingChatGPTReplyButton->setText(text);
+//    });
 
-    // Start waiting effect
-    waitingEffectTimer->start(500);
+//    // Start waiting effect
+//    waitingEffectTimer->start(500);
 
-    connect(client, &ChatgptClient::replyIsReady, [timeoutTimer, waitingEffectTimer, this](const QString &reply){
+    connect(client, &ChatgptClient::replyIsReady, [timeoutTimer, this](const QString &reply){
         timeoutTimer->stop(); // Stop the timeout timer
-        waitingEffectTimer->stop(); // Stop the waiting effect
+        //waitingEffectTimer->stop(); // Stop the waiting effect
         ui->waitingChatGPTReplyButton->setText("Done"); // Indicate completion
         ui->waitingChatGPTReplyButton->hide();
         fixedCodeHighlighter = new Highlighter(ui->fixedCodeTextEdit->document());
