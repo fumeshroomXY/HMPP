@@ -183,6 +183,7 @@ private slots:
     void showHMPPView();
     void showProjectView();
     void showFixedCodeView();
+    void showCSCRTool();
     void showSCMFaultTab(int);
     void lineEditPrompt();
     void doubleClickedProjectTree(const QModelIndex &index);

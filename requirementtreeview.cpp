@@ -284,7 +284,7 @@ void BuildProFromSpecDialog::renameItem(QTreeWidgetItem* item, int column) {
     if (ok && !newName.isEmpty()) {
         item->setText(0, newName);
         QFont font = item->font(0);
-        font.setBold(true);
+        //font.setBold(true);
         item->setFont(0, font);
         treeWidget->setCurrentItem(item);
     }

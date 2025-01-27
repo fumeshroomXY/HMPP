@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
@@ -63,7 +64,7 @@ public:
     QAction *aboutAct;
     QAction *aboutDeveloperAct;
     QAction *projectShowAct;
-    QAction *runDebugAct;
+    QAction *cscrToolAct;
     QAction *codeAnalysisAct;
     QAction *hmppAct;
     QAction *manageSetAct;
@@ -77,9 +78,11 @@ public:
     QAction *SCMDemoAct;
     QAction *importSpecAct;
     QAction *specBuildAct;
+    QAction *actionLoad_Review_Report;
+    QAction *actionGenerate_Review_Report;
     QWidget *centralwidget;
     QHBoxLayout *horizontalLayout;
-    QStackedWidget *stackedWidget;
+    QStackedWidget *stackedWidgetLeft;
     QWidget *pageProject;
     QVBoxLayout *verticalLayout_2;
     ToDoTableView *toDoTableView;
@@ -105,6 +108,10 @@ public:
     QVBoxLayout *verticalLayout_7;
     QTextEdit *fixedCodeTextEdit;
     QWidget *pageCodeAnalysis;
+    QWidget *widget;
+    QHBoxLayout *horizontalLayout_12;
+    QPushButton *pushButton_11;
+    QLabel *label_9;
     QWidget *pageHMPP;
     QGridLayout *gridLayout_2;
     QHBoxLayout *horizontalLayout_2;
@@ -134,6 +141,9 @@ public:
     QTextBrowser *codeBrowser;
     QVBoxLayout *verticalLayout;
     QMdiArea *mdiArea;
+    QStackedWidget *stackedWidgetRightDown;
+    QWidget *page;
+    QGridLayout *gridLayout_6;
     QTabWidget *tabProgramOutput;
     QWidget *tabDebug;
     QGridLayout *gridLayout_3;
@@ -143,6 +153,32 @@ public:
     QGridLayout *gridLayout;
     QTableWidget *tableWidgetReport;
     QWidget *tabAppOutput;
+    QGridLayout *gridLayout_5;
+    QWidget *page_2;
+    QGridLayout *gridLayout_7;
+    QVBoxLayout *verticalLayout_11;
+    QHBoxLayout *horizontalLayout_8;
+    QPushButton *pushButton;
+    QPushButton *pushButton_6;
+    QPushButton *pushButton_7;
+    QPushButton *pushButton_8;
+    QSpacerItem *horizontalSpacer_2;
+    QVBoxLayout *verticalLayout_10;
+    QLabel *label_5;
+    QHBoxLayout *horizontalLayout_9;
+    QLabel *label_6;
+    QLineEdit *lineEdit_2;
+    QHBoxLayout *horizontalLayout_10;
+    QLabel *label_7;
+    QComboBox *comboBox;
+    QSpacerItem *horizontalSpacer_3;
+    QVBoxLayout *verticalLayout_9;
+    QLabel *label_8;
+    QTextEdit *textEdit;
+    QHBoxLayout *horizontalLayout_11;
+    QSpacerItem *horizontalSpacer;
+    QPushButton *pushButton_9;
+    QPushButton *pushButton_10;
     QMenuBar *menubar;
     QMenu *menuFile;
     QMenu *menuEdit;
@@ -241,11 +277,11 @@ public:
         QIcon icon13;
         icon13.addFile(QStringLiteral(":/images/toolbar_images/project.png"), QSize(), QIcon::Normal, QIcon::Off);
         projectShowAct->setIcon(icon13);
-        runDebugAct = new QAction(MainWindow);
-        runDebugAct->setObjectName(QStringLiteral("runDebugAct"));
+        cscrToolAct = new QAction(MainWindow);
+        cscrToolAct->setObjectName(QStringLiteral("cscrToolAct"));
         QIcon icon14;
-        icon14.addFile(QStringLiteral(":/images/toolbar_images/rundebug.png"), QSize(), QIcon::Normal, QIcon::Off);
-        runDebugAct->setIcon(icon14);
+        icon14.addFile(QStringLiteral(":/images/toolbar_images/codeanalysis.png"), QSize(), QIcon::Normal, QIcon::Off);
+        cscrToolAct->setIcon(icon14);
         codeAnalysisAct = new QAction(MainWindow);
         codeAnalysisAct->setObjectName(QStringLiteral("codeAnalysisAct"));
         QIcon icon15;
@@ -274,7 +310,7 @@ public:
         codePredictAct = new QAction(MainWindow);
         codePredictAct->setObjectName(QStringLiteral("codePredictAct"));
         QIcon icon17;
-        icon17.addFile(QStringLiteral(":/images/toolbar_images/codeanalysis.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon17.addFile(QStringLiteral(":/images/toolbar_images/rundebug.png"), QSize(), QIcon::Normal, QIcon::Off);
         codePredictAct->setIcon(icon17);
         testAct = new QAction(MainWindow);
         testAct->setObjectName(QStringLiteral("testAct"));
@@ -284,15 +320,19 @@ public:
         importSpecAct->setObjectName(QStringLiteral("importSpecAct"));
         specBuildAct = new QAction(MainWindow);
         specBuildAct->setObjectName(QStringLiteral("specBuildAct"));
+        actionLoad_Review_Report = new QAction(MainWindow);
+        actionLoad_Review_Report->setObjectName(QStringLiteral("actionLoad_Review_Report"));
+        actionGenerate_Review_Report = new QAction(MainWindow);
+        actionGenerate_Review_Report->setObjectName(QStringLiteral("actionGenerate_Review_Report"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         horizontalLayout = new QHBoxLayout(centralwidget);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
         horizontalLayout->setSizeConstraint(QLayout::SetMinimumSize);
-        stackedWidget = new QStackedWidget(centralwidget);
-        stackedWidget->setObjectName(QStringLiteral("stackedWidget"));
-        stackedWidget->setLineWidth(0);
-        stackedWidget->setMidLineWidth(0);
+        stackedWidgetLeft = new QStackedWidget(centralwidget);
+        stackedWidgetLeft->setObjectName(QStringLiteral("stackedWidgetLeft"));
+        stackedWidgetLeft->setLineWidth(0);
+        stackedWidgetLeft->setMidLineWidth(0);
         pageProject = new QWidget();
         pageProject->setObjectName(QStringLiteral("pageProject"));
         verticalLayout_2 = new QVBoxLayout(pageProject);
@@ -353,7 +393,7 @@ public:
 
         verticalLayout_2->addWidget(progressBar);
 
-        stackedWidget->addWidget(pageProject);
+        stackedWidgetLeft->addWidget(pageProject);
         pageRunDebug = new QWidget();
         pageRunDebug->setObjectName(QStringLiteral("pageRunDebug"));
         gridLayout_4 = new QGridLayout(pageRunDebug);
@@ -379,7 +419,7 @@ public:
         sizePolicy.setHeightForWidth(pushButton_5->sizePolicy().hasHeightForWidth());
         pushButton_5->setSizePolicy(sizePolicy);
         pushButton_5->setBaseSize(QSize(16, 16));
-        pushButton_5->setIcon(icon17);
+        pushButton_5->setIcon(icon14);
 
         horizontalLayout_7->addWidget(pushButton_5);
 
@@ -496,10 +536,35 @@ public:
 
         gridLayout_4->addWidget(scrollArea_2, 5, 0, 1, 1);
 
-        stackedWidget->addWidget(pageRunDebug);
+        stackedWidgetLeft->addWidget(pageRunDebug);
         pageCodeAnalysis = new QWidget();
         pageCodeAnalysis->setObjectName(QStringLiteral("pageCodeAnalysis"));
-        stackedWidget->addWidget(pageCodeAnalysis);
+        widget = new QWidget(pageCodeAnalysis);
+        widget->setObjectName(QStringLiteral("widget"));
+        widget->setGeometry(QRect(0, 20, 106, 26));
+        horizontalLayout_12 = new QHBoxLayout(widget);
+        horizontalLayout_12->setObjectName(QStringLiteral("horizontalLayout_12"));
+        horizontalLayout_12->setContentsMargins(0, 0, 0, 0);
+        pushButton_11 = new QPushButton(widget);
+        pushButton_11->setObjectName(QStringLiteral("pushButton_11"));
+        sizePolicy.setHeightForWidth(pushButton_11->sizePolicy().hasHeightForWidth());
+        pushButton_11->setSizePolicy(sizePolicy);
+        pushButton_11->setBaseSize(QSize(16, 16));
+        pushButton_11->setIcon(icon14);
+
+        horizontalLayout_12->addWidget(pushButton_11);
+
+        label_9 = new QLabel(widget);
+        label_9->setObjectName(QStringLiteral("label_9"));
+        label_9->setStyleSheet(QLatin1String("\n"
+"    font-family: 'Verdana', sans-serif; /* Font type */\n"
+"    font-size: 12px; /* Font size */\n"
+"    color: #333333; /* Text color */\n"
+"    font-weight: bold; /* Make the text bold */"));
+
+        horizontalLayout_12->addWidget(label_9);
+
+        stackedWidgetLeft->addWidget(pageCodeAnalysis);
         pageHMPP = new QWidget();
         pageHMPP->setObjectName(QStringLiteral("pageHMPP"));
         gridLayout_2 = new QGridLayout(pageHMPP);
@@ -659,9 +724,9 @@ public:
 
         gridLayout_2->addWidget(scrollArea, 1, 0, 1, 1);
 
-        stackedWidget->addWidget(pageHMPP);
+        stackedWidgetLeft->addWidget(pageHMPP);
 
-        horizontalLayout->addWidget(stackedWidget);
+        horizontalLayout->addWidget(stackedWidgetLeft);
 
         verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
@@ -681,8 +746,16 @@ public:
 
         verticalLayout->addWidget(mdiArea);
 
-        tabProgramOutput = new QTabWidget(centralwidget);
+        stackedWidgetRightDown = new QStackedWidget(centralwidget);
+        stackedWidgetRightDown->setObjectName(QStringLiteral("stackedWidgetRightDown"));
+        page = new QWidget();
+        page->setObjectName(QStringLiteral("page"));
+        gridLayout_6 = new QGridLayout(page);
+        gridLayout_6->setObjectName(QStringLiteral("gridLayout_6"));
+        gridLayout_6->setContentsMargins(0, 0, 0, 0);
+        tabProgramOutput = new QTabWidget(page);
         tabProgramOutput->setObjectName(QStringLiteral("tabProgramOutput"));
+        tabProgramOutput->setTabBarAutoHide(false);
         tabDebug = new QWidget();
         tabDebug->setObjectName(QStringLiteral("tabDebug"));
         gridLayout_3 = new QGridLayout(tabDebug);
@@ -761,10 +834,138 @@ public:
         tabProgramOutput->addTab(tabFaultReport, QString());
         tabAppOutput = new QWidget();
         tabAppOutput->setObjectName(QStringLiteral("tabAppOutput"));
+        gridLayout_5 = new QGridLayout(tabAppOutput);
+        gridLayout_5->setObjectName(QStringLiteral("gridLayout_5"));
         tabProgramOutput->addTab(tabAppOutput, QString());
 
-        verticalLayout->addWidget(tabProgramOutput);
+        gridLayout_6->addWidget(tabProgramOutput, 0, 0, 1, 1);
 
+        stackedWidgetRightDown->addWidget(page);
+        page_2 = new QWidget();
+        page_2->setObjectName(QStringLiteral("page_2"));
+        gridLayout_7 = new QGridLayout(page_2);
+        gridLayout_7->setObjectName(QStringLiteral("gridLayout_7"));
+        gridLayout_7->setContentsMargins(0, 0, 0, 0);
+        verticalLayout_11 = new QVBoxLayout();
+        verticalLayout_11->setObjectName(QStringLiteral("verticalLayout_11"));
+        horizontalLayout_8 = new QHBoxLayout();
+        horizontalLayout_8->setObjectName(QStringLiteral("horizontalLayout_8"));
+        pushButton = new QPushButton(page_2);
+        pushButton->setObjectName(QStringLiteral("pushButton"));
+
+        horizontalLayout_8->addWidget(pushButton);
+
+        pushButton_6 = new QPushButton(page_2);
+        pushButton_6->setObjectName(QStringLiteral("pushButton_6"));
+
+        horizontalLayout_8->addWidget(pushButton_6);
+
+        pushButton_7 = new QPushButton(page_2);
+        pushButton_7->setObjectName(QStringLiteral("pushButton_7"));
+
+        horizontalLayout_8->addWidget(pushButton_7);
+
+        pushButton_8 = new QPushButton(page_2);
+        pushButton_8->setObjectName(QStringLiteral("pushButton_8"));
+
+        horizontalLayout_8->addWidget(pushButton_8);
+
+        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_8->addItem(horizontalSpacer_2);
+
+
+        verticalLayout_11->addLayout(horizontalLayout_8);
+
+        verticalLayout_10 = new QVBoxLayout();
+        verticalLayout_10->setObjectName(QStringLiteral("verticalLayout_10"));
+        label_5 = new QLabel(page_2);
+        label_5->setObjectName(QStringLiteral("label_5"));
+
+        verticalLayout_10->addWidget(label_5);
+
+        horizontalLayout_9 = new QHBoxLayout();
+        horizontalLayout_9->setObjectName(QStringLiteral("horizontalLayout_9"));
+        label_6 = new QLabel(page_2);
+        label_6->setObjectName(QStringLiteral("label_6"));
+
+        horizontalLayout_9->addWidget(label_6);
+
+        lineEdit_2 = new QLineEdit(page_2);
+        lineEdit_2->setObjectName(QStringLiteral("lineEdit_2"));
+
+        horizontalLayout_9->addWidget(lineEdit_2);
+
+
+        verticalLayout_10->addLayout(horizontalLayout_9);
+
+        horizontalLayout_10 = new QHBoxLayout();
+        horizontalLayout_10->setObjectName(QStringLiteral("horizontalLayout_10"));
+        label_7 = new QLabel(page_2);
+        label_7->setObjectName(QStringLiteral("label_7"));
+
+        horizontalLayout_10->addWidget(label_7);
+
+        comboBox = new QComboBox(page_2);
+        comboBox->setObjectName(QStringLiteral("comboBox"));
+
+        horizontalLayout_10->addWidget(comboBox);
+
+        horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_10->addItem(horizontalSpacer_3);
+
+        horizontalLayout_10->setStretch(0, 1);
+        horizontalLayout_10->setStretch(1, 2);
+        horizontalLayout_10->setStretch(2, 3);
+
+        verticalLayout_10->addLayout(horizontalLayout_10);
+
+        verticalLayout_9 = new QVBoxLayout();
+        verticalLayout_9->setObjectName(QStringLiteral("verticalLayout_9"));
+        label_8 = new QLabel(page_2);
+        label_8->setObjectName(QStringLiteral("label_8"));
+
+        verticalLayout_9->addWidget(label_8);
+
+        textEdit = new QTextEdit(page_2);
+        textEdit->setObjectName(QStringLiteral("textEdit"));
+
+        verticalLayout_9->addWidget(textEdit);
+
+
+        verticalLayout_10->addLayout(verticalLayout_9);
+
+        horizontalLayout_11 = new QHBoxLayout();
+        horizontalLayout_11->setObjectName(QStringLiteral("horizontalLayout_11"));
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_11->addItem(horizontalSpacer);
+
+        pushButton_9 = new QPushButton(page_2);
+        pushButton_9->setObjectName(QStringLiteral("pushButton_9"));
+
+        horizontalLayout_11->addWidget(pushButton_9);
+
+        pushButton_10 = new QPushButton(page_2);
+        pushButton_10->setObjectName(QStringLiteral("pushButton_10"));
+
+        horizontalLayout_11->addWidget(pushButton_10);
+
+
+        verticalLayout_10->addLayout(horizontalLayout_11);
+
+
+        verticalLayout_11->addLayout(verticalLayout_10);
+
+
+        gridLayout_7->addLayout(verticalLayout_11, 0, 0, 1, 1);
+
+        stackedWidgetRightDown->addWidget(page_2);
+
+        verticalLayout->addWidget(stackedWidgetRightDown);
+
+        verticalLayout->setStretch(0, 1);
         verticalLayout->setStretch(1, 1);
 
         horizontalLayout->addLayout(verticalLayout);
@@ -865,17 +1066,19 @@ public:
         menuChooseTargetLanguage->addAction(actionCplus);
         menuChooseTargetLanguage->addAction(actionJava);
         menuChooseTargetLanguage->addAction(actionCsharp);
-        menuTools_T->addAction(runDebugAct);
+        menuTools_T->addAction(cscrToolAct);
         menuTools_T->addAction(codeAnalysisAct);
         menuTools_T->addAction(hmppAct);
         menuTools_T->addAction(specBuildAct);
+        menuTools_T->addAction(actionLoad_Review_Report);
+        menuTools_T->addAction(actionGenerate_Review_Report);
         menuTest->addAction(testAct);
         menuDemo->addAction(SCMDemoAct);
         toolBar->addAction(projectShowAct);
         toolBar->addSeparator();
-        toolBar->addAction(runDebugAct);
-        toolBar->addSeparator();
         toolBar->addAction(codeAnalysisAct);
+        toolBar->addSeparator();
+        toolBar->addAction(cscrToolAct);
         toolBar->addSeparator();
         toolBar->addAction(codePredictAct);
         toolBar->addSeparator();
@@ -883,8 +1086,9 @@ public:
 
         retranslateUi(MainWindow);
 
-        stackedWidget->setCurrentIndex(1);
-        tabProgramOutput->setCurrentIndex(0);
+        stackedWidgetLeft->setCurrentIndex(2);
+        stackedWidgetRightDown->setCurrentIndex(1);
+        tabProgramOutput->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -974,9 +1178,9 @@ public:
 #ifndef QT_NO_TOOLTIP
         projectShowAct->setToolTip(QApplication::translate("MainWindow", "Show the project framework", 0));
 #endif // QT_NO_TOOLTIP
-        runDebugAct->setText(QApplication::translate("MainWindow", "Run and Debug", 0));
+        cscrToolAct->setText(QApplication::translate("MainWindow", "CSCR-Tool", 0));
 #ifndef QT_NO_TOOLTIP
-        runDebugAct->setToolTip(QApplication::translate("MainWindow", "Run and Debug", 0));
+        cscrToolAct->setToolTip(QApplication::translate("MainWindow", "CSCR-Tool", 0));
 #endif // QT_NO_TOOLTIP
         codeAnalysisAct->setText(QApplication::translate("MainWindow", "SCM Configure", 0));
 #ifndef QT_NO_TOOLTIP
@@ -1012,6 +1216,8 @@ public:
         importSpecAct->setToolTip(QApplication::translate("MainWindow", "Import Specification for Current Project", 0));
 #endif // QT_NO_TOOLTIP
         specBuildAct->setText(QApplication::translate("MainWindow", "Build Project From Specification", 0));
+        actionLoad_Review_Report->setText(QApplication::translate("MainWindow", "Load Review Report", 0));
+        actionGenerate_Review_Report->setText(QApplication::translate("MainWindow", "Generate Review Report", 0));
         QTreeWidgetItem *___qtreewidgetitem = treeClassView->headerItem();
         ___qtreewidgetitem->setText(0, QApplication::translate("MainWindow", "Class View", 0));
 
@@ -1071,6 +1277,8 @@ public:
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:14px;\">}</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bo"
                         "ttom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS UI Gothic'; font-size:9pt;\"><br /></p></body></html>", 0));
+        pushButton_11->setText(QString());
+        label_9->setText(QApplication::translate("MainWindow", "CSCR-Tool", 0));
         pushButton_2->setText(QString());
         label_2->setText(QApplication::translate("MainWindow", "Ask anything about programming", 0));
         lineEdit->setInputMask(QString());
@@ -1133,7 +1341,17 @@ public:
         tableWidgetReport->setSortingEnabled(__sortingEnabled1);
 
         tabProgramOutput->setTabText(tabProgramOutput->indexOf(tabFaultReport), QApplication::translate("MainWindow", "Fault Report", 0));
-        tabProgramOutput->setTabText(tabProgramOutput->indexOf(tabAppOutput), QApplication::translate("MainWindow", "Application Output", 0));
+        tabProgramOutput->setTabText(tabProgramOutput->indexOf(tabAppOutput), QApplication::translate("MainWindow", "App Output", 0));
+        pushButton->setText(QApplication::translate("MainWindow", "Structure", 0));
+        pushButton_6->setText(QApplication::translate("MainWindow", "Start Reviewing", 0));
+        pushButton_7->setText(QApplication::translate("MainWindow", "Done", 0));
+        pushButton_8->setText(QApplication::translate("MainWindow", "Finish Reviewing", 0));
+        label_5->setText(QApplication::translate("MainWindow", "Current Line: ", 0));
+        label_6->setText(QApplication::translate("MainWindow", "Bug Name:", 0));
+        label_7->setText(QApplication::translate("MainWindow", "Bug Nature:", 0));
+        label_8->setText(QApplication::translate("MainWindow", "Brief Description:", 0));
+        pushButton_9->setText(QApplication::translate("MainWindow", "OK", 0));
+        pushButton_10->setText(QApplication::translate("MainWindow", "Cancel", 0));
         menuFile->setTitle(QApplication::translate("MainWindow", "File(&F)", 0));
         menuEdit->setTitle(QApplication::translate("MainWindow", "Edit(&E)", 0));
         menuWindow->setTitle(QApplication::translate("MainWindow", "Window(&W)", 0));

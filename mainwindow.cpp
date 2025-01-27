@@ -88,6 +88,7 @@ MainWindow::MainWindow()
     connect(ui->projectShowAct, &QAction::triggered, this, &MainWindow::showProjectView);
     connect(ui->hmppAct, &QAction::triggered, this, &MainWindow::showHMPPView);
     connect(ui->codePredictAct, &QAction::triggered, this, &MainWindow::showFixedCodeView);
+    connect(ui->cscrToolAct, &QAction::triggered, this, &MainWindow::showCSCRTool);
 
     connect(ui->tableWidgetReport, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), this, SLOT(setCursorToFaultLine(QTableWidgetItem*)));
 
@@ -1046,17 +1047,29 @@ void MainWindow::doubleClickedProjectTree(const QModelIndex &index)
 
 void MainWindow::showProjectView()
 {
-    ui->stackedWidget->setCurrentIndex(0);
+    ui->stackedWidgetLeft->setCurrentIndex(0);
+    ui->stackedWidgetRightDown->hide();
 }
 
 void MainWindow::showHMPPView()
 {
-    ui->stackedWidget->setCurrentIndex(3);
+    ui->stackedWidgetLeft->setCurrentIndex(3);
+    ui->stackedWidgetRightDown->hide();
 }
 
 void MainWindow::showFixedCodeView()
 {
-    ui->stackedWidget->setCurrentIndex(1);
+    ui->stackedWidgetLeft->setCurrentIndex(1);
+    ui->stackedWidgetRightDown->hide();
+}
+
+void MainWindow::showCSCRTool()
+{
+    ui->stackedWidgetLeft->setCurrentIndex(2);
+    ui->verticalLayout->setStretch(0, 1);
+    ui->verticalLayout->setStretch(1, 1);
+    ui->stackedWidgetRightDown->setCurrentIndex(1);
+    ui->stackedWidgetRightDown->show();
 }
 
 bool MainWindow::createNewClassFiles(const QString& className)
@@ -2306,6 +2319,8 @@ void MainWindow::showSCMFaultTab(int faultLineNumber){
     QString line = "line " + QString::number(faultLineNumber + 1);
     QTableWidgetItem *item = new QTableWidgetItem(line);
     ui->tableWidgetReport->setItem(0, 1, item);
+    ui->verticalLayout->setStretch(0, 0);
+    ui->verticalLayout->setStretch(1, 1);
     ui->tabProgramOutput->setCurrentIndex(1);
     ui->tabProgramOutput->show();
     qDebug() << "31";
@@ -2419,6 +2434,8 @@ void MainWindow::showClassEncapsulateIssueTab()
         return;
     }
     qDebug() << "tabProgramOutputDebug";
+    ui->verticalLayout->setStretch(0, 0);
+    ui->verticalLayout->setStretch(1, 1);
     ui->tabProgramOutput->setCurrentIndex(0);
     ui->tabProgramOutput->show();
 }
@@ -2697,6 +2714,7 @@ void MainWindow::switchLayoutDirection()
 void MainWindow::configCodeAnalysis()
 {
     qDebug() << "37";
+    ui->stackedWidgetRightDown->hide();
     CodeAnalyzeConfigDialog* analyzeConfig = new CodeAnalyzeConfigDialog(this);
     analyzeConfig->resize(analyzeConfig->width() * screenFactor, analyzeConfig->height() * screenFactor);
 
@@ -2981,6 +2999,11 @@ void MainWindow::showDemoSCM()
     QString faultName = "DivisionByZero";
 
     child->matchFaultPattern(divisionByZero, format, faultName);
+    ui->tabProgramOutput->setCurrentIndex(1);
+    ui->stackedWidgetRightDown->setCurrentIndex(0);
+    ui->stackedWidgetRightDown->show();
+    ui->tabProgramOutput->show();
+
 }
 
 ClassInfo MainWindow::getProClassInfo(QString className)
@@ -3080,7 +3103,7 @@ void MainWindow::startChatGPTDialog(QString text)
 void MainWindow::fixCodeByChatGPT(QString text)
 {
     ui->waitingChatGPTReplyButton->show();
-    ui->stackedWidget->setCurrentIndex(1);
+    ui->stackedWidgetLeft->setCurrentIndex(1);
     // Create a timer for timeout handling
     QTimer* timeoutTimer = new QTimer(this);
     timeoutTimer->setSingleShot(true); // Ensure the timer only fires once
