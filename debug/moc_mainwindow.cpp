@@ -21,8 +21,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[81];
-    char stringdata0[1337];
+    QByteArrayData data[85];
+    char stringdata0[1401];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -62,56 +62,60 @@ QT_MOC_LITERAL(27, 458, 16), // "fixCodeByChatGPT"
 QT_MOC_LITERAL(28, 475, 19), // "findClassMemberType"
 QT_MOC_LITERAL(29, 495, 9), // "className"
 QT_MOC_LITERAL(30, 505, 10), // "expression"
-QT_MOC_LITERAL(31, 516, 7), // "newFile"
-QT_MOC_LITERAL(32, 524, 4), // "open"
-QT_MOC_LITERAL(33, 529, 4), // "save"
-QT_MOC_LITERAL(34, 534, 6), // "saveAs"
-QT_MOC_LITERAL(35, 541, 23), // "updateRecentFileActions"
-QT_MOC_LITERAL(36, 565, 14), // "openRecentFile"
-QT_MOC_LITERAL(37, 580, 3), // "cut"
-QT_MOC_LITERAL(38, 584, 4), // "copy"
-QT_MOC_LITERAL(39, 589, 5), // "paste"
-QT_MOC_LITERAL(40, 595, 5), // "about"
-QT_MOC_LITERAL(41, 601, 14), // "aboutDeveloper"
-QT_MOC_LITERAL(42, 616, 11), // "updateMenus"
-QT_MOC_LITERAL(43, 628, 16), // "updateWindowMenu"
-QT_MOC_LITERAL(44, 645, 14), // "createMdiChild"
-QT_MOC_LITERAL(45, 660, 9), // "MdiChild*"
-QT_MOC_LITERAL(46, 670, 21), // "switchLayoutDirection"
-QT_MOC_LITERAL(47, 692, 18), // "configCodeAnalysis"
-QT_MOC_LITERAL(48, 711, 17), // "managePropertySet"
-QT_MOC_LITERAL(49, 729, 19), // "showAllRuleDescript"
-QT_MOC_LITERAL(50, 749, 17), // "updateProgressBar"
-QT_MOC_LITERAL(51, 767, 20), // "setCursorToFaultLine"
-QT_MOC_LITERAL(52, 788, 12), // "showHMPPView"
-QT_MOC_LITERAL(53, 801, 15), // "showProjectView"
-QT_MOC_LITERAL(54, 817, 17), // "showFixedCodeView"
-QT_MOC_LITERAL(55, 835, 12), // "showCSCRTool"
-QT_MOC_LITERAL(56, 848, 15), // "showSCMFaultTab"
-QT_MOC_LITERAL(57, 864, 14), // "lineEditPrompt"
-QT_MOC_LITERAL(58, 879, 24), // "doubleClickedProjectTree"
-QT_MOC_LITERAL(59, 904, 5), // "index"
-QT_MOC_LITERAL(60, 910, 30), // "doubleClickedSpecificationView"
-QT_MOC_LITERAL(61, 941, 26), // "doubleClickedToDoTableView"
-QT_MOC_LITERAL(62, 968, 21), // "completeSpecification"
-QT_MOC_LITERAL(63, 990, 19), // "updateToDoListModel"
-QT_MOC_LITERAL(64, 1010, 18), // "clearToDoListModel"
-QT_MOC_LITERAL(65, 1029, 16), // "completeToDoNote"
-QT_MOC_LITERAL(66, 1046, 20), // "setTargetLangToCplus"
-QT_MOC_LITERAL(67, 1067, 19), // "setTargetLangToJava"
-QT_MOC_LITERAL(68, 1087, 21), // "setTargetLangToCsharp"
-QT_MOC_LITERAL(69, 1109, 22), // "updateProjectClassInfo"
-QT_MOC_LITERAL(70, 1132, 25), // "QHash<QString,ClassInfo>&"
-QT_MOC_LITERAL(71, 1158, 16), // "newClassInfoHash"
-QT_MOC_LITERAL(72, 1175, 22), // "insertProjectClassInfo"
-QT_MOC_LITERAL(73, 1198, 16), // "QList<ClassInfo>"
-QT_MOC_LITERAL(74, 1215, 16), // "insertClassInfos"
-QT_MOC_LITERAL(75, 1232, 25), // "on_copyCodeButton_clicked"
-QT_MOC_LITERAL(76, 1258, 30), // "on_copyFixedCodeButton_clicked"
-QT_MOC_LITERAL(77, 1289, 8), // "testSlot"
-QT_MOC_LITERAL(78, 1298, 22), // "projectViewMenuRequest"
-QT_MOC_LITERAL(79, 1321, 3), // "pos"
-QT_MOC_LITERAL(80, 1325, 11) // "showDemoSCM"
+QT_MOC_LITERAL(31, 516, 17), // "loadBugReportFile"
+QT_MOC_LITERAL(32, 534, 17), // "bugReportFilePath"
+QT_MOC_LITERAL(33, 552, 16), // "reviewMethodCode"
+QT_MOC_LITERAL(34, 569, 10), // "methodName"
+QT_MOC_LITERAL(35, 580, 7), // "newFile"
+QT_MOC_LITERAL(36, 588, 4), // "open"
+QT_MOC_LITERAL(37, 593, 4), // "save"
+QT_MOC_LITERAL(38, 598, 6), // "saveAs"
+QT_MOC_LITERAL(39, 605, 23), // "updateRecentFileActions"
+QT_MOC_LITERAL(40, 629, 14), // "openRecentFile"
+QT_MOC_LITERAL(41, 644, 3), // "cut"
+QT_MOC_LITERAL(42, 648, 4), // "copy"
+QT_MOC_LITERAL(43, 653, 5), // "paste"
+QT_MOC_LITERAL(44, 659, 5), // "about"
+QT_MOC_LITERAL(45, 665, 14), // "aboutDeveloper"
+QT_MOC_LITERAL(46, 680, 11), // "updateMenus"
+QT_MOC_LITERAL(47, 692, 16), // "updateWindowMenu"
+QT_MOC_LITERAL(48, 709, 14), // "createMdiChild"
+QT_MOC_LITERAL(49, 724, 9), // "MdiChild*"
+QT_MOC_LITERAL(50, 734, 21), // "switchLayoutDirection"
+QT_MOC_LITERAL(51, 756, 18), // "configCodeAnalysis"
+QT_MOC_LITERAL(52, 775, 17), // "managePropertySet"
+QT_MOC_LITERAL(53, 793, 19), // "showAllRuleDescript"
+QT_MOC_LITERAL(54, 813, 17), // "updateProgressBar"
+QT_MOC_LITERAL(55, 831, 20), // "setCursorToFaultLine"
+QT_MOC_LITERAL(56, 852, 12), // "showHMPPView"
+QT_MOC_LITERAL(57, 865, 15), // "showProjectView"
+QT_MOC_LITERAL(58, 881, 17), // "showFixedCodeView"
+QT_MOC_LITERAL(59, 899, 12), // "showCSCRTool"
+QT_MOC_LITERAL(60, 912, 15), // "showSCMFaultTab"
+QT_MOC_LITERAL(61, 928, 14), // "lineEditPrompt"
+QT_MOC_LITERAL(62, 943, 24), // "doubleClickedProjectTree"
+QT_MOC_LITERAL(63, 968, 5), // "index"
+QT_MOC_LITERAL(64, 974, 30), // "doubleClickedSpecificationView"
+QT_MOC_LITERAL(65, 1005, 26), // "doubleClickedToDoTableView"
+QT_MOC_LITERAL(66, 1032, 21), // "completeSpecification"
+QT_MOC_LITERAL(67, 1054, 19), // "updateToDoListModel"
+QT_MOC_LITERAL(68, 1074, 18), // "clearToDoListModel"
+QT_MOC_LITERAL(69, 1093, 16), // "completeToDoNote"
+QT_MOC_LITERAL(70, 1110, 20), // "setTargetLangToCplus"
+QT_MOC_LITERAL(71, 1131, 19), // "setTargetLangToJava"
+QT_MOC_LITERAL(72, 1151, 21), // "setTargetLangToCsharp"
+QT_MOC_LITERAL(73, 1173, 22), // "updateProjectClassInfo"
+QT_MOC_LITERAL(74, 1196, 25), // "QHash<QString,ClassInfo>&"
+QT_MOC_LITERAL(75, 1222, 16), // "newClassInfoHash"
+QT_MOC_LITERAL(76, 1239, 22), // "insertProjectClassInfo"
+QT_MOC_LITERAL(77, 1262, 16), // "QList<ClassInfo>"
+QT_MOC_LITERAL(78, 1279, 16), // "insertClassInfos"
+QT_MOC_LITERAL(79, 1296, 25), // "on_copyCodeButton_clicked"
+QT_MOC_LITERAL(80, 1322, 30), // "on_copyFixedCodeButton_clicked"
+QT_MOC_LITERAL(81, 1353, 8), // "testSlot"
+QT_MOC_LITERAL(82, 1362, 22), // "projectViewMenuRequest"
+QT_MOC_LITERAL(83, 1385, 3), // "pos"
+QT_MOC_LITERAL(84, 1389, 11) // "showDemoSCM"
 
     },
     "MainWindow\0setCursorToIssueLine\0\0"
@@ -128,10 +132,11 @@ QT_MOC_LITERAL(80, 1325, 11) // "showDemoSCM"
     "buildFilesFromSpecification\0"
     "startChatGPTDialog\0text\0fixCodeByChatGPT\0"
     "findClassMemberType\0className\0expression\0"
-    "newFile\0open\0save\0saveAs\0"
-    "updateRecentFileActions\0openRecentFile\0"
-    "cut\0copy\0paste\0about\0aboutDeveloper\0"
-    "updateMenus\0updateWindowMenu\0"
+    "loadBugReportFile\0bugReportFilePath\0"
+    "reviewMethodCode\0methodName\0newFile\0"
+    "open\0save\0saveAs\0updateRecentFileActions\0"
+    "openRecentFile\0cut\0copy\0paste\0about\0"
+    "aboutDeveloper\0updateMenus\0updateWindowMenu\0"
     "createMdiChild\0MdiChild*\0switchLayoutDirection\0"
     "configCodeAnalysis\0managePropertySet\0"
     "showAllRuleDescript\0updateProgressBar\0"
@@ -159,7 +164,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      55,   14, // methods
+      57,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -167,61 +172,63 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    1,  289,    2, 0x0a /* Public */,
-       5,    1,  292,    2, 0x0a /* Public */,
-       8,    0,  295,    2, 0x0a /* Public */,
-       9,    5,  296,    2, 0x0a /* Public */,
-      15,    0,  307,    2, 0x0a /* Public */,
-      16,    2,  308,    2, 0x0a /* Public */,
-      20,    2,  313,    2, 0x0a /* Public */,
-      23,    0,  318,    2, 0x0a /* Public */,
-      24,    0,  319,    2, 0x0a /* Public */,
-      25,    1,  320,    2, 0x0a /* Public */,
-      27,    1,  323,    2, 0x0a /* Public */,
-      28,    2,  326,    2, 0x0a /* Public */,
-      31,    0,  331,    2, 0x08 /* Private */,
-      32,    0,  332,    2, 0x08 /* Private */,
-      33,    0,  333,    2, 0x08 /* Private */,
-      34,    0,  334,    2, 0x08 /* Private */,
-      35,    0,  335,    2, 0x08 /* Private */,
-      36,    0,  336,    2, 0x08 /* Private */,
-      37,    0,  337,    2, 0x08 /* Private */,
-      38,    0,  338,    2, 0x08 /* Private */,
-      39,    0,  339,    2, 0x08 /* Private */,
-      40,    0,  340,    2, 0x08 /* Private */,
-      41,    0,  341,    2, 0x08 /* Private */,
-      42,    0,  342,    2, 0x08 /* Private */,
-      43,    0,  343,    2, 0x08 /* Private */,
-      44,    0,  344,    2, 0x08 /* Private */,
-      46,    0,  345,    2, 0x08 /* Private */,
-      47,    0,  346,    2, 0x08 /* Private */,
-      48,    0,  347,    2, 0x08 /* Private */,
-      49,    0,  348,    2, 0x08 /* Private */,
-      50,    0,  349,    2, 0x08 /* Private */,
-      51,    1,  350,    2, 0x08 /* Private */,
-      52,    0,  353,    2, 0x08 /* Private */,
-      53,    0,  354,    2, 0x08 /* Private */,
-      54,    0,  355,    2, 0x08 /* Private */,
-      55,    0,  356,    2, 0x08 /* Private */,
-      56,    1,  357,    2, 0x08 /* Private */,
-      57,    0,  360,    2, 0x08 /* Private */,
-      58,    1,  361,    2, 0x08 /* Private */,
-      60,    1,  364,    2, 0x08 /* Private */,
-      61,    1,  367,    2, 0x08 /* Private */,
-      62,    1,  370,    2, 0x08 /* Private */,
-      63,    0,  373,    2, 0x08 /* Private */,
-      64,    0,  374,    2, 0x08 /* Private */,
-      65,    1,  375,    2, 0x08 /* Private */,
-      66,    0,  378,    2, 0x08 /* Private */,
-      67,    0,  379,    2, 0x08 /* Private */,
-      68,    0,  380,    2, 0x08 /* Private */,
-      69,    2,  381,    2, 0x08 /* Private */,
-      72,    1,  386,    2, 0x08 /* Private */,
-      75,    0,  389,    2, 0x08 /* Private */,
-      76,    0,  390,    2, 0x08 /* Private */,
-      77,    0,  391,    2, 0x08 /* Private */,
-      78,    1,  392,    2, 0x08 /* Private */,
-      80,    0,  395,    2, 0x08 /* Private */,
+       1,    1,  299,    2, 0x0a /* Public */,
+       5,    1,  302,    2, 0x0a /* Public */,
+       8,    0,  305,    2, 0x0a /* Public */,
+       9,    5,  306,    2, 0x0a /* Public */,
+      15,    0,  317,    2, 0x0a /* Public */,
+      16,    2,  318,    2, 0x0a /* Public */,
+      20,    2,  323,    2, 0x0a /* Public */,
+      23,    0,  328,    2, 0x0a /* Public */,
+      24,    0,  329,    2, 0x0a /* Public */,
+      25,    1,  330,    2, 0x0a /* Public */,
+      27,    1,  333,    2, 0x0a /* Public */,
+      28,    2,  336,    2, 0x0a /* Public */,
+      31,    1,  341,    2, 0x0a /* Public */,
+      33,    1,  344,    2, 0x0a /* Public */,
+      35,    0,  347,    2, 0x08 /* Private */,
+      36,    0,  348,    2, 0x08 /* Private */,
+      37,    0,  349,    2, 0x08 /* Private */,
+      38,    0,  350,    2, 0x08 /* Private */,
+      39,    0,  351,    2, 0x08 /* Private */,
+      40,    0,  352,    2, 0x08 /* Private */,
+      41,    0,  353,    2, 0x08 /* Private */,
+      42,    0,  354,    2, 0x08 /* Private */,
+      43,    0,  355,    2, 0x08 /* Private */,
+      44,    0,  356,    2, 0x08 /* Private */,
+      45,    0,  357,    2, 0x08 /* Private */,
+      46,    0,  358,    2, 0x08 /* Private */,
+      47,    0,  359,    2, 0x08 /* Private */,
+      48,    0,  360,    2, 0x08 /* Private */,
+      50,    0,  361,    2, 0x08 /* Private */,
+      51,    0,  362,    2, 0x08 /* Private */,
+      52,    0,  363,    2, 0x08 /* Private */,
+      53,    0,  364,    2, 0x08 /* Private */,
+      54,    0,  365,    2, 0x08 /* Private */,
+      55,    1,  366,    2, 0x08 /* Private */,
+      56,    0,  369,    2, 0x08 /* Private */,
+      57,    0,  370,    2, 0x08 /* Private */,
+      58,    0,  371,    2, 0x08 /* Private */,
+      59,    0,  372,    2, 0x08 /* Private */,
+      60,    1,  373,    2, 0x08 /* Private */,
+      61,    0,  376,    2, 0x08 /* Private */,
+      62,    1,  377,    2, 0x08 /* Private */,
+      64,    1,  380,    2, 0x08 /* Private */,
+      65,    1,  383,    2, 0x08 /* Private */,
+      66,    1,  386,    2, 0x08 /* Private */,
+      67,    0,  389,    2, 0x08 /* Private */,
+      68,    0,  390,    2, 0x08 /* Private */,
+      69,    1,  391,    2, 0x08 /* Private */,
+      70,    0,  394,    2, 0x08 /* Private */,
+      71,    0,  395,    2, 0x08 /* Private */,
+      72,    0,  396,    2, 0x08 /* Private */,
+      73,    2,  397,    2, 0x08 /* Private */,
+      76,    1,  402,    2, 0x08 /* Private */,
+      79,    0,  405,    2, 0x08 /* Private */,
+      80,    0,  406,    2, 0x08 /* Private */,
+      81,    0,  407,    2, 0x08 /* Private */,
+      82,    1,  408,    2, 0x08 /* Private */,
+      84,    0,  411,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void, 0x80000000 | 3,    4,
@@ -236,6 +243,8 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void, QMetaType::QString,   26,
     QMetaType::Void, QMetaType::QString,   26,
     QMetaType::QString, QMetaType::QString, QMetaType::QString,   29,   30,
+    QMetaType::Void, QMetaType::QString,   32,
+    QMetaType::Void, QMetaType::QString,   34,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -249,7 +258,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    0x80000000 | 45,
+    0x80000000 | 49,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -262,22 +271,22 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void, QMetaType::Int,    2,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QModelIndex,   59,
-    QMetaType::Void, QMetaType::QModelIndex,   59,
-    QMetaType::Void, QMetaType::QModelIndex,   59,
-    QMetaType::Void, QMetaType::QModelIndex,   59,
+    QMetaType::Void, QMetaType::QModelIndex,   63,
+    QMetaType::Void, QMetaType::QModelIndex,   63,
+    QMetaType::Void, QMetaType::QModelIndex,   63,
+    QMetaType::Void, QMetaType::QModelIndex,   63,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QModelIndex,   59,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void, QMetaType::QString, 0x80000000 | 70,   17,   71,
-    QMetaType::Void, 0x80000000 | 73,   74,
+    QMetaType::Void, QMetaType::QModelIndex,   63,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QPoint,   79,
+    QMetaType::Void, QMetaType::QString, 0x80000000 | 74,   17,   75,
+    QMetaType::Void, 0x80000000 | 77,   78,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::QPoint,   83,
     QMetaType::Void,
 
        0        // eod
@@ -302,50 +311,52 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 10: _t->fixCodeByChatGPT((*reinterpret_cast< QString(*)>(_a[1]))); break;
         case 11: { QString _r = _t->findClassMemberType((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 12: _t->newFile(); break;
-        case 13: _t->open(); break;
-        case 14: _t->save(); break;
-        case 15: _t->saveAs(); break;
-        case 16: _t->updateRecentFileActions(); break;
-        case 17: _t->openRecentFile(); break;
-        case 18: _t->cut(); break;
-        case 19: _t->copy(); break;
-        case 20: _t->paste(); break;
-        case 21: _t->about(); break;
-        case 22: _t->aboutDeveloper(); break;
-        case 23: _t->updateMenus(); break;
-        case 24: _t->updateWindowMenu(); break;
-        case 25: { MdiChild* _r = _t->createMdiChild();
+        case 12: _t->loadBugReportFile((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 13: _t->reviewMethodCode((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 14: _t->newFile(); break;
+        case 15: _t->open(); break;
+        case 16: _t->save(); break;
+        case 17: _t->saveAs(); break;
+        case 18: _t->updateRecentFileActions(); break;
+        case 19: _t->openRecentFile(); break;
+        case 20: _t->cut(); break;
+        case 21: _t->copy(); break;
+        case 22: _t->paste(); break;
+        case 23: _t->about(); break;
+        case 24: _t->aboutDeveloper(); break;
+        case 25: _t->updateMenus(); break;
+        case 26: _t->updateWindowMenu(); break;
+        case 27: { MdiChild* _r = _t->createMdiChild();
             if (_a[0]) *reinterpret_cast< MdiChild**>(_a[0]) = _r; }  break;
-        case 26: _t->switchLayoutDirection(); break;
-        case 27: _t->configCodeAnalysis(); break;
-        case 28: _t->managePropertySet(); break;
-        case 29: _t->showAllRuleDescript(); break;
-        case 30: _t->updateProgressBar(); break;
-        case 31: _t->setCursorToFaultLine((*reinterpret_cast< QTableWidgetItem*(*)>(_a[1]))); break;
-        case 32: _t->showHMPPView(); break;
-        case 33: _t->showProjectView(); break;
-        case 34: _t->showFixedCodeView(); break;
-        case 35: _t->showCSCRTool(); break;
-        case 36: _t->showSCMFaultTab((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 37: _t->lineEditPrompt(); break;
-        case 38: _t->doubleClickedProjectTree((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
-        case 39: _t->doubleClickedSpecificationView((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
-        case 40: _t->doubleClickedToDoTableView((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
-        case 41: _t->completeSpecification((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
-        case 42: _t->updateToDoListModel(); break;
-        case 43: _t->clearToDoListModel(); break;
-        case 44: _t->completeToDoNote((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
-        case 45: _t->setTargetLangToCplus(); break;
-        case 46: _t->setTargetLangToJava(); break;
-        case 47: _t->setTargetLangToCsharp(); break;
-        case 48: _t->updateProjectClassInfo((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QHash<QString,ClassInfo>(*)>(_a[2]))); break;
-        case 49: _t->insertProjectClassInfo((*reinterpret_cast< const QList<ClassInfo>(*)>(_a[1]))); break;
-        case 50: _t->on_copyCodeButton_clicked(); break;
-        case 51: _t->on_copyFixedCodeButton_clicked(); break;
-        case 52: _t->testSlot(); break;
-        case 53: _t->projectViewMenuRequest((*reinterpret_cast< const QPoint(*)>(_a[1]))); break;
-        case 54: _t->showDemoSCM(); break;
+        case 28: _t->switchLayoutDirection(); break;
+        case 29: _t->configCodeAnalysis(); break;
+        case 30: _t->managePropertySet(); break;
+        case 31: _t->showAllRuleDescript(); break;
+        case 32: _t->updateProgressBar(); break;
+        case 33: _t->setCursorToFaultLine((*reinterpret_cast< QTableWidgetItem*(*)>(_a[1]))); break;
+        case 34: _t->showHMPPView(); break;
+        case 35: _t->showProjectView(); break;
+        case 36: _t->showFixedCodeView(); break;
+        case 37: _t->showCSCRTool(); break;
+        case 38: _t->showSCMFaultTab((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 39: _t->lineEditPrompt(); break;
+        case 40: _t->doubleClickedProjectTree((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
+        case 41: _t->doubleClickedSpecificationView((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
+        case 42: _t->doubleClickedToDoTableView((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
+        case 43: _t->completeSpecification((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
+        case 44: _t->updateToDoListModel(); break;
+        case 45: _t->clearToDoListModel(); break;
+        case 46: _t->completeToDoNote((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
+        case 47: _t->setTargetLangToCplus(); break;
+        case 48: _t->setTargetLangToJava(); break;
+        case 49: _t->setTargetLangToCsharp(); break;
+        case 50: _t->updateProjectClassInfo((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QHash<QString,ClassInfo>(*)>(_a[2]))); break;
+        case 51: _t->insertProjectClassInfo((*reinterpret_cast< const QList<ClassInfo>(*)>(_a[1]))); break;
+        case 52: _t->on_copyCodeButton_clicked(); break;
+        case 53: _t->on_copyFixedCodeButton_clicked(); break;
+        case 54: _t->testSlot(); break;
+        case 55: _t->projectViewMenuRequest((*reinterpret_cast< const QPoint(*)>(_a[1]))); break;
+        case 56: _t->showDemoSCM(); break;
         default: ;
         }
     }
@@ -376,13 +387,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 55)
+        if (_id < 57)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 55;
+        _id -= 57;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 55)
+        if (_id < 57)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 55;
+        _id -= 57;
     }
     return _id;
 }

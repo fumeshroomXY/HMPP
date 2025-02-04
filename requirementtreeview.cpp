@@ -5,9 +5,11 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QInputDialog>
+#include <QFileDialog>
 #include <QFont>
 #include <QMessageBox>
 #include <QLabel>
+#include "ui_cscrtooldialog.h"
 
 RequirementTreeView::RequirementTreeView(QWidget *parent) : QTreeView(parent)
 {
@@ -425,4 +427,71 @@ void SameNameMethodHandleDialog::saveResult(const QString& buttonClicked) {
     resultData.buttonClicked = buttonClicked;
     resultData.indexA = listA->currentRow() < 0 ? 0 : listA->currentRow();
     resultData.indexB = listB->currentRow() < 0 ? 0 : listB->currentRow();
+}
+
+CscrToolDialog::CscrToolDialog(QWidget *parent, const QList<QString> & methods)
+    : QDialog(parent),
+      ui(new Ui::cscrtooldialog),  // Initialize with the lowercase UI class name
+      buttonGroup(new QButtonGroup(this))  // Initialize the QButtonGroup
+{
+    ui->setupUi(this);  // Link the UI to the dialog
+    ui->stackedWidget->setCurrentIndex(0);
+    // Add radio buttons to the button group
+    buttonGroup->addButton(ui->reviewButton, 1);  // ID = 1
+    buttonGroup->addButton(ui->loadButton, 2);  // ID = 2
+    ui->reviewButton->setChecked(true); // Set default selection
+
+    ui->methodComboBox->addItems(methods);
+
+    // Connect the button group signal to the slot
+    connect(buttonGroup, SIGNAL(buttonClicked(int)), this, SLOT(handleOptionChanged(int)));
+
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &CscrToolDialog::onOkClicked);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
+    //QString filePath;  // Variable to hold the file path
+
+    // Connect the button to the lambda and pass filePath as reference
+    connect(ui->loadFileButton, &QPushButton::clicked, [this]() {
+        QString selectedFilePath = QFileDialog::getOpenFileName(
+            this,
+            tr("Select a Bug Report File"),
+            QString(),
+            tr("Text Files (*.txt)")
+        );
+        ui->lineEdit->setText(selectedFilePath);
+
+        if (!selectedFilePath.isEmpty()) {
+            this->bugReportFilePath = selectedFilePath;
+            qDebug() << "Selected file path:" << selectedFilePath;
+        } else {
+            qDebug() << "No file selected.";
+        }
+    });
+}
+
+CscrToolDialog::~CscrToolDialog()
+{
+    delete ui;  // Clean up the UI
+}
+
+void CscrToolDialog::onOkClicked()
+{
+    if (ui->loadButton->isChecked()) {
+        emit loadBugReportFile(bugReportFilePath);
+    } else if (ui->reviewButton->isChecked()) {
+        emit reviewMethod(ui->methodComboBox->currentText());
+    }
+    accept();
+}
+
+void CscrToolDialog::handleOptionChanged(int id)
+{
+    if (id == 1) {
+        ui->stackedWidget->show();
+        ui->stackedWidget->setCurrentIndex(0);
+    } else if (id == 2) {
+        ui->stackedWidget->show();
+        ui->stackedWidget->setCurrentIndex(1);
+    }
 }

@@ -76,7 +76,7 @@ class MdiChild : public QTextEdit
 public:
     explicit MdiChild(QWidget *parent = 0);
 
-    void newFile();
+    void newFile(QString fileName = "");
     bool loadFile(const QString &fileName);   //加载文件
     bool save();
     bool saveAs();
@@ -137,6 +137,12 @@ public:
     //将todo需求伪码改为注释
     void completeToDoNote(int lineNumber);
 
+    //根据当前行号找到对应的函数代码
+    QString findMethodCodeByName(int currentBlockNumber);
+
+    bool getCscrToolMode() const;
+    void setCscrToolMode(bool value);
+
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;   //关闭事件
 
@@ -180,6 +186,8 @@ private slots:
     void askChatGPTTriggered();
 
     void fixCodeTriggered();
+
+    void addBugTriggered();
 
 
     //更新需求括号的匹配
@@ -229,6 +237,8 @@ private:
     bool insertPreview = false;
     bool faultflag = true;
     bool fixedfalg = false;
+
+    bool cscrToolMode = false;
 
     bool matchLeftMark(QTextBlock currentBlock, int index,
                               int numRightParentheses, int &matchLineNumber, int &matchPosition,

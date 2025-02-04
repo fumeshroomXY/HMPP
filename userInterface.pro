@@ -61,4 +61,5 @@ FORMS += \
     allruledescriptdialog.ui \
     managepropertysetdialog.ui \
     faultpromptdialog.ui \
-    selectnewclassdialog.ui
+    selectnewclassdialog.ui \
+    cscrtooldialog.ui

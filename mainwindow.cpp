@@ -1070,6 +1070,27 @@ void MainWindow::showCSCRTool()
     ui->verticalLayout->setStretch(1, 1);
     ui->stackedWidgetRightDown->setCurrentIndex(1);
     ui->stackedWidgetRightDown->show();
+
+    //QList<QString> itemList = {"Option 1", "Option 2", "Option 3"};
+    CscrToolDialog *cscrToolDialog = new CscrToolDialog(this, cscrToolMethodNameToCode.keys());
+    connect(cscrToolDialog, &CscrToolDialog::reviewMethod, this, &MainWindow::reviewMethodCode);
+    connect(cscrToolDialog, &CscrToolDialog::loadBugReportFile, this, &MainWindow::loadBugReportFile);
+    cscrToolDialog->exec();
+    delete cscrToolDialog;  // Cleanup after execution
+}
+
+void MainWindow::loadBugReportFile(QString bugReportFilePath)
+{
+
+}
+
+void MainWindow::reviewMethodCode(QString methodName)
+{
+    QString methodCode = cscrToolMethodNameToCode.value(methodName);
+    MdiChild* cscrToolMdiChild = newFile("review_" + methodName + ".txt");
+    cscrToolMdiChild->setCscrToolMode(true);
+    cscrToolMdiChild->setText(methodCode);
+
 }
 
 bool MainWindow::createNewClassFiles(const QString& className)
@@ -1853,12 +1874,22 @@ void MainWindow::closeEvent(QCloseEvent *event)
     qDebug() << "13";
 }
 
-void MainWindow::newFile()
+void MainWindow::newFile(QString fileName)
 {
     qDebug() << "14";
     MdiChild *child = createMdiChild();
-    child->newFile();
+    child->newFile(fileName);
     child->show();
+    qDebug() << "14";
+}
+
+MdiChild* MainWindow::newFile(QString fileName)
+{
+    qDebug() << "14";
+    MdiChild *child = createMdiChild();
+    child->newFile(fileName);
+    child->show();
+    return child;
     qDebug() << "14";
 }
 
@@ -2692,6 +2723,11 @@ void MainWindow::init()
 
     //当前项目使用的目标语言
     targetLanginCurrentPro = QString();
+}
+
+void MainWindow::setCscrToolMethodNameToCode(const QHash<QString, QString> &value)
+{
+    cscrToolMethodNameToCode = value;
 }
 
 void MainWindow::switchLayoutDirection()

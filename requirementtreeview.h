@@ -10,6 +10,7 @@
 #include <QHash>
 #include <QStringList>
 #include <QListWidget>
+#include <QButtonGroup>  // Include QButtonGroup
 
 
 #include <mdichild.h>
@@ -116,6 +117,33 @@ private:
     QListWidget* listA;
     QListWidget* listB;
     DialogResult resultData{"Cancel", 0, 0}; // Initialize indices to -1 (no selection)
+};
+
+namespace Ui {
+    class cscrtooldialog;  // Matches the name of the .ui file
+}
+
+class CscrToolDialog : public QDialog
+{
+    Q_OBJECT
+
+public:
+    explicit CscrToolDialog(QWidget *parent = nullptr, const QList<QString> & methods = QList<QString>());
+    ~CscrToolDialog();
+
+signals:
+    void loadBugReportFile(QString);
+    void reviewMethod(QString);
+
+private slots:
+    void handleOptionChanged(int id);  // Slot to handle the selection change
+    void onOkClicked();
+
+private:
+    Ui::cscrtooldialog *ui;
+    QButtonGroup *buttonGroup;  // Pointer to the QButtonGroup
+    QString bugReportFilePath;
+
 };
 
 

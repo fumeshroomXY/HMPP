@@ -112,6 +112,8 @@ public:
     //将ChatGPT的回答分割为三部分
     void separateText(const QString &fullText, QString &problemPart, QString &codePart, QString &conclusionPart);
 
+    void setCscrToolMethodNameToCode(const QHash<QString, QString> &value);
+
 public slots:
 
     //点击Issue时跳转到对应行
@@ -151,11 +153,18 @@ public slots:
     //查询类对象类型
     QString findClassMemberType(QString className, QString expression);
 
+    //导入Bug Report 文件
+    void loadBugReportFile(QString bugReportFilePath);
+
+    //开始复盘代码模式
+    void reviewMethodCode(QString methodName);
+
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;    //指定重载符
 
 private slots:
-    void newFile();
+    void newFile(QString fileName = "");
+    MdiChild* newFile(QString fileName = "");
     void open();
     void save();
     void saveAs();
@@ -281,7 +290,7 @@ private:
 
     QHash<QString, QList<InformalSpecInfo>> fileInformalSpecs;
 
-
+    QHash<QString, QString> cscrToolMethodNameToCode;
 
     //include文件中包含的类
     QStringList includedClass;

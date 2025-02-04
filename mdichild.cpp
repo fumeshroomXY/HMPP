@@ -1,5 +1,6 @@
 #include <QtWidgets>
 #include <QPlainTextEdit>
+#include <QtGlobal>
 
 #include "mdichild.h"
 #include "faultpromptdialog.h"
@@ -64,14 +65,18 @@ MdiChild::MdiChild(QWidget *parent): QTextEdit(parent)
     qDebug() << "-1";
 }
 
-void MdiChild::newFile()
+void MdiChild::newFile(QString fileName)
 {
     qDebug() << "-2";
     static int sequenceNumber = 1;
 
     isUntitled = true;    //新建的文档没有被保存过
     //新建文件，curFile存的不是文件的完整路径，所以不推荐直接新建文件，最好是先新建项目
-    curFile = tr("document%1.txt").arg(sequenceNumber++);  //当前文件命名
+    if(fileName.isEmpty()){
+        curFile = tr("document%1.txt").arg(sequenceNumber++);  //当前文件命名
+    }else{
+        curFile = fileName;
+    }
     setWindowTitle(curFile + "[*]");
 
     connect(document(), &QTextDocument::contentsChanged,
@@ -235,6 +240,10 @@ void MdiChild::contextMenuEvent(QContextMenuEvent *event)
     // Connect the action to a custom slot
     connect(askChatGPTAction, &QAction::triggered, this, &MdiChild::askChatGPTTriggered);
 
+    QAction* addBugDescription = menu->addAction("Add a bug description");
+
+    connect(addBugDescription, &QAction::triggered, this, &MdiChild::addBugTriggered);
+
     // Show the menu at the cursor's position
     menu->exec(event->globalPos());
 
@@ -294,6 +303,16 @@ void MdiChild::setCurrentFile(const QString &fileName)
 QString MdiChild::strippedName(const QString &fullFileName)
 {
     return QFileInfo(fullFileName).fileName();
+}
+
+bool MdiChild::getCscrToolMode() const
+{
+    return cscrToolMode;
+}
+
+void MdiChild::setCscrToolMode(bool value)
+{
+    cscrToolMode = value;
 }
 
 MainWindow *MdiChild::getMainWindowPtr() const
@@ -915,6 +934,11 @@ void MdiChild::fixCodeTriggered()
     }
 }
 
+void MdiChild::addBugTriggered()
+{
+
+}
+
 void MdiChild::updateMatch()
 {
     qDebug() << "-21";
@@ -1325,8 +1349,6 @@ void MdiChild::updateObjectInfoInHeaderFile()
     updateTopParenthesis();
     syntaxIssueList.clear();
 
-
-
     QString text = document()->toPlainText(); // 获取文档中的所有文本
 
     QString classBodyStart = QString("\\bclass[^\\S\n]+%1[^\\{]*(\\{)").arg(className);
@@ -1448,6 +1470,37 @@ void MdiChild::updateObjectInfoInHeaderFile()
     emit showHeaderFileIssue();
 }
 
+QString MdiChild::findMethodCodeByName(int currentBlockNumber)
+{
+    QString methodCode;
+    int minD = document()->blockCount();
+    int startLine = -1;
+    int endLine = -1;
+    for (Parenthesis* p : topParenthesis) {
+        if (p && qAbs(currentBlockNumber - p->startLine) < minD) {
+             minD = qAbs(currentBlockNumber - p->startLine);
+             startLine = p->startLine;
+             endLine = p->endLine;
+        }
+    }
+    if(startLine != -1 && endLine != -1 && startLine <= endLine){
+        QStringList lines;
+        int totalLines = document()->blockCount();
+        startLine = qBound(0, startLine, totalLines - 1);
+        endLine = qBound(0, endLine, totalLines - 1);
+
+        QTextBlock block = document()->findBlockByLineNumber(startLine);
+        for (int i = startLine; i <= endLine && block.isValid(); ++i) {
+            lines.append(block.text());
+            block = block.next();
+        }
+
+        return lines.join("\n");
+    }else{
+        return QString();
+    }
+}
+
 
 
 
@@ -1477,6 +1530,9 @@ void MdiChild::updateObjectInfoInSourceFile()
     if(fileClassName != "main") classInfoHash->insert(fileClassName, ClassInfo(fileClassName));
 
     QString text = document()->toPlainText(); // 获取文档中的所有文本
+
+    QHash<QString, QString> methodNameToCode;
+
     // 遍历正则表达式列表，并检测文本是否符合
     foreach (const QRegExp &reg, syntaxRuleList) {
         if(reg == classPattern){
@@ -1841,7 +1897,20 @@ void MdiChild::updateObjectInfoInSourceFile()
                 qDebug()  << "definedMethods: " ;
                 qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;  //type需要选择是否加上&或*，cap(2)
                 //qDebug() << "ConstMethod: " << reg.cap(1) << " " << reg.cap(2) << " " << reg.cap(3) << " " << reg.cap(4) << " " << reg.cap(5);
-                qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
+                int currentBlockNumber = document()->findBlock(pos).blockNumber();
+                qDebug() << "current block: " << currentBlockNumber;
+                QString methodCode = findMethodCodeByName(currentBlockNumber);
+                if(!methodCode.isEmpty()){
+                    QString methodName = reg.cap(0);
+                    if (methodName.endsWith("{")) {
+                        methodName = methodName.chop(1).trimmed(); // Remove last character '{'
+                    }
+                    methodNameToCode.insert(methodName, methodCode);
+                    qDebug() << "MethodNameAndCode";
+                    qDebug() << "MethodName: " << reg.cap(0);
+                    qDebug() << "MethodCode: " << methodCode;
+                }
+
                 //1返回类型，2*&，3类名，4函数名，5参数列表
                 SCOPE scope = (reg.cap(3).isEmpty() ? GLOBAL : CLASS);  //判断类作用域是否为空，比如Class::
                 //这里要把类名中的::去掉
@@ -1918,6 +1987,10 @@ void MdiChild::updateObjectInfoInSourceFile()
 
             }
         }
+    }
+
+    if(!mainWindowPtr && !methodNameToCode.isEmpty()){
+        mainWindowPtr->setCscrToolMethodNameToCode(methodNameToCode);
     }
 
     qDebug() << "arrange defined methods.";
