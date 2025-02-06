@@ -244,6 +244,10 @@ void MdiChild::contextMenuEvent(QContextMenuEvent *event)
 
     connect(addBugDescription, &QAction::triggered, this, &MdiChild::addBugTriggered);
 
+    if (getCscrToolMode() == false) {
+        addBugDescription->setEnabled(false);
+    }
+
     // Show the menu at the cursor's position
     menu->exec(event->globalPos());
 
@@ -1494,8 +1498,12 @@ QString MdiChild::findMethodCodeByName(int currentBlockNumber)
             lines.append(block.text());
             block = block.next();
         }
-
-        return lines.join("\n");
+        methodCode = lines.join("\n");
+        if(methodCode.startsWith("{")){
+            QString methodBody = document()->findBlockByLineNumber(currentBlockNumber).text();
+            methodCode = methodBody + methodCode;
+        }
+        return methodCode;
     }else{
         return QString();
     }
@@ -1642,6 +1650,7 @@ void MdiChild::updateObjectInfoInSourceFile()
                         className = fileClassName;
                         if(fileClassName == "main"){
                             qDebug() << "Cannot use this pointer in main.cpp";
+                            pos += reg.matchedLength(); // 继续查找下一个匹配位置
                             continue;
                         }
                     }else{
@@ -1693,6 +1702,7 @@ void MdiChild::updateObjectInfoInSourceFile()
                         className = fileClassName;
                         if(fileClassName == "main"){
                             qDebug() << "Cannot use this pointer in main.cpp";
+                            pos += reg.matchedLength();
                             continue;
                         }
                     }else{
@@ -1749,6 +1759,7 @@ void MdiChild::updateObjectInfoInSourceFile()
                         className = fileClassName;
                         if(fileClassName == "main"){
                             qDebug() << "Cannot use this pointer in main.cpp";
+                            pos += reg.matchedLength();
                             continue;
                         }
                     }else{
@@ -1806,6 +1817,7 @@ void MdiChild::updateObjectInfoInSourceFile()
                         className = fileClassName;
                         if(fileClassName == "main"){
                             qDebug() << "Cannot use this pointer in main.cpp";
+                            pos += reg.matchedLength();
                             continue;
                         }
                     }else{
@@ -1903,11 +1915,12 @@ void MdiChild::updateObjectInfoInSourceFile()
                 if(!methodCode.isEmpty()){
                     QString methodName = reg.cap(0);
                     if (methodName.endsWith("{")) {
-                        methodName = methodName.chop(1).trimmed(); // Remove last character '{'
+                        methodName.chop(1);
+                        methodName = methodName.trimmed(); // Remove last character '{'
                     }
                     methodNameToCode.insert(methodName, methodCode);
                     qDebug() << "MethodNameAndCode";
-                    qDebug() << "MethodName: " << reg.cap(0);
+                    qDebug() << "MethodName: " << methodName;
                     qDebug() << "MethodCode: " << methodCode;
                 }
 
@@ -1989,8 +2002,15 @@ void MdiChild::updateObjectInfoInSourceFile()
         }
     }
 
-    if(!mainWindowPtr && !methodNameToCode.isEmpty()){
-        mainWindowPtr->setCscrToolMethodNameToCode(methodNameToCode);
+    qDebug() << "methodNameToCode:";
+    for (auto it = methodNameToCode.constBegin(); it != methodNameToCode.constEnd(); ++it) {
+        qDebug() << "Key:" << it.key() << ", Value:" << it.value();
+    }
+
+    if(!methodNameToCode.isEmpty()){
+        emit updateMethodNameToCode(methodNameToCode);
+    }else{
+        qDebug() << "Failed to set cscrToolMethodNameToCode.";
     }
 
     qDebug() << "arrange defined methods.";

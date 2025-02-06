@@ -1,0 +1,1847 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>964</width>
+    <height>565</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,7">
+    <property name="sizeConstraint">
+     <enum>QLayout::SetMinimumSize</enum>
+    </property>
+    <item>
+     <widget class="QStackedWidget" name="stackedWidgetLeft">
+      <property name="lineWidth">
+       <number>0</number>
+      </property>
+      <property name="midLineWidth">
+       <number>0</number>
+      </property>
+      <property name="currentIndex">
+       <number>2</number>
+      </property>
+      <widget class="QWidget" name="pageProject">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="ToDoTableView" name="toDoTableView">
+          <attribute name="horizontalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTreeView" name="projectTreeView">
+          <attribute name="headerStretchLastSection">
+           <bool>true</bool>
+          </attribute>
+         </widget>
+        </item>
+        <item>
+         <widget class="RequirementTreeView" name="specificationView"/>
+        </item>
+        <item>
+         <widget class="QTreeWidget" name="treeClassView">
+          <column>
+           <property name="text">
+            <string>Class View</string>
+           </property>
+          </column>
+          <item>
+           <property name="text">
+            <string>TestClass</string>
+           </property>
+           <property name="icon">
+            <iconset resource="ui_images.qrc">
+             <normaloff>:/images/toolbar_images/folder.png</normaloff>:/images/toolbar_images/folder.png</iconset>
+           </property>
+           <item>
+            <property name="text">
+             <string>gender</string>
+            </property>
+            <item>
+             <property name="text">
+              <string>FEMALE int</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>MALE int</string>
+             </property>
+            </item>
+           </item>
+           <item>
+            <property name="text">
+             <string>Student</string>
+            </property>
+            <property name="icon">
+             <iconset resource="ui_images.qrc">
+              <normaloff>:/images/toolbar_images/class.svg</normaloff>:/images/toolbar_images/class.svg</iconset>
+            </property>
+            <item>
+             <property name="text">
+              <string>Student(std::string, int)</string>
+             </property>
+             <property name="icon">
+              <iconset resource="ui_images.qrc">
+               <normaloff>:/images/toolbar_images/memberfunc.svg</normaloff>:/images/toolbar_images/memberfunc.svg</iconset>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>calculateAgerage() const</string>
+             </property>
+             <property name="icon">
+              <iconset resource="ui_images.qrc">
+               <normaloff>:/images/toolbar_images/memberfunc.svg</normaloff>:/images/toolbar_images/memberfunc.svg</iconset>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>displayInfo() const</string>
+             </property>
+             <property name="icon">
+              <iconset resource="ui_images.qrc">
+               <normaloff>:/images/toolbar_images/memberfunc.svg</normaloff>:/images/toolbar_images/memberfunc.svg</iconset>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>age int</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>grades double[]</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>name std::string</string>
+             </property>
+            </item>
+           </item>
+           <item>
+            <property name="text">
+             <string>initialize(StringList&lt;Student&gt;)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>main()</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>studentNum const int</string>
+            </property>
+           </item>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressBar">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageRunDebug">
+       <layout class="QGridLayout" name="gridLayout_4">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="styleSheet">
+           <string notr="true">
+    font-family: 'Verdana', sans-serif; /* Font type */
+    font-size: 12px; /* Font size */
+    color: #333333; /* Text color */
+    font-weight: bold; /* Make the text bold */</string>
+          </property>
+          <property name="text">
+           <string>Fixed Code:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <item>
+           <widget class="QPushButton" name="pushButton_5">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="baseSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="ui_images.qrc">
+              <normaloff>:/images/toolbar_images/codeanalysis.png</normaloff>:/images/toolbar_images/codeanalysis.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="styleSheet">
+             <string notr="true">
+    font-family: 'Verdana', sans-serif; /* Font type */
+    font-size: 12px; /* Font size */
+    color: #333333; /* Text color */
+    font-weight: bold; /* Make the text bold */</string>
+            </property>
+            <property name="text">
+             <string>The fixed code is as follows:</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="waitingChatGPTReplyButton">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="whatsThis">
+           <string>Waiting for ChatGPT reply...</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">    color: #333333; /* Text color */
+    font-weight: bold; /* Make the text bold */</string>
+          </property>
+          <property name="text">
+           <string>Select the code and send it to ChatGPT</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QPushButton" name="copyFixedCodeButton">
+          <property name="text">
+           <string>Copy the code</string>
+          </property>
+          <property name="icon">
+           <iconset resource="ui_images.qrc">
+            <normaloff>:/images/toolbar_images/copy.png</normaloff>:/images/toolbar_images/copy.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="font">
+           <font>
+            <family>Verdana,sans-serif</family>
+            <pointsize>-1</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+    font-family: 'Verdana', sans-serif; /* Font type */
+    font-size: 12px; /* Font size */
+    color: #333333; /* Text color */
+    font-weight: bold; /* Make the text bold */</string>
+          </property>
+          <property name="lineWidth">
+           <number>1</number>
+          </property>
+          <property name="text">
+           <string>Problem:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QScrollArea" name="scrollArea_3">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">    border-radius: 5px; /* Rounded corners */</string>
+          </property>
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents_3">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>83</width>
+             <height>75</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_6">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QTextBrowser" name="fixedCodeProblemBrowser">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="cursor" stdset="0">
+               <cursorShape>ArrowCursor</cursorShape>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">    background-color: #ffffff; /* White background */
+    border: 2px solid #007BFF; /* Blue border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 1px; /* Inner padding */
+    font-family: Arial, sans-serif; /* Font type */
+    font-size: 14px; /* Font size */
+    color: #555555; /* Text color */
+    line-height: 1.5; /* Line height */</string>
+              </property>
+              <property name="verticalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+              <property name="horizontalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustIgnored</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QScrollArea" name="scrollArea_2">
+          <property name="styleSheet">
+           <string notr="true">    border-radius: 5px; /* Rounded corners */</string>
+          </property>
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents_4">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>83</width>
+             <height>77</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_7">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QTextEdit" name="fixedCodeTextEdit">
+              <property name="styleSheet">
+               <string notr="true">    background-color: #ffffff; /* White background */
+    border: 2px solid #007BFF; /* Blue border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 2px; /* Inner padding */
+    font-family: Arial, sans-serif; /* Font type */
+    font-size: 14px; /* Font size */
+    color: #555555; /* Text color */
+    line-height: 1.5; /* Line height */</string>
+              </property>
+              <property name="verticalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+              <property name="horizontalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+              <property name="html">
+               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Arial,sans-serif'; font-size:14px; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14px;&quot;&gt;#include &amp;lt;iostream&amp;gt; &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14px;&quot;&gt;#include &amp;lt;stdexcept&amp;gt; // for std::invalid_argument &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14px;&quot;&gt;double divide(double numerator, double denominator) { &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14px;&quot;&gt;    if (denominator == 0) { &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14px;&quot;&gt;        throw std::invalid_argument(&amp;quot;Denominator cannot be zero&amp;quot;); &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14px;&quot;&gt;    } &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14px;&quot;&gt;    return numerator / denominator; &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14px;&quot;&gt;}&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS UI Gothic'; font-size:9pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageCodeAnalysis">
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>20</y>
+          <width>106</width>
+          <height>26</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_12">
+         <item>
+          <widget class="QPushButton" name="pushButton_11">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="baseSize">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="ui_images.qrc">
+             <normaloff>:/images/toolbar_images/codeanalysis.png</normaloff>:/images/toolbar_images/codeanalysis.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_9">
+           <property name="styleSheet">
+            <string notr="true">
+    font-family: 'Verdana', sans-serif; /* Font type */
+    font-size: 12px; /* Font size */
+    color: #333333; /* Text color */
+    font-weight: bold; /* Make the text bold */</string>
+           </property>
+           <property name="text">
+            <string>CSCR-Tool</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="pageHMPP">
+       <layout class="QGridLayout" name="gridLayout_2">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item row="0" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QPushButton" name="pushButton_2">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="baseSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="ui_images.qrc">
+              <normaloff>:/images/toolbar_images/robot16.svg</normaloff>:/images/toolbar_images/robot16.svg</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Ask anything about programming</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLineEdit" name="lineEdit">
+          <property name="inputMethodHints">
+           <set>Qt::ImhNone</set>
+          </property>
+          <property name="inputMask">
+           <string/>
+          </property>
+          <property name="text">
+           <string comment="Ask anything about programming" extracomment="Ask anything about programming"/>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QScrollArea" name="scrollArea">
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>131</width>
+             <height>659</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_8">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_3">
+                <item>
+                 <widget class="QPushButton" name="pushButton_3">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="ui_images.qrc">
+                    <normaloff>:/images/toolbar_images/robot16.svg</normaloff>:/images/toolbar_images/robot16.svg</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QLabel" name="label1">
+                <property name="autoFillBackground">
+                 <bool>false</bool>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgb(120, 180, 210);
+padding: 10px</string>
+                </property>
+                <property name="text">
+                 <string>Great! How can I assist you today? Do you have any code-related questions or problems that I can help you with?</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <widget class="QLabel" name="label2">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgb(251, 200, 150);
+padding: 10px</string>
+                </property>
+                <property name="text">
+                 <string>create a calculate class</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_4">
+                <item>
+                 <widget class="QPushButton" name="pushButton_4">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="baseSize">
+                   <size>
+                    <width>16</width>
+                    <height>16</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="ui_images.qrc">
+                    <normaloff>:/images/toolbar_images/user.svg</normaloff>:/images/toolbar_images/user.svg</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_2">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_5">
+                <item>
+                 <widget class="QPushButton" name="hmppIconButton">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="ui_images.qrc">
+                    <normaloff>:/images/toolbar_images/robot16.svg</normaloff>:/images/toolbar_images/robot16.svg</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_3">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QLabel" name="label3">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgb(120, 180, 210);
+padding: 10px</string>
+                </property>
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The code you provided has some problems. Here is the modified version. If you want me to explain further, feel free to ask any question. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_6"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="copyCodeButton">
+              <property name="text">
+               <string>Copy code</string>
+              </property>
+              <property name="icon">
+               <iconset resource="ui_images.qrc">
+                <normaloff>:/images/toolbar_images/copy.png</normaloff>:/images/toolbar_images/copy.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QTextBrowser" name="codeBrowser">
+              <property name="styleSheet">
+               <string notr="true"/>
+              </property>
+              <property name="verticalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+              <property name="horizontalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustToContents</enum>
+              </property>
+              <property name="lineWrapMode">
+               <enum>QTextEdit::NoWrap</enum>
+              </property>
+              <property name="html">
+               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS UI Gothic'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'SimSun';&quot;&gt;#include &amp;quot;Camera.h&amp;quot;&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'SimSun';&quot;&gt;#include &amp;quot;EncryptionModule.h&amp;quot;&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'SimSun';&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'SimSun';&quot;&gt;int main() {&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'SimSun';&quot;&gt;    std::string storagePath = &amp;quot;./encrypted_videos&amp;quot;;&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'SimSun';&quot;&gt;    EncryptionModule encryptionModule;&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'SimSun';&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'SimSun';&quot;&gt;    // Create storage directory if it doesn't exist&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'SimSun';&quot;&gt;    std::system((&amp;quot;mkdir -p &amp;quot; + storagePath).c_str());&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'SimSun';&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'SimSun';&quot;&gt;    // Initialize Camera&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'SimSun';&quot;&gt;    Camera camera(storagePath, encryptionModule);&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'SimSun';&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'SimSun';&quot;&gt;    // Simulate a video file path&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'SimSun';&quot;&gt;    std::string videoFilePath = &amp;quot;./sample_video.mp4&amp;quot;;&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'SimSun';&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'SimSun';&quot;&gt;    // Encrypt and store the video&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'SimSun';&quot;&gt;    camera.encryptAndStoreVideo(videoFilePath);&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'SimSun';&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'SimSun';&quot;&gt;    return 0;&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'SimSun';&quot;&gt;}&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'SimSun';&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="3,1">
+      <item>
+       <widget class="QMdiArea" name="mdiArea">
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAsNeeded</enum>
+        </property>
+        <property name="horizontalScrollBarPolicy">
+         <enum>Qt::ScrollBarAsNeeded</enum>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QAbstractScrollArea::AdjustToContents</enum>
+        </property>
+        <property name="background">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>255</red>
+           <green>255</green>
+           <blue>255</blue>
+          </color>
+         </brush>
+        </property>
+        <property name="activationOrder">
+         <enum>QMdiArea::ActivationHistoryOrder</enum>
+        </property>
+        <property name="viewMode">
+         <enum>QMdiArea::TabbedView</enum>
+        </property>
+        <property name="documentMode">
+         <bool>true</bool>
+        </property>
+        <property name="tabsClosable">
+         <bool>true</bool>
+        </property>
+        <property name="tabsMovable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QStackedWidget" name="stackedWidgetRightDown">
+        <property name="currentIndex">
+         <number>1</number>
+        </property>
+        <widget class="QWidget" name="page">
+         <layout class="QGridLayout" name="gridLayout_6">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QTabWidget" name="tabProgramOutput">
+            <property name="currentIndex">
+             <number>2</number>
+            </property>
+            <property name="tabBarAutoHide">
+             <bool>false</bool>
+            </property>
+            <widget class="QWidget" name="tabDebug">
+             <attribute name="title">
+              <string>Issue Report</string>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_3">
+              <item row="1" column="0">
+               <layout class="QGridLayout" name="gridLayoutIssue">
+                <item row="0" column="0">
+                 <widget class="QTableWidget" name="tableIssueWidget">
+                  <property name="sizeAdjustPolicy">
+                   <enum>QAbstractScrollArea::AdjustToContents</enum>
+                  </property>
+                  <property name="editTriggers">
+                   <set>QAbstractItemView::NoEditTriggers</set>
+                  </property>
+                  <property name="selectionBehavior">
+                   <enum>QAbstractItemView::SelectRows</enum>
+                  </property>
+                  <property name="showGrid">
+                   <bool>false</bool>
+                  </property>
+                  <attribute name="horizontalHeaderVisible">
+                   <bool>false</bool>
+                  </attribute>
+                  <attribute name="verticalHeaderVisible">
+                   <bool>false</bool>
+                  </attribute>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="tabFaultReport">
+             <attribute name="title">
+              <string>Fault Report</string>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout">
+              <property name="leftMargin">
+               <number>1</number>
+              </property>
+              <property name="topMargin">
+               <number>1</number>
+              </property>
+              <property name="rightMargin">
+               <number>1</number>
+              </property>
+              <property name="bottomMargin">
+               <number>1</number>
+              </property>
+              <item row="0" column="0">
+               <widget class="QTableWidget" name="tableWidgetReport">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="lineWidth">
+                 <number>0</number>
+                </property>
+                <property name="sizeAdjustPolicy">
+                 <enum>QAbstractScrollArea::AdjustToContents</enum>
+                </property>
+                <property name="editTriggers">
+                 <set>QAbstractItemView::NoEditTriggers</set>
+                </property>
+                <property name="alternatingRowColors">
+                 <bool>false</bool>
+                </property>
+                <property name="selectionMode">
+                 <enum>QAbstractItemView::SingleSelection</enum>
+                </property>
+                <property name="selectionBehavior">
+                 <enum>QAbstractItemView::SelectRows</enum>
+                </property>
+                <property name="showGrid">
+                 <bool>false</bool>
+                </property>
+                <property name="gridStyle">
+                 <enum>Qt::NoPen</enum>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+                <property name="cornerButtonEnabled">
+                 <bool>true</bool>
+                </property>
+                <attribute name="horizontalHeaderVisible">
+                 <bool>false</bool>
+                </attribute>
+                <attribute name="horizontalHeaderCascadingSectionResizes">
+                 <bool>false</bool>
+                </attribute>
+                <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+                 <bool>false</bool>
+                </attribute>
+                <attribute name="horizontalHeaderStretchLastSection">
+                 <bool>true</bool>
+                </attribute>
+                <attribute name="verticalHeaderVisible">
+                 <bool>false</bool>
+                </attribute>
+                <row>
+                 <property name="text">
+                  <string>1</string>
+                 </property>
+                </row>
+                <column>
+                 <property name="text">
+                  <string>Locate</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Line Number</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Fault Information</string>
+                 </property>
+                </column>
+                <item row="0" column="0">
+                 <property name="text">
+                  <string>codeeditor.cpp</string>
+                 </property>
+                 <property name="textAlignment">
+                  <set>AlignCenter</set>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="ui_images.qrc">
+                   <normaloff>:/images/toolbar_images/error.png</normaloff>:/images/toolbar_images/error.png</iconset>
+                 </property>
+                </item>
+                <item row="0" column="1">
+                 <property name="text">
+                  <string>line 13</string>
+                 </property>
+                 <property name="textAlignment">
+                  <set>AlignCenter</set>
+                 </property>
+                </item>
+                <item row="0" column="2">
+                 <property name="text">
+                  <string>The exception that is thrown when there is an attempt to divide an integral or Decimal value by zero.</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="tabAppOutput">
+             <attribute name="title">
+              <string>App Output</string>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_5"/>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_2">
+         <layout class="QVBoxLayout" name="verticalLayout_11">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QStackedWidget" name="stackedWidgetCscrButtons">
+            <property name="currentIndex">
+             <number>0</number>
+            </property>
+            <widget class="QWidget" name="page_3">
+             <layout class="QVBoxLayout" name="verticalLayout_14">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_13">
+                <item>
+                 <widget class="QPushButton" name="pushButton">
+                  <property name="text">
+                   <string>Structure</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButton_12">
+                  <property name="text">
+                   <string>Undo</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButton_13">
+                  <property name="text">
+                   <string>Restart Structure</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButton_15">
+                  <property name="text">
+                   <string>Done</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_2">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="page_4">
+             <layout class="QVBoxLayout" name="verticalLayout_13">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_14">
+                <item>
+                 <widget class="QPushButton" name="pushButton_6">
+                  <property name="text">
+                   <string>Review from Start</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButton_7">
+                  <property name="text">
+                   <string>Back to Current</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButton_8">
+                  <property name="text">
+                   <string>Finish Reviewing and Generate Report</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_4">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_10">
+            <item>
+             <widget class="QStackedWidget" name="stackedWidgetBugDescript">
+              <property name="currentIndex">
+               <number>0</number>
+              </property>
+              <widget class="QWidget" name="page_5">
+               <layout class="QVBoxLayout" name="verticalLayout_12">
+                <item>
+                 <widget class="QLabel" name="label_5">
+                  <property name="text">
+                   <string>Current Line: </string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_9">
+                  <item>
+                   <widget class="QLabel" name="label_6">
+                    <property name="text">
+                     <string>Bug Name:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="lineEdit_2"/>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_10" stretch="0,2,1">
+                  <item>
+                   <widget class="QLabel" name="label_7">
+                    <property name="text">
+                     <string>Bug Nature:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="comboBox"/>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_3">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout_9">
+                  <item>
+                   <widget class="QLabel" name="label_8">
+                    <property name="text">
+                     <string>Brief Description:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QTextEdit" name="textEdit"/>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_11">
+                  <item>
+                   <spacer name="horizontalSpacer">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="pushButton_9">
+                    <property name="text">
+                     <string>OK</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="pushButton_10">
+                    <property name="text">
+                     <string>Cancel</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="page_6"/>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>964</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File(&amp;F)</string>
+    </property>
+    <addaction name="newAct"/>
+    <addaction name="newProjectAct"/>
+    <addaction name="openAct"/>
+    <addaction name="saveAct"/>
+    <addaction name="saveAsAct"/>
+    <addaction name="separator"/>
+    <addaction name="exitAct"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit(&amp;E)</string>
+    </property>
+    <addaction name="cutAct"/>
+    <addaction name="copyAct"/>
+    <addaction name="pasteAct"/>
+    <addaction name="separator"/>
+    <addaction name="undoAct"/>
+    <addaction name="redoAct"/>
+   </widget>
+   <widget class="QMenu" name="menuWindow">
+    <property name="title">
+     <string>Window(&amp;W)</string>
+    </property>
+    <addaction name="closeAct"/>
+    <addaction name="closeAllAct"/>
+    <addaction name="separator"/>
+    <addaction name="tileAct"/>
+    <addaction name="cascadeAct"/>
+    <addaction name="separator"/>
+    <addaction name="previousAct"/>
+    <addaction name="nextAct"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help(&amp;H)</string>
+    </property>
+    <addaction name="aboutAct"/>
+    <addaction name="aboutDeveloperAct"/>
+   </widget>
+   <widget class="QMenu" name="menuConfiguration">
+    <property name="title">
+     <string>Configuration(&amp;I)</string>
+    </property>
+    <widget class="QMenu" name="menuChooseTargetLanguage">
+     <property name="title">
+      <string>Choose Target Language</string>
+     </property>
+     <addaction name="actionCplus"/>
+     <addaction name="actionJava"/>
+     <addaction name="actionCsharp"/>
+    </widget>
+    <addaction name="manageSetAct"/>
+    <addaction name="allRuleDescriptAct"/>
+    <addaction name="menuChooseTargetLanguage"/>
+    <addaction name="importSpecAct"/>
+   </widget>
+   <widget class="QMenu" name="menuTools_T">
+    <property name="title">
+     <string>Tools(&amp;T)</string>
+    </property>
+    <addaction name="cscrToolAct"/>
+    <addaction name="codeAnalysisAct"/>
+    <addaction name="hmppAct"/>
+    <addaction name="specBuildAct"/>
+    <addaction name="actionLoad_Review_Report"/>
+    <addaction name="actionGenerate_Review_Report"/>
+   </widget>
+   <widget class="QMenu" name="menuTest">
+    <property name="title">
+     <string>Test(&amp;S)</string>
+    </property>
+    <addaction name="testAct"/>
+   </widget>
+   <widget class="QMenu" name="menuDemo">
+    <property name="title">
+     <string>Demo(&amp;D)</string>
+    </property>
+    <addaction name="SCMDemoAct"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuWindow"/>
+   <addaction name="menuConfiguration"/>
+   <addaction name="menuTools_T"/>
+   <addaction name="menuDemo"/>
+   <addaction name="menuTest"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>255</verstretch>
+    </sizepolicy>
+   </property>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>8</pointsize>
+     <weight>50</weight>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="acceptDrops">
+    <bool>false</bool>
+   </property>
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::RightToLeft</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
+   <property name="movable">
+    <bool>true</bool>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::LeftToolBarArea</set>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Vertical</enum>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>96</width>
+     <height>96</height>
+    </size>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextUnderIcon</enum>
+   </property>
+   <property name="floatable">
+    <bool>false</bool>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>LeftToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="projectShowAct"/>
+   <addaction name="separator"/>
+   <addaction name="codeAnalysisAct"/>
+   <addaction name="separator"/>
+   <addaction name="cscrToolAct"/>
+   <addaction name="separator"/>
+   <addaction name="codePredictAct"/>
+   <addaction name="separator"/>
+   <addaction name="hmppAct"/>
+  </widget>
+  <action name="newAct">
+   <property name="icon">
+    <iconset resource="ui_images.qrc">
+     <normaloff>:/images/toolbar_images/new.png</normaloff>:/images/toolbar_images/new.png</iconset>
+   </property>
+   <property name="text">
+    <string>New File(&amp;N)</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a new file</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="openAct">
+   <property name="icon">
+    <iconset resource="ui_images.qrc">
+     <normaloff>:/images/toolbar_images/open.png</normaloff>:/images/toolbar_images/open.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open project(&amp;O)</string>
+   </property>
+   <property name="toolTip">
+    <string>Open an existing project</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="saveAct">
+   <property name="icon">
+    <iconset resource="ui_images.qrc">
+     <normaloff>:/images/toolbar_images/save.png</normaloff>:/images/toolbar_images/save.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save(&amp;s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Save the document</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="saveAsAct">
+   <property name="icon">
+    <iconset resource="ui_images.qrc">
+     <normaloff>:/images/toolbar_images/saveAs.png</normaloff>:/images/toolbar_images/saveAs.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save As(&amp;A)</string>
+   </property>
+   <property name="toolTip">
+    <string>Save the document under a new name</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="exitAct">
+   <property name="icon">
+    <iconset resource="ui_images.qrc">
+     <normaloff>:/images/toolbar_images/exit.png</normaloff>:/images/toolbar_images/exit.png</iconset>
+   </property>
+   <property name="text">
+    <string>Exit(&amp;X)</string>
+   </property>
+   <property name="toolTip">
+    <string>Exit the application</string>
+   </property>
+  </action>
+  <action name="undoAct">
+   <property name="icon">
+    <iconset resource="ui_images.qrc">
+     <normaloff>:/images/toolbar_images/undo.png</normaloff>:/images/toolbar_images/undo.png</iconset>
+   </property>
+   <property name="text">
+    <string>Undo(&amp;U)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="redoAct">
+   <property name="icon">
+    <iconset resource="ui_images.qrc">
+     <normaloff>:/images/toolbar_images/redo.png</normaloff>:/images/toolbar_images/redo.png</iconset>
+   </property>
+   <property name="text">
+    <string>Redo(&amp;R)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
+   </property>
+  </action>
+  <action name="cutAct">
+   <property name="icon">
+    <iconset resource="ui_images.qrc">
+     <normaloff>:/images/toolbar_images/cut.png</normaloff>:/images/toolbar_images/cut.png</iconset>
+   </property>
+   <property name="text">
+    <string>Cut(&amp;T)</string>
+   </property>
+   <property name="toolTip">
+    <string>Cut the selected contents to the clipboard</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="copyAct">
+   <property name="icon">
+    <iconset resource="ui_images.qrc">
+     <normaloff>:/images/toolbar_images/copy.png</normaloff>:/images/toolbar_images/copy.png</iconset>
+   </property>
+   <property name="text">
+    <string>Copy(&amp;C)</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy the selected contentes to the clipboard</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="pasteAct">
+   <property name="icon">
+    <iconset resource="ui_images.qrc">
+     <normaloff>:/images/toolbar_images/paste.png</normaloff>:/images/toolbar_images/paste.png</iconset>
+   </property>
+   <property name="text">
+    <string>Paste(&amp;P)</string>
+   </property>
+   <property name="toolTip">
+    <string>Paste the clipboard's contents into the current selection</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="closeAct">
+   <property name="text">
+    <string>Close(&amp;O)</string>
+   </property>
+   <property name="toolTip">
+    <string>Close the active window</string>
+   </property>
+  </action>
+  <action name="closeAllAct">
+   <property name="text">
+    <string>CloseAll(&amp;A)</string>
+   </property>
+   <property name="toolTip">
+    <string>Close all the windows</string>
+   </property>
+  </action>
+  <action name="tileAct">
+   <property name="text">
+    <string>Tile(&amp;T)</string>
+   </property>
+   <property name="toolTip">
+    <string>Tile the windows</string>
+   </property>
+  </action>
+  <action name="cascadeAct">
+   <property name="text">
+    <string>Cascade(&amp;C)</string>
+   </property>
+   <property name="toolTip">
+    <string>Cascade the windows</string>
+   </property>
+  </action>
+  <action name="nextAct">
+   <property name="icon">
+    <iconset resource="ui_images.qrc">
+     <normaloff>:/images/toolbar_images/next.png</normaloff>:/images/toolbar_images/next.png</iconset>
+   </property>
+   <property name="text">
+    <string>Next(&amp;X)</string>
+   </property>
+   <property name="toolTip">
+    <string>Move the focus to the next window</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Tab</string>
+   </property>
+  </action>
+  <action name="previousAct">
+   <property name="icon">
+    <iconset resource="ui_images.qrc">
+     <normaloff>:/images/toolbar_images/previous.png</normaloff>:/images/toolbar_images/previous.png</iconset>
+   </property>
+   <property name="text">
+    <string>Previous(&amp;V)</string>
+   </property>
+   <property name="toolTip">
+    <string>Move the focus to the previous window</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Backtab</string>
+   </property>
+  </action>
+  <action name="aboutAct">
+   <property name="icon">
+    <iconset resource="ui_images.qrc">
+     <normaloff>:/images/toolbar_images/about.png</normaloff>:/images/toolbar_images/about.png</iconset>
+   </property>
+   <property name="text">
+    <string>About(&amp;A)</string>
+   </property>
+   <property name="toolTip">
+    <string>Show the demo's information box</string>
+   </property>
+  </action>
+  <action name="aboutDeveloperAct">
+   <property name="text">
+    <string>About Software Developer(&amp;Q)</string>
+   </property>
+   <property name="toolTip">
+    <string>Show the developer's information box</string>
+   </property>
+  </action>
+  <action name="projectShowAct">
+   <property name="icon">
+    <iconset resource="ui_images.qrc">
+     <normaloff>:/images/toolbar_images/project.png</normaloff>:/images/toolbar_images/project.png</iconset>
+   </property>
+   <property name="text">
+    <string>Project</string>
+   </property>
+   <property name="toolTip">
+    <string>Show the project framework</string>
+   </property>
+  </action>
+  <action name="cscrToolAct">
+   <property name="icon">
+    <iconset resource="ui_images.qrc">
+     <normaloff>:/images/toolbar_images/codeanalysis.png</normaloff>:/images/toolbar_images/codeanalysis.png</iconset>
+   </property>
+   <property name="text">
+    <string>CSCR-Tool</string>
+   </property>
+   <property name="toolTip">
+    <string>CSCR-Tool</string>
+   </property>
+  </action>
+  <action name="codeAnalysisAct">
+   <property name="icon">
+    <iconset resource="ui_images.qrc">
+     <normaloff>:/images/toolbar_images/codepredict.png</normaloff>:/images/toolbar_images/codepredict.png</iconset>
+   </property>
+   <property name="text">
+    <string>SCM Configure</string>
+   </property>
+   <property name="toolTip">
+    <string>Analyze code and identify faults</string>
+   </property>
+  </action>
+  <action name="hmppAct">
+   <property name="icon">
+    <iconset resource="ui_images.qrc">
+     <normaloff>:/images/toolbar_images/hmpp.png</normaloff>:/images/toolbar_images/hmpp.png</iconset>
+   </property>
+   <property name="text">
+    <string>HMPP</string>
+   </property>
+   <property name="toolTip">
+    <string>Human Machine Pair Programming</string>
+   </property>
+  </action>
+  <action name="manageSetAct">
+   <property name="text">
+    <string>Manage property rule sets(&amp;M)</string>
+   </property>
+   <property name="toolTip">
+    <string>Manage the rules of property sets</string>
+   </property>
+  </action>
+  <action name="allRuleDescriptAct">
+   <property name="text">
+    <string>All Rules Description(&amp;D)</string>
+   </property>
+   <property name="toolTip">
+    <string>Show the detailed description of all rules</string>
+   </property>
+  </action>
+  <action name="newProjectAct">
+   <property name="text">
+    <string>New Project</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a new project</string>
+   </property>
+  </action>
+  <action name="actionCplus">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>C++</string>
+   </property>
+  </action>
+  <action name="actionJava">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Java</string>
+   </property>
+  </action>
+  <action name="actionCsharp">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>C#</string>
+   </property>
+  </action>
+  <action name="codePredictAct">
+   <property name="icon">
+    <iconset resource="ui_images.qrc">
+     <normaloff>:/images/toolbar_images/rundebug.png</normaloff>:/images/toolbar_images/rundebug.png</iconset>
+   </property>
+   <property name="text">
+    <string>Smart Fix</string>
+   </property>
+   <property name="toolTip">
+    <string>Predict code</string>
+   </property>
+  </action>
+  <action name="testAct">
+   <property name="text">
+    <string>testAction</string>
+   </property>
+  </action>
+  <action name="SCMDemoAct">
+   <property name="text">
+    <string>SCM Demo</string>
+   </property>
+  </action>
+  <action name="importSpecAct">
+   <property name="text">
+    <string>Import Specification</string>
+   </property>
+   <property name="toolTip">
+    <string>Import Specification for Current Project</string>
+   </property>
+  </action>
+  <action name="specBuildAct">
+   <property name="text">
+    <string>Build Project From Specification</string>
+   </property>
+  </action>
+  <action name="actionLoad_Review_Report">
+   <property name="text">
+    <string>Load Review Report</string>
+   </property>
+  </action>
+  <action name="actionGenerate_Review_Report">
+   <property name="text">
+    <string>Generate Review Report</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>RequirementTreeView</class>
+   <extends>QTreeView</extends>
+   <header>requirementtreeview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ToDoTableView</class>
+   <extends>QTableView</extends>
+   <header>requirementtreeview.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="ui_images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -108,7 +108,7 @@ public:
     QVBoxLayout *verticalLayout_7;
     QTextEdit *fixedCodeTextEdit;
     QWidget *pageCodeAnalysis;
-    QWidget *widget;
+    QWidget *layoutWidget;
     QHBoxLayout *horizontalLayout_12;
     QPushButton *pushButton_11;
     QLabel *label_9;
@@ -155,15 +155,27 @@ public:
     QWidget *tabAppOutput;
     QGridLayout *gridLayout_5;
     QWidget *page_2;
-    QGridLayout *gridLayout_7;
     QVBoxLayout *verticalLayout_11;
-    QHBoxLayout *horizontalLayout_8;
+    QStackedWidget *stackedWidgetCscrButtons;
+    QWidget *page_3;
+    QVBoxLayout *verticalLayout_14;
+    QHBoxLayout *horizontalLayout_13;
     QPushButton *pushButton;
+    QPushButton *pushButton_12;
+    QPushButton *pushButton_13;
+    QPushButton *pushButton_15;
+    QSpacerItem *horizontalSpacer_2;
+    QWidget *page_4;
+    QVBoxLayout *verticalLayout_13;
+    QHBoxLayout *horizontalLayout_14;
     QPushButton *pushButton_6;
     QPushButton *pushButton_7;
     QPushButton *pushButton_8;
-    QSpacerItem *horizontalSpacer_2;
+    QSpacerItem *horizontalSpacer_4;
     QVBoxLayout *verticalLayout_10;
+    QStackedWidget *stackedWidgetBugDescript;
+    QWidget *page_5;
+    QVBoxLayout *verticalLayout_12;
     QLabel *label_5;
     QHBoxLayout *horizontalLayout_9;
     QLabel *label_6;
@@ -179,6 +191,7 @@ public:
     QSpacerItem *horizontalSpacer;
     QPushButton *pushButton_9;
     QPushButton *pushButton_10;
+    QWidget *page_6;
     QMenuBar *menubar;
     QMenu *menuFile;
     QMenu *menuEdit;
@@ -196,7 +209,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(964, 630);
+        MainWindow->resize(964, 565);
         newAct = new QAction(MainWindow);
         newAct->setObjectName(QStringLiteral("newAct"));
         QIcon icon;
@@ -477,7 +490,7 @@ public:
         scrollArea_3->setWidgetResizable(true);
         scrollAreaWidgetContents_3 = new QWidget();
         scrollAreaWidgetContents_3->setObjectName(QStringLiteral("scrollAreaWidgetContents_3"));
-        scrollAreaWidgetContents_3->setGeometry(QRect(0, 0, 251, 192));
+        scrollAreaWidgetContents_3->setGeometry(QRect(0, 0, 83, 75));
         verticalLayout_6 = new QVBoxLayout(scrollAreaWidgetContents_3);
         verticalLayout_6->setObjectName(QStringLiteral("verticalLayout_6"));
         verticalLayout_6->setContentsMargins(0, 0, 0, 0);
@@ -513,7 +526,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         scrollAreaWidgetContents_4 = new QWidget();
         scrollAreaWidgetContents_4->setObjectName(QStringLiteral("scrollAreaWidgetContents_4"));
-        scrollAreaWidgetContents_4->setGeometry(QRect(0, 0, 251, 242));
+        scrollAreaWidgetContents_4->setGeometry(QRect(0, 0, 83, 77));
         verticalLayout_7 = new QVBoxLayout(scrollAreaWidgetContents_4);
         verticalLayout_7->setObjectName(QStringLiteral("verticalLayout_7"));
         verticalLayout_7->setContentsMargins(0, 0, 0, 0);
@@ -539,13 +552,13 @@ public:
         stackedWidgetLeft->addWidget(pageRunDebug);
         pageCodeAnalysis = new QWidget();
         pageCodeAnalysis->setObjectName(QStringLiteral("pageCodeAnalysis"));
-        widget = new QWidget(pageCodeAnalysis);
-        widget->setObjectName(QStringLiteral("widget"));
-        widget->setGeometry(QRect(0, 20, 106, 26));
-        horizontalLayout_12 = new QHBoxLayout(widget);
+        layoutWidget = new QWidget(pageCodeAnalysis);
+        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
+        layoutWidget->setGeometry(QRect(0, 20, 106, 26));
+        horizontalLayout_12 = new QHBoxLayout(layoutWidget);
         horizontalLayout_12->setObjectName(QStringLiteral("horizontalLayout_12"));
         horizontalLayout_12->setContentsMargins(0, 0, 0, 0);
-        pushButton_11 = new QPushButton(widget);
+        pushButton_11 = new QPushButton(layoutWidget);
         pushButton_11->setObjectName(QStringLiteral("pushButton_11"));
         sizePolicy.setHeightForWidth(pushButton_11->sizePolicy().hasHeightForWidth());
         pushButton_11->setSizePolicy(sizePolicy);
@@ -554,7 +567,7 @@ public:
 
         horizontalLayout_12->addWidget(pushButton_11);
 
-        label_9 = new QLabel(widget);
+        label_9 = new QLabel(layoutWidget);
         label_9->setObjectName(QStringLiteral("label_9"));
         label_9->setStyleSheet(QLatin1String("\n"
 "    font-family: 'Verdana', sans-serif; /* Font type */\n"
@@ -602,7 +615,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QStringLiteral("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 249, 511));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 131, 659));
         verticalLayout_8 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_8->setObjectName(QStringLiteral("verticalLayout_8"));
         horizontalLayout_3 = new QHBoxLayout();
@@ -843,70 +856,115 @@ public:
         stackedWidgetRightDown->addWidget(page);
         page_2 = new QWidget();
         page_2->setObjectName(QStringLiteral("page_2"));
-        gridLayout_7 = new QGridLayout(page_2);
-        gridLayout_7->setObjectName(QStringLiteral("gridLayout_7"));
-        gridLayout_7->setContentsMargins(0, 0, 0, 0);
-        verticalLayout_11 = new QVBoxLayout();
+        verticalLayout_11 = new QVBoxLayout(page_2);
         verticalLayout_11->setObjectName(QStringLiteral("verticalLayout_11"));
-        horizontalLayout_8 = new QHBoxLayout();
-        horizontalLayout_8->setObjectName(QStringLiteral("horizontalLayout_8"));
-        pushButton = new QPushButton(page_2);
+        verticalLayout_11->setContentsMargins(0, 0, 0, 0);
+        stackedWidgetCscrButtons = new QStackedWidget(page_2);
+        stackedWidgetCscrButtons->setObjectName(QStringLiteral("stackedWidgetCscrButtons"));
+        page_3 = new QWidget();
+        page_3->setObjectName(QStringLiteral("page_3"));
+        verticalLayout_14 = new QVBoxLayout(page_3);
+        verticalLayout_14->setObjectName(QStringLiteral("verticalLayout_14"));
+        verticalLayout_14->setContentsMargins(0, 0, 0, 0);
+        horizontalLayout_13 = new QHBoxLayout();
+        horizontalLayout_13->setObjectName(QStringLiteral("horizontalLayout_13"));
+        pushButton = new QPushButton(page_3);
         pushButton->setObjectName(QStringLiteral("pushButton"));
 
-        horizontalLayout_8->addWidget(pushButton);
+        horizontalLayout_13->addWidget(pushButton);
 
-        pushButton_6 = new QPushButton(page_2);
-        pushButton_6->setObjectName(QStringLiteral("pushButton_6"));
+        pushButton_12 = new QPushButton(page_3);
+        pushButton_12->setObjectName(QStringLiteral("pushButton_12"));
 
-        horizontalLayout_8->addWidget(pushButton_6);
+        horizontalLayout_13->addWidget(pushButton_12);
 
-        pushButton_7 = new QPushButton(page_2);
-        pushButton_7->setObjectName(QStringLiteral("pushButton_7"));
+        pushButton_13 = new QPushButton(page_3);
+        pushButton_13->setObjectName(QStringLiteral("pushButton_13"));
 
-        horizontalLayout_8->addWidget(pushButton_7);
+        horizontalLayout_13->addWidget(pushButton_13);
 
-        pushButton_8 = new QPushButton(page_2);
-        pushButton_8->setObjectName(QStringLiteral("pushButton_8"));
+        pushButton_15 = new QPushButton(page_3);
+        pushButton_15->setObjectName(QStringLiteral("pushButton_15"));
 
-        horizontalLayout_8->addWidget(pushButton_8);
+        horizontalLayout_13->addWidget(pushButton_15);
 
         horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        horizontalLayout_8->addItem(horizontalSpacer_2);
+        horizontalLayout_13->addItem(horizontalSpacer_2);
 
 
-        verticalLayout_11->addLayout(horizontalLayout_8);
+        verticalLayout_14->addLayout(horizontalLayout_13);
+
+        stackedWidgetCscrButtons->addWidget(page_3);
+        page_4 = new QWidget();
+        page_4->setObjectName(QStringLiteral("page_4"));
+        verticalLayout_13 = new QVBoxLayout(page_4);
+        verticalLayout_13->setObjectName(QStringLiteral("verticalLayout_13"));
+        verticalLayout_13->setContentsMargins(0, 0, 0, 0);
+        horizontalLayout_14 = new QHBoxLayout();
+        horizontalLayout_14->setObjectName(QStringLiteral("horizontalLayout_14"));
+        pushButton_6 = new QPushButton(page_4);
+        pushButton_6->setObjectName(QStringLiteral("pushButton_6"));
+
+        horizontalLayout_14->addWidget(pushButton_6);
+
+        pushButton_7 = new QPushButton(page_4);
+        pushButton_7->setObjectName(QStringLiteral("pushButton_7"));
+
+        horizontalLayout_14->addWidget(pushButton_7);
+
+        pushButton_8 = new QPushButton(page_4);
+        pushButton_8->setObjectName(QStringLiteral("pushButton_8"));
+
+        horizontalLayout_14->addWidget(pushButton_8);
+
+        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_14->addItem(horizontalSpacer_4);
+
+
+        verticalLayout_13->addLayout(horizontalLayout_14);
+
+        stackedWidgetCscrButtons->addWidget(page_4);
+
+        verticalLayout_11->addWidget(stackedWidgetCscrButtons);
 
         verticalLayout_10 = new QVBoxLayout();
         verticalLayout_10->setObjectName(QStringLiteral("verticalLayout_10"));
-        label_5 = new QLabel(page_2);
+        stackedWidgetBugDescript = new QStackedWidget(page_2);
+        stackedWidgetBugDescript->setObjectName(QStringLiteral("stackedWidgetBugDescript"));
+        page_5 = new QWidget();
+        page_5->setObjectName(QStringLiteral("page_5"));
+        verticalLayout_12 = new QVBoxLayout(page_5);
+        verticalLayout_12->setObjectName(QStringLiteral("verticalLayout_12"));
+        label_5 = new QLabel(page_5);
         label_5->setObjectName(QStringLiteral("label_5"));
 
-        verticalLayout_10->addWidget(label_5);
+        verticalLayout_12->addWidget(label_5);
 
         horizontalLayout_9 = new QHBoxLayout();
         horizontalLayout_9->setObjectName(QStringLiteral("horizontalLayout_9"));
-        label_6 = new QLabel(page_2);
+        label_6 = new QLabel(page_5);
         label_6->setObjectName(QStringLiteral("label_6"));
 
         horizontalLayout_9->addWidget(label_6);
 
-        lineEdit_2 = new QLineEdit(page_2);
+        lineEdit_2 = new QLineEdit(page_5);
         lineEdit_2->setObjectName(QStringLiteral("lineEdit_2"));
 
         horizontalLayout_9->addWidget(lineEdit_2);
 
 
-        verticalLayout_10->addLayout(horizontalLayout_9);
+        verticalLayout_12->addLayout(horizontalLayout_9);
 
         horizontalLayout_10 = new QHBoxLayout();
         horizontalLayout_10->setObjectName(QStringLiteral("horizontalLayout_10"));
-        label_7 = new QLabel(page_2);
+        label_7 = new QLabel(page_5);
         label_7->setObjectName(QStringLiteral("label_7"));
 
         horizontalLayout_10->addWidget(label_7);
 
-        comboBox = new QComboBox(page_2);
+        comboBox = new QComboBox(page_5);
         comboBox->setObjectName(QStringLiteral("comboBox"));
 
         horizontalLayout_10->addWidget(comboBox);
@@ -915,26 +973,25 @@ public:
 
         horizontalLayout_10->addItem(horizontalSpacer_3);
 
-        horizontalLayout_10->setStretch(0, 1);
         horizontalLayout_10->setStretch(1, 2);
-        horizontalLayout_10->setStretch(2, 3);
+        horizontalLayout_10->setStretch(2, 1);
 
-        verticalLayout_10->addLayout(horizontalLayout_10);
+        verticalLayout_12->addLayout(horizontalLayout_10);
 
         verticalLayout_9 = new QVBoxLayout();
         verticalLayout_9->setObjectName(QStringLiteral("verticalLayout_9"));
-        label_8 = new QLabel(page_2);
+        label_8 = new QLabel(page_5);
         label_8->setObjectName(QStringLiteral("label_8"));
 
         verticalLayout_9->addWidget(label_8);
 
-        textEdit = new QTextEdit(page_2);
+        textEdit = new QTextEdit(page_5);
         textEdit->setObjectName(QStringLiteral("textEdit"));
 
         verticalLayout_9->addWidget(textEdit);
 
 
-        verticalLayout_10->addLayout(verticalLayout_9);
+        verticalLayout_12->addLayout(verticalLayout_9);
 
         horizontalLayout_11 = new QHBoxLayout();
         horizontalLayout_11->setObjectName(QStringLiteral("horizontalLayout_11"));
@@ -942,30 +999,34 @@ public:
 
         horizontalLayout_11->addItem(horizontalSpacer);
 
-        pushButton_9 = new QPushButton(page_2);
+        pushButton_9 = new QPushButton(page_5);
         pushButton_9->setObjectName(QStringLiteral("pushButton_9"));
 
         horizontalLayout_11->addWidget(pushButton_9);
 
-        pushButton_10 = new QPushButton(page_2);
+        pushButton_10 = new QPushButton(page_5);
         pushButton_10->setObjectName(QStringLiteral("pushButton_10"));
 
         horizontalLayout_11->addWidget(pushButton_10);
 
 
-        verticalLayout_10->addLayout(horizontalLayout_11);
+        verticalLayout_12->addLayout(horizontalLayout_11);
+
+        stackedWidgetBugDescript->addWidget(page_5);
+        page_6 = new QWidget();
+        page_6->setObjectName(QStringLiteral("page_6"));
+        stackedWidgetBugDescript->addWidget(page_6);
+
+        verticalLayout_10->addWidget(stackedWidgetBugDescript);
 
 
         verticalLayout_11->addLayout(verticalLayout_10);
-
-
-        gridLayout_7->addLayout(verticalLayout_11, 0, 0, 1, 1);
 
         stackedWidgetRightDown->addWidget(page_2);
 
         verticalLayout->addWidget(stackedWidgetRightDown);
 
-        verticalLayout->setStretch(0, 1);
+        verticalLayout->setStretch(0, 3);
         verticalLayout->setStretch(1, 1);
 
         horizontalLayout->addLayout(verticalLayout);
@@ -1089,6 +1150,8 @@ public:
         stackedWidgetLeft->setCurrentIndex(2);
         stackedWidgetRightDown->setCurrentIndex(1);
         tabProgramOutput->setCurrentIndex(2);
+        stackedWidgetCscrButtons->setCurrentIndex(1);
+        stackedWidgetBugDescript->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -1343,9 +1406,12 @@ public:
         tabProgramOutput->setTabText(tabProgramOutput->indexOf(tabFaultReport), QApplication::translate("MainWindow", "Fault Report", 0));
         tabProgramOutput->setTabText(tabProgramOutput->indexOf(tabAppOutput), QApplication::translate("MainWindow", "App Output", 0));
         pushButton->setText(QApplication::translate("MainWindow", "Structure", 0));
-        pushButton_6->setText(QApplication::translate("MainWindow", "Start Reviewing", 0));
-        pushButton_7->setText(QApplication::translate("MainWindow", "Done", 0));
-        pushButton_8->setText(QApplication::translate("MainWindow", "Finish Reviewing", 0));
+        pushButton_12->setText(QApplication::translate("MainWindow", "Undo", 0));
+        pushButton_13->setText(QApplication::translate("MainWindow", "Restart Structure", 0));
+        pushButton_15->setText(QApplication::translate("MainWindow", "Done", 0));
+        pushButton_6->setText(QApplication::translate("MainWindow", "Review from Start", 0));
+        pushButton_7->setText(QApplication::translate("MainWindow", "Back to Current", 0));
+        pushButton_8->setText(QApplication::translate("MainWindow", "Finish Reviewing and Generate Report", 0));
         label_5->setText(QApplication::translate("MainWindow", "Current Line: ", 0));
         label_6->setText(QApplication::translate("MainWindow", "Bug Name:", 0));
         label_7->setText(QApplication::translate("MainWindow", "Bug Nature:", 0));

@@ -62,6 +62,11 @@ public:
         if (cscrtooldialog->objectName().isEmpty())
             cscrtooldialog->setObjectName(QStringLiteral("cscrtooldialog"));
         cscrtooldialog->resize(400, 300);
+        QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(cscrtooldialog->sizePolicy().hasHeightForWidth());
+        cscrtooldialog->setSizePolicy(sizePolicy);
         gridLayout_2 = new QGridLayout(cscrtooldialog);
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
         verticalLayout_3 = new QVBoxLayout();
@@ -85,9 +90,6 @@ public:
 
         stackedWidget = new QStackedWidget(cscrtooldialog);
         stackedWidget->setObjectName(QStringLiteral("stackedWidget"));
-        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(stackedWidget->sizePolicy().hasHeightForWidth());
         stackedWidget->setSizePolicy(sizePolicy);
         page = new QWidget();
@@ -115,6 +117,7 @@ public:
         sizePolicy1.setVerticalStretch(0);
         sizePolicy1.setHeightForWidth(methodComboBox->sizePolicy().hasHeightForWidth());
         methodComboBox->setSizePolicy(sizePolicy1);
+        methodComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 
         horizontalLayout->addWidget(methodComboBox);
 

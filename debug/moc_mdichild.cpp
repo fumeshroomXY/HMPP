@@ -21,8 +21,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MdiChild_t {
-    QByteArrayData data[46];
-    char stringdata0[747];
+    QByteArrayData data[50];
+    char stringdata0[826];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -49,34 +49,38 @@ QT_MOC_LITERAL(14, 217, 13), // "classInfoHash"
 QT_MOC_LITERAL(15, 231, 21), // "updateInformalSpecPos"
 QT_MOC_LITERAL(16, 253, 24), // "QList<InformalSpecInfo>&"
 QT_MOC_LITERAL(17, 278, 17), // "informalSpecInfos"
-QT_MOC_LITERAL(18, 296, 18), // "startChatGPTDialog"
-QT_MOC_LITERAL(19, 315, 19), // "startChatGPTFixCode"
-QT_MOC_LITERAL(20, 335, 11), // "resizeEvent"
-QT_MOC_LITERAL(21, 347, 13), // "QResizeEvent*"
-QT_MOC_LITERAL(22, 361, 5), // "event"
-QT_MOC_LITERAL(23, 367, 14), // "faultLinePaint"
-QT_MOC_LITERAL(24, 382, 11), // "blockNumber"
-QT_MOC_LITERAL(25, 394, 10), // "setFixText"
-QT_MOC_LITERAL(26, 405, 4), // "var1"
-QT_MOC_LITERAL(27, 410, 4), // "var2"
-QT_MOC_LITERAL(28, 415, 17), // "faultFixOkClicked"
-QT_MOC_LITERAL(29, 433, 20), // "highlightCurrentLine"
-QT_MOC_LITERAL(30, 454, 19), // "documentWasModified"
-QT_MOC_LITERAL(31, 474, 25), // "updateLineNumberAreaWidth"
-QT_MOC_LITERAL(32, 500, 13), // "newBlockCount"
-QT_MOC_LITERAL(33, 514, 20), // "updateLineNumberArea"
-QT_MOC_LITERAL(34, 535, 21), // "showFaultPromptDialog"
-QT_MOC_LITERAL(35, 557, 10), // "lineNumber"
-QT_MOC_LITERAL(36, 568, 16), // "fixButtonHovered"
-QT_MOC_LITERAL(37, 585, 16), // "fixButtonClicked"
-QT_MOC_LITERAL(38, 602, 12), // "clearPreview"
-QT_MOC_LITERAL(39, 615, 14), // "highlightMatch"
-QT_MOC_LITERAL(40, 630, 19), // "askChatGPTTriggered"
-QT_MOC_LITERAL(41, 650, 16), // "fixCodeTriggered"
-QT_MOC_LITERAL(42, 667, 11), // "updateMatch"
-QT_MOC_LITERAL(43, 679, 27), // "updateInformalSpecPosInFile"
-QT_MOC_LITERAL(44, 707, 17), // "autoCompleteMatch"
-QT_MOC_LITERAL(45, 725, 21) // "moveFaultPromptDialog"
+QT_MOC_LITERAL(18, 296, 22), // "updateMethodNameToCode"
+QT_MOC_LITERAL(19, 319, 22), // "QHash<QString,QString>"
+QT_MOC_LITERAL(20, 342, 16), // "methodNameToCode"
+QT_MOC_LITERAL(21, 359, 18), // "startChatGPTDialog"
+QT_MOC_LITERAL(22, 378, 19), // "startChatGPTFixCode"
+QT_MOC_LITERAL(23, 398, 11), // "resizeEvent"
+QT_MOC_LITERAL(24, 410, 13), // "QResizeEvent*"
+QT_MOC_LITERAL(25, 424, 5), // "event"
+QT_MOC_LITERAL(26, 430, 14), // "faultLinePaint"
+QT_MOC_LITERAL(27, 445, 11), // "blockNumber"
+QT_MOC_LITERAL(28, 457, 10), // "setFixText"
+QT_MOC_LITERAL(29, 468, 4), // "var1"
+QT_MOC_LITERAL(30, 473, 4), // "var2"
+QT_MOC_LITERAL(31, 478, 17), // "faultFixOkClicked"
+QT_MOC_LITERAL(32, 496, 20), // "highlightCurrentLine"
+QT_MOC_LITERAL(33, 517, 19), // "documentWasModified"
+QT_MOC_LITERAL(34, 537, 25), // "updateLineNumberAreaWidth"
+QT_MOC_LITERAL(35, 563, 13), // "newBlockCount"
+QT_MOC_LITERAL(36, 577, 20), // "updateLineNumberArea"
+QT_MOC_LITERAL(37, 598, 21), // "showFaultPromptDialog"
+QT_MOC_LITERAL(38, 620, 10), // "lineNumber"
+QT_MOC_LITERAL(39, 631, 16), // "fixButtonHovered"
+QT_MOC_LITERAL(40, 648, 16), // "fixButtonClicked"
+QT_MOC_LITERAL(41, 665, 12), // "clearPreview"
+QT_MOC_LITERAL(42, 678, 14), // "highlightMatch"
+QT_MOC_LITERAL(43, 693, 19), // "askChatGPTTriggered"
+QT_MOC_LITERAL(44, 713, 16), // "fixCodeTriggered"
+QT_MOC_LITERAL(45, 730, 15), // "addBugTriggered"
+QT_MOC_LITERAL(46, 746, 11), // "updateMatch"
+QT_MOC_LITERAL(47, 758, 27), // "updateInformalSpecPosInFile"
+QT_MOC_LITERAL(48, 786, 17), // "autoCompleteMatch"
+QT_MOC_LITERAL(49, 804, 21) // "moveFaultPromptDialog"
 
     },
     "MdiChild\0showSCMFault\0\0hideProblemTab\0"
@@ -86,17 +90,19 @@ QT_MOC_LITERAL(45, 725, 21) // "moveFaultPromptDialog"
     "QVector<RequireNote*>\0note\0updateClassFiles\0"
     "QHash<QString,ClassInfo>&\0classInfoHash\0"
     "updateInformalSpecPos\0QList<InformalSpecInfo>&\0"
-    "informalSpecInfos\0startChatGPTDialog\0"
-    "startChatGPTFixCode\0resizeEvent\0"
-    "QResizeEvent*\0event\0faultLinePaint\0"
-    "blockNumber\0setFixText\0var1\0var2\0"
-    "faultFixOkClicked\0highlightCurrentLine\0"
-    "documentWasModified\0updateLineNumberAreaWidth\0"
-    "newBlockCount\0updateLineNumberArea\0"
-    "showFaultPromptDialog\0lineNumber\0"
-    "fixButtonHovered\0fixButtonClicked\0"
-    "clearPreview\0highlightMatch\0"
-    "askChatGPTTriggered\0fixCodeTriggered\0"
+    "informalSpecInfos\0updateMethodNameToCode\0"
+    "QHash<QString,QString>\0methodNameToCode\0"
+    "startChatGPTDialog\0startChatGPTFixCode\0"
+    "resizeEvent\0QResizeEvent*\0event\0"
+    "faultLinePaint\0blockNumber\0setFixText\0"
+    "var1\0var2\0faultFixOkClicked\0"
+    "highlightCurrentLine\0documentWasModified\0"
+    "updateLineNumberAreaWidth\0newBlockCount\0"
+    "updateLineNumberArea\0showFaultPromptDialog\0"
+    "lineNumber\0fixButtonHovered\0"
+    "fixButtonClicked\0clearPreview\0"
+    "highlightMatch\0askChatGPTTriggered\0"
+    "fixCodeTriggered\0addBugTriggered\0"
     "updateMatch\0updateInformalSpecPosInFile\0"
     "autoCompleteMatch\0moveFaultPromptDialog"
 };
@@ -108,46 +114,48 @@ static const uint qt_meta_data_MdiChild[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      30,   14, // methods
+      32,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       9,       // signalCount
+      10,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,  164,    2, 0x06 /* Public */,
-       3,    0,  167,    2, 0x06 /* Public */,
-       4,    0,  168,    2, 0x06 /* Public */,
-       5,    1,  169,    2, 0x06 /* Public */,
-       8,    2,  172,    2, 0x06 /* Public */,
-      12,    2,  177,    2, 0x06 /* Public */,
-      15,    2,  182,    2, 0x06 /* Public */,
-      18,    1,  187,    2, 0x06 /* Public */,
-      19,    1,  190,    2, 0x06 /* Public */,
+       1,    1,  174,    2, 0x06 /* Public */,
+       3,    0,  177,    2, 0x06 /* Public */,
+       4,    0,  178,    2, 0x06 /* Public */,
+       5,    1,  179,    2, 0x06 /* Public */,
+       8,    2,  182,    2, 0x06 /* Public */,
+      12,    2,  187,    2, 0x06 /* Public */,
+      15,    2,  192,    2, 0x06 /* Public */,
+      18,    1,  197,    2, 0x06 /* Public */,
+      21,    1,  200,    2, 0x06 /* Public */,
+      22,    1,  203,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      20,    1,  193,    2, 0x0a /* Public */,
-      23,    1,  196,    2, 0x0a /* Public */,
-      25,    2,  199,    2, 0x0a /* Public */,
-      28,    0,  204,    2, 0x0a /* Public */,
-      29,    0,  205,    2, 0x0a /* Public */,
-      30,    0,  206,    2, 0x08 /* Private */,
-      31,    1,  207,    2, 0x08 /* Private */,
-      33,    1,  210,    2, 0x08 /* Private */,
-      33,    1,  213,    2, 0x08 /* Private */,
-      33,    0,  216,    2, 0x08 /* Private */,
-      34,    1,  217,    2, 0x08 /* Private */,
-      36,    0,  220,    2, 0x08 /* Private */,
-      37,    0,  221,    2, 0x08 /* Private */,
-      38,    0,  222,    2, 0x08 /* Private */,
-      39,    0,  223,    2, 0x08 /* Private */,
-      40,    0,  224,    2, 0x08 /* Private */,
-      41,    0,  225,    2, 0x08 /* Private */,
-      42,    0,  226,    2, 0x08 /* Private */,
-      43,    0,  227,    2, 0x08 /* Private */,
-      44,    0,  228,    2, 0x08 /* Private */,
-      45,    0,  229,    2, 0x08 /* Private */,
+      23,    1,  206,    2, 0x0a /* Public */,
+      26,    1,  209,    2, 0x0a /* Public */,
+      28,    2,  212,    2, 0x0a /* Public */,
+      31,    0,  217,    2, 0x0a /* Public */,
+      32,    0,  218,    2, 0x0a /* Public */,
+      33,    0,  219,    2, 0x08 /* Private */,
+      34,    1,  220,    2, 0x08 /* Private */,
+      36,    1,  223,    2, 0x08 /* Private */,
+      36,    1,  226,    2, 0x08 /* Private */,
+      36,    0,  229,    2, 0x08 /* Private */,
+      37,    1,  230,    2, 0x08 /* Private */,
+      39,    0,  233,    2, 0x08 /* Private */,
+      40,    0,  234,    2, 0x08 /* Private */,
+      41,    0,  235,    2, 0x08 /* Private */,
+      42,    0,  236,    2, 0x08 /* Private */,
+      43,    0,  237,    2, 0x08 /* Private */,
+      44,    0,  238,    2, 0x08 /* Private */,
+      45,    0,  239,    2, 0x08 /* Private */,
+      46,    0,  240,    2, 0x08 /* Private */,
+      47,    0,  241,    2, 0x08 /* Private */,
+      48,    0,  242,    2, 0x08 /* Private */,
+      49,    0,  243,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Int,    2,
@@ -157,21 +165,23 @@ static const uint qt_meta_data_MdiChild[] = {
     QMetaType::Void, QMetaType::QString, 0x80000000 | 10,    9,   11,
     QMetaType::Void, QMetaType::QString, 0x80000000 | 13,    9,   14,
     QMetaType::Void, QMetaType::QString, 0x80000000 | 16,    9,   17,
+    QMetaType::Void, 0x80000000 | 19,   20,
     QMetaType::Void, QMetaType::QString,    2,
     QMetaType::Void, QMetaType::QString,    2,
 
  // slots: parameters
-    QMetaType::Void, 0x80000000 | 21,   22,
-    QMetaType::Void, QMetaType::Int,   24,
-    QMetaType::Void, QMetaType::QString, QMetaType::QString,   26,   27,
+    QMetaType::Void, 0x80000000 | 24,   25,
+    QMetaType::Void, QMetaType::Int,   27,
+    QMetaType::Void, QMetaType::QString, QMetaType::QString,   29,   30,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,   32,
+    QMetaType::Void, QMetaType::Int,   35,
     QMetaType::Void, QMetaType::QRectF,    2,
     QMetaType::Void, QMetaType::Int,    2,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,   35,
+    QMetaType::Void, QMetaType::Int,   38,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -199,29 +209,31 @@ void MdiChild::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
         case 4: _t->updateToDoRequireNote((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QVector<RequireNote*>(*)>(_a[2]))); break;
         case 5: _t->updateClassFiles((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QHash<QString,ClassInfo>(*)>(_a[2]))); break;
         case 6: _t->updateInformalSpecPos((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QList<InformalSpecInfo>(*)>(_a[2]))); break;
-        case 7: _t->startChatGPTDialog((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 8: _t->startChatGPTFixCode((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 9: _t->resizeEvent((*reinterpret_cast< QResizeEvent*(*)>(_a[1]))); break;
-        case 10: _t->faultLinePaint((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 11: _t->setFixText((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2]))); break;
-        case 12: _t->faultFixOkClicked(); break;
-        case 13: _t->highlightCurrentLine(); break;
-        case 14: _t->documentWasModified(); break;
-        case 15: _t->updateLineNumberAreaWidth((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 16: _t->updateLineNumberArea((*reinterpret_cast< QRectF(*)>(_a[1]))); break;
-        case 17: _t->updateLineNumberArea((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 18: _t->updateLineNumberArea(); break;
-        case 19: _t->showFaultPromptDialog((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 20: _t->fixButtonHovered(); break;
-        case 21: _t->fixButtonClicked(); break;
-        case 22: _t->clearPreview(); break;
-        case 23: _t->highlightMatch(); break;
-        case 24: _t->askChatGPTTriggered(); break;
-        case 25: _t->fixCodeTriggered(); break;
-        case 26: _t->updateMatch(); break;
-        case 27: _t->updateInformalSpecPosInFile(); break;
-        case 28: _t->autoCompleteMatch(); break;
-        case 29: _t->moveFaultPromptDialog(); break;
+        case 7: _t->updateMethodNameToCode((*reinterpret_cast< QHash<QString,QString>(*)>(_a[1]))); break;
+        case 8: _t->startChatGPTDialog((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 9: _t->startChatGPTFixCode((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 10: _t->resizeEvent((*reinterpret_cast< QResizeEvent*(*)>(_a[1]))); break;
+        case 11: _t->faultLinePaint((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 12: _t->setFixText((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2]))); break;
+        case 13: _t->faultFixOkClicked(); break;
+        case 14: _t->highlightCurrentLine(); break;
+        case 15: _t->documentWasModified(); break;
+        case 16: _t->updateLineNumberAreaWidth((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 17: _t->updateLineNumberArea((*reinterpret_cast< QRectF(*)>(_a[1]))); break;
+        case 18: _t->updateLineNumberArea((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 19: _t->updateLineNumberArea(); break;
+        case 20: _t->showFaultPromptDialog((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 21: _t->fixButtonHovered(); break;
+        case 22: _t->fixButtonClicked(); break;
+        case 23: _t->clearPreview(); break;
+        case 24: _t->highlightMatch(); break;
+        case 25: _t->askChatGPTTriggered(); break;
+        case 26: _t->fixCodeTriggered(); break;
+        case 27: _t->addBugTriggered(); break;
+        case 28: _t->updateMatch(); break;
+        case 29: _t->updateInformalSpecPosInFile(); break;
+        case 30: _t->autoCompleteMatch(); break;
+        case 31: _t->moveFaultPromptDialog(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -277,16 +289,23 @@ void MdiChild::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
             }
         }
         {
-            typedef void (MdiChild::*_t)(QString );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&MdiChild::startChatGPTDialog)) {
+            typedef void (MdiChild::*_t)(QHash<QString,QString> );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&MdiChild::updateMethodNameToCode)) {
                 *result = 7;
                 return;
             }
         }
         {
             typedef void (MdiChild::*_t)(QString );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&MdiChild::startChatGPTFixCode)) {
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&MdiChild::startChatGPTDialog)) {
                 *result = 8;
+                return;
+            }
+        }
+        {
+            typedef void (MdiChild::*_t)(QString );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&MdiChild::startChatGPTFixCode)) {
+                *result = 9;
                 return;
             }
         }
@@ -318,13 +337,13 @@ int MdiChild::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 30)
+        if (_id < 32)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 30;
+        _id -= 32;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 30)
+        if (_id < 32)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 30;
+        _id -= 32;
     }
     return _id;
 }
@@ -377,17 +396,24 @@ void MdiChild::updateInformalSpecPos(QString _t1, QList<InformalSpecInfo> & _t2)
 }
 
 // SIGNAL 7
-void MdiChild::startChatGPTDialog(QString _t1)
+void MdiChild::updateMethodNameToCode(QHash<QString,QString> _t1)
 {
     void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 7, _a);
 }
 
 // SIGNAL 8
-void MdiChild::startChatGPTFixCode(QString _t1)
+void MdiChild::startChatGPTDialog(QString _t1)
 {
     void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 8, _a);
+}
+
+// SIGNAL 9
+void MdiChild::startChatGPTFixCode(QString _t1)
+{
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 9, _a);
 }
 struct qt_meta_stringdata_LineNumberArea_t {
     QByteArrayData data[3];

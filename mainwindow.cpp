@@ -1071,8 +1071,9 @@ void MainWindow::showCSCRTool()
     ui->stackedWidgetRightDown->setCurrentIndex(1);
     ui->stackedWidgetRightDown->show();
 
-    //QList<QString> itemList = {"Option 1", "Option 2", "Option 3"};
-    CscrToolDialog *cscrToolDialog = new CscrToolDialog(this, cscrToolMethodNameToCode.keys());
+    QList<QString> itemList = cscrToolMethodNameToCode.keys();
+    itemList.sort();
+    CscrToolDialog *cscrToolDialog = new CscrToolDialog(this, itemList);
     connect(cscrToolDialog, &CscrToolDialog::reviewMethod, this, &MainWindow::reviewMethodCode);
     connect(cscrToolDialog, &CscrToolDialog::loadBugReportFile, this, &MainWindow::loadBugReportFile);
     cscrToolDialog->exec();
@@ -1087,7 +1088,7 @@ void MainWindow::loadBugReportFile(QString bugReportFilePath)
 void MainWindow::reviewMethodCode(QString methodName)
 {
     QString methodCode = cscrToolMethodNameToCode.value(methodName);
-    MdiChild* cscrToolMdiChild = newFile("review_" + methodName + ".txt");
+    MdiChild* cscrToolMdiChild = newReviewCodeFile("review_" + methodName + ".txt");
     cscrToolMdiChild->setCscrToolMode(true);
     cscrToolMdiChild->setText(methodCode);
 
@@ -1874,16 +1875,16 @@ void MainWindow::closeEvent(QCloseEvent *event)
     qDebug() << "13";
 }
 
-void MainWindow::newFile(QString fileName)
+void MainWindow::newFile()
 {
     qDebug() << "14";
     MdiChild *child = createMdiChild();
-    child->newFile(fileName);
+    child->newFile("");
     child->show();
     qDebug() << "14";
 }
 
-MdiChild* MainWindow::newFile(QString fileName)
+MdiChild* MainWindow::newReviewCodeFile(QString fileName)
 {
     qDebug() << "14";
     MdiChild *child = createMdiChild();
@@ -2339,6 +2340,8 @@ MdiChild *MainWindow::createMdiChild()
 
     //利用ChatGPT修正当前函数
     connect(child, &MdiChild::startChatGPTFixCode, this, &MainWindow::fixCodeByChatGPT);
+
+    connect(child, &MdiChild::updateMethodNameToCode, this, &MainWindow::setCscrToolMethodNameToCode);
 
     qDebug() << "30";
     return child;

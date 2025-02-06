@@ -328,6 +328,9 @@ signals:
     //通知主窗口更新自然语言规格位置
     void updateInformalSpecPos(QString filePath, QList<InformalSpecInfo>& informalSpecInfos);
 
+    //更新当前文件的函数及对应代码
+    void updateMethodNameToCode(QHash<QString, QString> methodNameToCode);
+
     void startChatGPTDialog(QString);
 
     void startChatGPTFixCode(QString);

@@ -112,7 +112,6 @@ public:
     //将ChatGPT的回答分割为三部分
     void separateText(const QString &fullText, QString &problemPart, QString &codePart, QString &conclusionPart);
 
-    void setCscrToolMethodNameToCode(const QHash<QString, QString> &value);
 
 public slots:
 
@@ -159,12 +158,14 @@ public slots:
     //开始复盘代码模式
     void reviewMethodCode(QString methodName);
 
+    void setCscrToolMethodNameToCode(const QHash<QString, QString> &value);
+
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;    //指定重载符
 
 private slots:
-    void newFile(QString fileName = "");
-    MdiChild* newFile(QString fileName = "");
+    void newFile();
+    MdiChild* newReviewCodeFile(QString fileName = "");
     void open();
     void save();
     void saveAs();
