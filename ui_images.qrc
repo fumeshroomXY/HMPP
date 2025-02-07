@@ -33,5 +33,10 @@
         <file>images/toolbar_images/question.png</file>
         <file>images/toolbar_images/watermark.png</file>
         <file>images/toolbar_images/todo.svg</file>
+        <file>images/toolbar_images/BackToCurrent.png</file>
+        <file>images/toolbar_images/CompleteStructure.png</file>
+        <file>images/toolbar_images/CompleteTheSegment.png</file>
+        <file>images/toolbar_images/RestartFromFirst.png</file>
+        <file>images/toolbar_images/RestartStructure.png</file>
     </qresource>
 </RCC>

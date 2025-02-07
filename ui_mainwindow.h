@@ -19,6 +19,7 @@
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
+#include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMdiArea>
 #include <QtWidgets/QMenu>
@@ -81,7 +82,7 @@ public:
     QAction *actionLoad_Review_Report;
     QAction *actionGenerate_Review_Report;
     QWidget *centralwidget;
-    QHBoxLayout *horizontalLayout;
+    QGridLayout *gridLayout_7;
     QStackedWidget *stackedWidgetLeft;
     QWidget *pageProject;
     QVBoxLayout *verticalLayout_2;
@@ -108,10 +109,13 @@ public:
     QVBoxLayout *verticalLayout_7;
     QTextEdit *fixedCodeTextEdit;
     QWidget *pageCodeAnalysis;
-    QWidget *layoutWidget;
+    QVBoxLayout *verticalLayout_16;
+    QVBoxLayout *verticalLayout_15;
     QHBoxLayout *horizontalLayout_12;
     QPushButton *pushButton_11;
     QLabel *label_9;
+    QLabel *label_10;
+    QListWidget *listWidget;
     QWidget *pageHMPP;
     QGridLayout *gridLayout_2;
     QHBoxLayout *horizontalLayout_2;
@@ -159,19 +163,23 @@ public:
     QStackedWidget *stackedWidgetCscrButtons;
     QWidget *page_3;
     QVBoxLayout *verticalLayout_14;
-    QHBoxLayout *horizontalLayout_13;
-    QPushButton *pushButton;
-    QPushButton *pushButton_12;
-    QPushButton *pushButton_13;
-    QPushButton *pushButton_15;
+    QHBoxLayout *horizontalLayout;
+    QHBoxLayout *horizontalLayout_8;
+    QPushButton *buttonStructure;
+    QPushButton *buttonUndoStructure;
+    QPushButton *buttonRestartStructure;
+    QPushButton *buttonDoneStructure;
+    QSpacerItem *horizontalSpacer_4;
+    QPushButton *buttonReviewFromStart;
+    QPushButton *buttonBackToCurrent;
+    QPushButton *buttonCompleteCurrentSegment;
+    QPushButton *buttonGenerateReviewReport;
+    QPushButton *buttonPreviousBugDescription;
+    QPushButton *buttonNextBugDescription;
     QSpacerItem *horizontalSpacer_2;
     QWidget *page_4;
     QVBoxLayout *verticalLayout_13;
     QHBoxLayout *horizontalLayout_14;
-    QPushButton *pushButton_6;
-    QPushButton *pushButton_7;
-    QPushButton *pushButton_8;
-    QSpacerItem *horizontalSpacer_4;
     QVBoxLayout *verticalLayout_10;
     QStackedWidget *stackedWidgetBugDescript;
     QWidget *page_5;
@@ -339,9 +347,9 @@ public:
         actionGenerate_Review_Report->setObjectName(QStringLiteral("actionGenerate_Review_Report"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
-        horizontalLayout = new QHBoxLayout(centralwidget);
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        horizontalLayout->setSizeConstraint(QLayout::SetMinimumSize);
+        gridLayout_7 = new QGridLayout(centralwidget);
+        gridLayout_7->setObjectName(QStringLiteral("gridLayout_7"));
+        gridLayout_7->setSizeConstraint(QLayout::SetMinimumSize);
         stackedWidgetLeft = new QStackedWidget(centralwidget);
         stackedWidgetLeft->setObjectName(QStringLiteral("stackedWidgetLeft"));
         stackedWidgetLeft->setLineWidth(0);
@@ -490,7 +498,7 @@ public:
         scrollArea_3->setWidgetResizable(true);
         scrollAreaWidgetContents_3 = new QWidget();
         scrollAreaWidgetContents_3->setObjectName(QStringLiteral("scrollAreaWidgetContents_3"));
-        scrollAreaWidgetContents_3->setGeometry(QRect(0, 0, 83, 75));
+        scrollAreaWidgetContents_3->setGeometry(QRect(0, 0, 251, 184));
         verticalLayout_6 = new QVBoxLayout(scrollAreaWidgetContents_3);
         verticalLayout_6->setObjectName(QStringLiteral("verticalLayout_6"));
         verticalLayout_6->setContentsMargins(0, 0, 0, 0);
@@ -526,7 +534,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         scrollAreaWidgetContents_4 = new QWidget();
         scrollAreaWidgetContents_4->setObjectName(QStringLiteral("scrollAreaWidgetContents_4"));
-        scrollAreaWidgetContents_4->setGeometry(QRect(0, 0, 83, 77));
+        scrollAreaWidgetContents_4->setGeometry(QRect(0, 0, 251, 185));
         verticalLayout_7 = new QVBoxLayout(scrollAreaWidgetContents_4);
         verticalLayout_7->setObjectName(QStringLiteral("verticalLayout_7"));
         verticalLayout_7->setContentsMargins(0, 0, 0, 0);
@@ -552,13 +560,14 @@ public:
         stackedWidgetLeft->addWidget(pageRunDebug);
         pageCodeAnalysis = new QWidget();
         pageCodeAnalysis->setObjectName(QStringLiteral("pageCodeAnalysis"));
-        layoutWidget = new QWidget(pageCodeAnalysis);
-        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
-        layoutWidget->setGeometry(QRect(0, 20, 106, 26));
-        horizontalLayout_12 = new QHBoxLayout(layoutWidget);
+        verticalLayout_16 = new QVBoxLayout(pageCodeAnalysis);
+        verticalLayout_16->setObjectName(QStringLiteral("verticalLayout_16"));
+        verticalLayout_16->setContentsMargins(0, 0, 0, 0);
+        verticalLayout_15 = new QVBoxLayout();
+        verticalLayout_15->setObjectName(QStringLiteral("verticalLayout_15"));
+        horizontalLayout_12 = new QHBoxLayout();
         horizontalLayout_12->setObjectName(QStringLiteral("horizontalLayout_12"));
-        horizontalLayout_12->setContentsMargins(0, 0, 0, 0);
-        pushButton_11 = new QPushButton(layoutWidget);
+        pushButton_11 = new QPushButton(pageCodeAnalysis);
         pushButton_11->setObjectName(QStringLiteral("pushButton_11"));
         sizePolicy.setHeightForWidth(pushButton_11->sizePolicy().hasHeightForWidth());
         pushButton_11->setSizePolicy(sizePolicy);
@@ -567,7 +576,7 @@ public:
 
         horizontalLayout_12->addWidget(pushButton_11);
 
-        label_9 = new QLabel(layoutWidget);
+        label_9 = new QLabel(pageCodeAnalysis);
         label_9->setObjectName(QStringLiteral("label_9"));
         label_9->setStyleSheet(QLatin1String("\n"
 "    font-family: 'Verdana', sans-serif; /* Font type */\n"
@@ -576,6 +585,26 @@ public:
 "    font-weight: bold; /* Make the text bold */"));
 
         horizontalLayout_12->addWidget(label_9);
+
+
+        verticalLayout_15->addLayout(horizontalLayout_12);
+
+        label_10 = new QLabel(pageCodeAnalysis);
+        label_10->setObjectName(QStringLiteral("label_10"));
+
+        verticalLayout_15->addWidget(label_10);
+
+        listWidget = new QListWidget(pageCodeAnalysis);
+        new QListWidgetItem(listWidget);
+        new QListWidgetItem(listWidget);
+        new QListWidgetItem(listWidget);
+        new QListWidgetItem(listWidget);
+        listWidget->setObjectName(QStringLiteral("listWidget"));
+
+        verticalLayout_15->addWidget(listWidget);
+
+
+        verticalLayout_16->addLayout(verticalLayout_15);
 
         stackedWidgetLeft->addWidget(pageCodeAnalysis);
         pageHMPP = new QWidget();
@@ -615,7 +644,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QStringLiteral("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 131, 659));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 249, 446));
         verticalLayout_8 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_8->setObjectName(QStringLiteral("verticalLayout_8"));
         horizontalLayout_3 = new QHBoxLayout();
@@ -739,7 +768,7 @@ public:
 
         stackedWidgetLeft->addWidget(pageHMPP);
 
-        horizontalLayout->addWidget(stackedWidgetLeft);
+        gridLayout_7->addWidget(stackedWidgetLeft, 0, 0, 1, 1);
 
         verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
@@ -866,34 +895,93 @@ public:
         verticalLayout_14 = new QVBoxLayout(page_3);
         verticalLayout_14->setObjectName(QStringLiteral("verticalLayout_14"));
         verticalLayout_14->setContentsMargins(0, 0, 0, 0);
-        horizontalLayout_13 = new QHBoxLayout();
-        horizontalLayout_13->setObjectName(QStringLiteral("horizontalLayout_13"));
-        pushButton = new QPushButton(page_3);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        horizontalLayout_8 = new QHBoxLayout();
+        horizontalLayout_8->setObjectName(QStringLiteral("horizontalLayout_8"));
+        buttonStructure = new QPushButton(page_3);
+        buttonStructure->setObjectName(QStringLiteral("buttonStructure"));
+        buttonStructure->setIcon(icon8);
 
-        horizontalLayout_13->addWidget(pushButton);
+        horizontalLayout_8->addWidget(buttonStructure);
 
-        pushButton_12 = new QPushButton(page_3);
-        pushButton_12->setObjectName(QStringLiteral("pushButton_12"));
+        buttonUndoStructure = new QPushButton(page_3);
+        buttonUndoStructure->setObjectName(QStringLiteral("buttonUndoStructure"));
+        buttonUndoStructure->setIcon(icon5);
 
-        horizontalLayout_13->addWidget(pushButton_12);
+        horizontalLayout_8->addWidget(buttonUndoStructure);
 
-        pushButton_13 = new QPushButton(page_3);
-        pushButton_13->setObjectName(QStringLiteral("pushButton_13"));
+        buttonRestartStructure = new QPushButton(page_3);
+        buttonRestartStructure->setObjectName(QStringLiteral("buttonRestartStructure"));
+        QIcon icon24;
+        icon24.addFile(QStringLiteral(":/images/toolbar_images/RestartStructure.png"), QSize(), QIcon::Normal, QIcon::Off);
+        buttonRestartStructure->setIcon(icon24);
 
-        horizontalLayout_13->addWidget(pushButton_13);
+        horizontalLayout_8->addWidget(buttonRestartStructure);
 
-        pushButton_15 = new QPushButton(page_3);
-        pushButton_15->setObjectName(QStringLiteral("pushButton_15"));
+        buttonDoneStructure = new QPushButton(page_3);
+        buttonDoneStructure->setObjectName(QStringLiteral("buttonDoneStructure"));
+        QIcon icon25;
+        icon25.addFile(QStringLiteral(":/images/toolbar_images/CompleteStructure.png"), QSize(), QIcon::Normal, QIcon::Off);
+        buttonDoneStructure->setIcon(icon25);
 
-        horizontalLayout_13->addWidget(pushButton_15);
+        horizontalLayout_8->addWidget(buttonDoneStructure);
+
+        horizontalSpacer_4 = new QSpacerItem(20, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout_8->addItem(horizontalSpacer_4);
+
+        buttonReviewFromStart = new QPushButton(page_3);
+        buttonReviewFromStart->setObjectName(QStringLiteral("buttonReviewFromStart"));
+        QIcon icon26;
+        icon26.addFile(QStringLiteral(":/images/toolbar_images/RestartFromFirst.png"), QSize(), QIcon::Normal, QIcon::Off);
+        buttonReviewFromStart->setIcon(icon26);
+
+        horizontalLayout_8->addWidget(buttonReviewFromStart);
+
+        buttonBackToCurrent = new QPushButton(page_3);
+        buttonBackToCurrent->setObjectName(QStringLiteral("buttonBackToCurrent"));
+        QIcon icon27;
+        icon27.addFile(QStringLiteral(":/images/toolbar_images/BackToCurrent.png"), QSize(), QIcon::Normal, QIcon::Off);
+        buttonBackToCurrent->setIcon(icon27);
+
+        horizontalLayout_8->addWidget(buttonBackToCurrent);
+
+        buttonCompleteCurrentSegment = new QPushButton(page_3);
+        buttonCompleteCurrentSegment->setObjectName(QStringLiteral("buttonCompleteCurrentSegment"));
+        QIcon icon28;
+        icon28.addFile(QStringLiteral(":/images/toolbar_images/CompleteTheSegment.png"), QSize(), QIcon::Normal, QIcon::Off);
+        buttonCompleteCurrentSegment->setIcon(icon28);
+
+        horizontalLayout_8->addWidget(buttonCompleteCurrentSegment);
+
+        buttonGenerateReviewReport = new QPushButton(page_3);
+        buttonGenerateReviewReport->setObjectName(QStringLiteral("buttonGenerateReviewReport"));
+        buttonGenerateReviewReport->setIcon(icon9);
+
+        horizontalLayout_8->addWidget(buttonGenerateReviewReport);
+
+        buttonPreviousBugDescription = new QPushButton(page_3);
+        buttonPreviousBugDescription->setObjectName(QStringLiteral("buttonPreviousBugDescription"));
+        buttonPreviousBugDescription->setIcon(icon11);
+
+        horizontalLayout_8->addWidget(buttonPreviousBugDescription);
+
+        buttonNextBugDescription = new QPushButton(page_3);
+        buttonNextBugDescription->setObjectName(QStringLiteral("buttonNextBugDescription"));
+        buttonNextBugDescription->setIcon(icon10);
+
+        horizontalLayout_8->addWidget(buttonNextBugDescription);
+
+
+        horizontalLayout->addLayout(horizontalLayout_8);
 
         horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        horizontalLayout_13->addItem(horizontalSpacer_2);
+        horizontalLayout->addItem(horizontalSpacer_2);
 
 
-        verticalLayout_14->addLayout(horizontalLayout_13);
+        verticalLayout_14->addLayout(horizontalLayout);
 
         stackedWidgetCscrButtons->addWidget(page_3);
         page_4 = new QWidget();
@@ -903,25 +991,6 @@ public:
         verticalLayout_13->setContentsMargins(0, 0, 0, 0);
         horizontalLayout_14 = new QHBoxLayout();
         horizontalLayout_14->setObjectName(QStringLiteral("horizontalLayout_14"));
-        pushButton_6 = new QPushButton(page_4);
-        pushButton_6->setObjectName(QStringLiteral("pushButton_6"));
-
-        horizontalLayout_14->addWidget(pushButton_6);
-
-        pushButton_7 = new QPushButton(page_4);
-        pushButton_7->setObjectName(QStringLiteral("pushButton_7"));
-
-        horizontalLayout_14->addWidget(pushButton_7);
-
-        pushButton_8 = new QPushButton(page_4);
-        pushButton_8->setObjectName(QStringLiteral("pushButton_8"));
-
-        horizontalLayout_14->addWidget(pushButton_8);
-
-        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout_14->addItem(horizontalSpacer_4);
-
 
         verticalLayout_13->addLayout(horizontalLayout_14);
 
@@ -1029,10 +1098,8 @@ public:
         verticalLayout->setStretch(0, 3);
         verticalLayout->setStretch(1, 1);
 
-        horizontalLayout->addLayout(verticalLayout);
+        gridLayout_7->addLayout(verticalLayout, 0, 1, 1, 1);
 
-        horizontalLayout->setStretch(0, 3);
-        horizontalLayout->setStretch(1, 7);
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QStringLiteral("menubar"));
@@ -1150,7 +1217,7 @@ public:
         stackedWidgetLeft->setCurrentIndex(2);
         stackedWidgetRightDown->setCurrentIndex(1);
         tabProgramOutput->setCurrentIndex(2);
-        stackedWidgetCscrButtons->setCurrentIndex(1);
+        stackedWidgetCscrButtons->setCurrentIndex(0);
         stackedWidgetBugDescript->setCurrentIndex(0);
 
 
@@ -1342,6 +1409,20 @@ public:
                         "ttom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS UI Gothic'; font-size:9pt;\"><br /></p></body></html>", 0));
         pushButton_11->setText(QString());
         label_9->setText(QApplication::translate("MainWindow", "CSCR-Tool", 0));
+        label_10->setText(QApplication::translate("MainWindow", "The relevant questions on the checklist:", 0));
+
+        const bool __sortingEnabled1 = listWidget->isSortingEnabled();
+        listWidget->setSortingEnabled(false);
+        QListWidgetItem *___qlistwidgetitem = listWidget->item(0);
+        ___qlistwidgetitem->setText(QApplication::translate("MainWindow", "Question 1", 0));
+        QListWidgetItem *___qlistwidgetitem1 = listWidget->item(1);
+        ___qlistwidgetitem1->setText(QApplication::translate("MainWindow", "Question 2", 0));
+        QListWidgetItem *___qlistwidgetitem2 = listWidget->item(2);
+        ___qlistwidgetitem2->setText(QApplication::translate("MainWindow", "Question 3", 0));
+        QListWidgetItem *___qlistwidgetitem3 = listWidget->item(3);
+        ___qlistwidgetitem3->setText(QApplication::translate("MainWindow", "Question 4", 0));
+        listWidget->setSortingEnabled(__sortingEnabled1);
+
         pushButton_2->setText(QString());
         label_2->setText(QApplication::translate("MainWindow", "Ask anything about programming", 0));
         lineEdit->setInputMask(QString());
@@ -1393,7 +1474,7 @@ public:
         QTableWidgetItem *___qtablewidgetitem3 = tableWidgetReport->verticalHeaderItem(0);
         ___qtablewidgetitem3->setText(QApplication::translate("MainWindow", "1", 0));
 
-        const bool __sortingEnabled1 = tableWidgetReport->isSortingEnabled();
+        const bool __sortingEnabled2 = tableWidgetReport->isSortingEnabled();
         tableWidgetReport->setSortingEnabled(false);
         QTableWidgetItem *___qtablewidgetitem4 = tableWidgetReport->item(0, 0);
         ___qtablewidgetitem4->setText(QApplication::translate("MainWindow", "codeeditor.cpp", 0));
@@ -1401,17 +1482,50 @@ public:
         ___qtablewidgetitem5->setText(QApplication::translate("MainWindow", "line 13", 0));
         QTableWidgetItem *___qtablewidgetitem6 = tableWidgetReport->item(0, 2);
         ___qtablewidgetitem6->setText(QApplication::translate("MainWindow", "The exception that is thrown when there is an attempt to divide an integral or Decimal value by zero.", 0));
-        tableWidgetReport->setSortingEnabled(__sortingEnabled1);
+        tableWidgetReport->setSortingEnabled(__sortingEnabled2);
 
         tabProgramOutput->setTabText(tabProgramOutput->indexOf(tabFaultReport), QApplication::translate("MainWindow", "Fault Report", 0));
         tabProgramOutput->setTabText(tabProgramOutput->indexOf(tabAppOutput), QApplication::translate("MainWindow", "App Output", 0));
-        pushButton->setText(QApplication::translate("MainWindow", "Structure", 0));
-        pushButton_12->setText(QApplication::translate("MainWindow", "Undo", 0));
-        pushButton_13->setText(QApplication::translate("MainWindow", "Restart Structure", 0));
-        pushButton_15->setText(QApplication::translate("MainWindow", "Done", 0));
-        pushButton_6->setText(QApplication::translate("MainWindow", "Review from Start", 0));
-        pushButton_7->setText(QApplication::translate("MainWindow", "Back to Current", 0));
-        pushButton_8->setText(QApplication::translate("MainWindow", "Finish Reviewing and Generate Report", 0));
+#ifndef QT_NO_TOOLTIP
+        buttonStructure->setToolTip(QApplication::translate("MainWindow", "Structure the code as a segement", 0));
+#endif // QT_NO_TOOLTIP
+        buttonStructure->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        buttonUndoStructure->setToolTip(QApplication::translate("MainWindow", "Undo the structure", 0));
+#endif // QT_NO_TOOLTIP
+        buttonUndoStructure->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        buttonRestartStructure->setToolTip(QApplication::translate("MainWindow", "Restart the structure", 0));
+#endif // QT_NO_TOOLTIP
+        buttonRestartStructure->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        buttonDoneStructure->setToolTip(QApplication::translate("MainWindow", "Finish the structure", 0));
+#endif // QT_NO_TOOLTIP
+        buttonDoneStructure->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        buttonReviewFromStart->setToolTip(QApplication::translate("MainWindow", "Restart reviewing from the first segment", 0));
+#endif // QT_NO_TOOLTIP
+        buttonReviewFromStart->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        buttonBackToCurrent->setToolTip(QApplication::translate("MainWindow", "Back to Current Segement", 0));
+#endif // QT_NO_TOOLTIP
+        buttonBackToCurrent->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        buttonCompleteCurrentSegment->setToolTip(QApplication::translate("MainWindow", "Complete current segement and move to next", 0));
+#endif // QT_NO_TOOLTIP
+        buttonCompleteCurrentSegment->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        buttonGenerateReviewReport->setToolTip(QApplication::translate("MainWindow", "Complete review and generate report", 0));
+#endif // QT_NO_TOOLTIP
+        buttonGenerateReviewReport->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        buttonPreviousBugDescription->setToolTip(QApplication::translate("MainWindow", "View previous bug description", 0));
+#endif // QT_NO_TOOLTIP
+        buttonPreviousBugDescription->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        buttonNextBugDescription->setToolTip(QApplication::translate("MainWindow", "View next bug description", 0));
+#endif // QT_NO_TOOLTIP
+        buttonNextBugDescription->setText(QString());
         label_5->setText(QApplication::translate("MainWindow", "Current Line: ", 0));
         label_6->setText(QApplication::translate("MainWindow", "Bug Name:", 0));
         label_7->setText(QApplication::translate("MainWindow", "Bug Nature:", 0));

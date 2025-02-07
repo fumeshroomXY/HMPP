@@ -12,6 +12,6 @@ set(HEADER_FILES)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 # Project Info: 
-# IncludedClass: 
+# IncludedClass:
 # Specification Path: 
 
