@@ -112,6 +112,8 @@ public:
     //将ChatGPT的回答分割为三部分
     void separateText(const QString &fullText, QString &problemPart, QString &codePart, QString &conclusionPart);
 
+    void generateReviewReport(MdiChild *child);
+
 
 public slots:
 

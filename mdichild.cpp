@@ -1,6 +1,7 @@
 #include <QtWidgets>
 #include <QPlainTextEdit>
 #include <QtGlobal>
+#include <algorithm>
 
 #include "mdichild.h"
 #include "faultpromptdialog.h"
@@ -309,6 +310,16 @@ QString MdiChild::strippedName(const QString &fullFileName)
     return QFileInfo(fullFileName).fileName();
 }
 
+int MdiChild::getCurrentReviewLine() const
+{
+    return currentReviewLine;
+}
+
+void MdiChild::setCurrentReviewLine(int value)
+{
+    currentReviewLine = value;
+}
+
 bool MdiChild::getCscrToolMode() const
 {
     return cscrToolMode;
@@ -472,7 +483,7 @@ void MdiChild::highlightCurrentLine()
 //    qDebug() << "currentBlockState: " << currentBlock.userState();
 
     qDebug() << "-15";
-    QList<QTextEdit::ExtraSelection> extraSelections;
+    QList<QTextEdit::ExtraSelection> extraSelections = this->extraSelections();
     if (!isReadOnly()) {
         QTextEdit::ExtraSelection selection;
 
@@ -488,6 +499,163 @@ void MdiChild::highlightCurrentLine()
     setExtraSelections(extraSelections);
     qDebug() << "-15";
 }
+
+void MdiChild::clearStructureNumberList()
+{
+    this->structureNumberList.clear();
+    highlightSegments(this->structureNumberList);
+}
+
+void MdiChild::addToStructureNumberList()
+{
+    int number = textCursor().blockNumber();
+    // Check for duplicates
+    if (structureNumberList.contains(number)) {
+        return; // Do nothing if the value already exists
+    }
+
+    // Insert in sorted order
+    auto it = std::lower_bound(structureNumberList.begin(), structureNumberList.end(), number);
+    // Convert iterator to index
+    int index = std::distance(structureNumberList.begin(), it);
+
+    // Insert at the correct position
+    structureNumberList.insert(index, number);
+
+    QStringList stringList;
+    for (int i = 0; i < structureNumberList.size(); ++i) {
+        stringList << QString::number(structureNumberList[i]);  // Convert each integer to a QString
+    }
+    qDebug() << "structureNumberList: " <<stringList.join(", ");
+
+    recentlyInsertedNumber = number;
+    highlightSegments(this->structureNumberList);
+}
+
+void MdiChild::undoStructureNumberList()
+{
+    structureNumberList.removeOne(recentlyInsertedNumber);
+    highlightSegments(this->structureNumberList);
+}
+
+void MdiChild::scrollToLine(int lineNumber) {
+    qDebug() << "MdiChild::scrollToLine,  lineNumber = " << lineNumber;
+    QTextDocument *doc = document();
+    if (!doc) return;
+
+    QTextBlock block = doc->findBlockByNumber(lineNumber);
+    if (!block.isValid()) return;
+
+    // Move the cursor to the desired block
+    QTextCursor cursor(block);
+    setTextCursor(cursor);
+
+    // Ensure the cursor is visible
+    ensureCursorVisible();
+
+    // Force the block to appear at the top
+    QScrollBar *scrollBar = verticalScrollBar();
+    if (scrollBar) {
+        int cursorY = cursor.block().layout()->position().y();
+        qDebug() << "cursorY: " << cursorY;
+        scrollBar->setValue(cursorY);
+    }
+}
+
+void MdiChild::scrollToCurrentReviewLine()
+{
+    scrollToLine(currentReviewLine);
+}
+
+void MdiChild::scrollToFirstLine()
+{
+    scrollToLine(0);
+}
+
+bool MdiChild::isAllSegmentsReviewed()
+{
+    if(currentReviewLine >= document()->blockCount()){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+void MdiChild::moveToNextReviewSegment()
+{
+    QList<QTextEdit::ExtraSelection> selections = this->extraSelections();
+    if(structureNumberList.isEmpty()){
+        //resetBlockColors(0, document()->blockCount(), Qt::transparent, selections);
+        emit allSegmentsReviewComplete();
+        currentReviewLine = document()->blockCount();
+        scrollToCurrentReviewLine();
+        setExtraSelections(selections);
+        return;
+    }
+
+    auto it = std::lower_bound(structureNumberList.begin(), structureNumberList.end(), currentReviewLine);
+    if (it == structureNumberList.end()) {
+        //structureNumberList.clear();
+        //highlightSegments(structureNumberList);
+        //resetBlockColors(currentReviewLine, document()->blockCount(), Qt::transparent, selections);
+        emit allSegmentsReviewComplete();
+        currentReviewLine = document()->blockCount();
+        scrollToCurrentReviewLine();
+    }else{
+        //structureNumberList.removeOne((*it));
+        //highlightSegments(structureNumberList);
+        //resetBlockColors(currentReviewLine, (*it) + 1, Qt::transparent, selections);
+        currentReviewLine = (*it) + 1;
+        scrollToCurrentReviewLine();
+    }
+    setExtraSelections(selections);
+}
+
+void MdiChild::resetBlockColors(int startLine, int endLine, const QColor &color, QList<QTextEdit::ExtraSelection>& selections) {
+
+    // Save the current cursor position
+    QTextCursor originalCursor = textCursor();
+
+    qDebug() << "resetBlockColors: startLine = " << startLine << " endLine = " << endLine;
+    qDebug() << "QColor: " << color;
+
+    int totalBlocks = document()->blockCount();
+    if (startLine < 0 || endLine > totalBlocks || startLine >= endLine) {
+        qDebug() << "Invalid block range";
+        return;
+    }
+
+    QTextDocument *doc = document();
+    if (!doc) return;
+
+    // Clear previous selections
+    qDebug() << "Applied extraSelections count before:" << selections.size();
+
+    // Iterate through all blocks from startLine to endLine (excluding endLine)
+    for (QTextBlock block = doc->findBlockByNumber(startLine);
+         block.isValid() && block.blockNumber() < endLine;
+         block = block.next()) {
+
+        int blockNumber = block.blockNumber();
+        qDebug() << "Processing block: " << blockNumber;
+
+        // Create a selection to reset the background color
+        QTextEdit::ExtraSelection selection;
+        selection.format.setBackground(color);
+        selection.cursor = QTextCursor(block);
+        selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+        selections.append(selection);
+    }
+
+    // Apply the selections
+    qDebug() << "Applied extraSelections count after:" << selections.size();
+
+    // Restore the original cursor position
+    setTextCursor(originalCursor);
+
+    update();
+}
+
 
 
 void MdiChild::lineNumberAreaPaintEvent(QPaintEvent *event)
@@ -863,7 +1031,7 @@ void MdiChild::highlightMatch()
     qDebug() << "-20";
     //qDebug()  <<  "start: " << "highlightMatch";
     //bool match = false;
-    QList<QTextEdit::ExtraSelection> selections;
+    QList<QTextEdit::ExtraSelection> selections = extraSelections();
     setExtraSelections(selections);
 
     //get userdata of the current line where cursor locates
@@ -2502,4 +2670,39 @@ void MdiChild::matchFaultPattern(const QRegExp& faultPattern, const QTextCharFor
     }
 
 }
+
+void MdiChild::highlightSegments(const QList<int> &segments) {
+    QList<QTextEdit::ExtraSelection> selections;
+
+    if (segments.isEmpty() || (segments.size() == 1 && segments.at(0) == -1)){
+        resetBlockColors(0, document()->blockCount(), Qt::transparent, selections);
+        setExtraSelections(selections);
+        return;
+    }
+
+    // Save the current cursor position
+    QTextCursor originalCursor = textCursor();
+
+    QColor colors[] = {Qt::yellow, Qt::cyan};  // Two alternating colors
+
+    int prev = 0;
+    for (int i = 0; i < segments.size(); ++i) {
+        QTextBlock startBlock = document()->findBlockByNumber(prev);
+        QTextBlock endBlock = (segments[i] == -1) ? document()->lastBlock() : document()->findBlockByNumber(segments[i]);
+
+        if (!startBlock.isValid() || !endBlock.isValid()) {
+            qDebug() << "block is invalid.";
+            break; // Invalid block
+        }
+        resetBlockColors(prev, segments[i]+1, colors[i % 2], selections);
+
+        prev = segments[i] + 1;
+    }
+
+    setExtraSelections(selections);
+
+    // Restore the original cursor position
+    setTextCursor(originalCursor);
+}
+
 

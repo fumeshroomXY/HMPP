@@ -143,6 +143,13 @@ public:
     bool getCscrToolMode() const;
     void setCscrToolMode(bool value);
 
+    int getCurrentReviewLine() const;
+    void setCurrentReviewLine(int value);
+
+    void resetBlockColors(int startLine, int endLine, const QColor &color, QList<QTextEdit::ExtraSelection>& selections);
+
+    bool isAllSegmentsReviewed();
+
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;   //关闭事件
 
@@ -163,6 +170,16 @@ public slots:
 
     void highlightCurrentLine();
 
+    //更改StructureNumberList
+    void clearStructureNumberList();
+    void addToStructureNumberList();
+    void undoStructureNumberList();
+
+    void scrollToLine(int lineNumber);
+    void scrollToCurrentReviewLine();
+    void scrollToFirstLine();
+
+    void moveToNextReviewSegment();
 
 
 private slots:
@@ -202,6 +219,9 @@ private slots:
     //更新faultBox的位置
     void moveFaultPromptDialog();
 
+    //绘制Structure后的代码块
+    void highlightSegments(const QList<int> &segments);
+
 private:
     //更新需求节点
     void updateRequireNotes(int start, int end, RequireNote* node);
@@ -226,6 +246,13 @@ private:
 
     //保存当前文件的类名，比如Student.cpp，保存Student
     QString fileClassName;
+
+    //保存Structure的段号
+    QList<int> structureNumberList;
+    int recentlyInsertedNumber;
+
+    int currentReviewLine = 0;
+
 
 
     //用于保存语法错误，这里主要是类未定义的，还有UNSPECIFIED的语法错误
@@ -334,6 +361,8 @@ signals:
     void startChatGPTDialog(QString);
 
     void startChatGPTFixCode(QString);
+
+    void allSegmentsReviewComplete();
 
 
 };

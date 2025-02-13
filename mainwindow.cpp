@@ -6,6 +6,7 @@
 #include <QErrorMessage>
 #include <QStringList>
 #include <QStandardItemModel>
+#include <QMessageBox>
 #include <algorithm>
 #include <utility>
 
@@ -1066,8 +1067,8 @@ void MainWindow::showFixedCodeView()
 void MainWindow::showCSCRTool()
 {
     ui->stackedWidgetLeft->setCurrentIndex(2);
-    ui->verticalLayout->setStretch(0, 1);
-    ui->verticalLayout->setStretch(1, 1);
+    //ui->verticalLayout->setStretch(0, 1);
+    //ui->verticalLayout->setStretch(1, 1);
     ui->stackedWidgetRightDown->setCurrentIndex(1);
     ui->stackedWidgetRightDown->show();
 
@@ -1087,10 +1088,74 @@ void MainWindow::loadBugReportFile(QString bugReportFilePath)
 
 void MainWindow::reviewMethodCode(QString methodName)
 {
+    ui->buttonReviewFromStart->setEnabled(false);
+    ui->buttonBackToCurrent->setEnabled(false);
+    ui->buttonCompleteCurrentSegment->setEnabled(false);
+    ui->buttonGenerateReviewReport->setEnabled(false);
+    ui->buttonPreviousBugDescription->setEnabled(false);
+    ui->buttonNextBugDescription->setEnabled(false);
+
     QString methodCode = cscrToolMethodNameToCode.value(methodName);
     MdiChild* cscrToolMdiChild = newReviewCodeFile("review_" + methodName + ".txt");
     cscrToolMdiChild->setCscrToolMode(true);
     cscrToolMdiChild->setText(methodCode);
+
+    connect(ui->buttonRestartStructure, &QPushButton::clicked, cscrToolMdiChild, &MdiChild::clearStructureNumberList);
+    connect(ui->buttonStructure, &QPushButton::clicked, cscrToolMdiChild, &MdiChild::addToStructureNumberList);
+    connect(ui->buttonUndoStructure, &QPushButton::clicked, cscrToolMdiChild, &MdiChild::undoStructureNumberList);
+    connect(ui->buttonDoneStructure, &QPushButton::clicked, cscrToolMdiChild, [this](){
+                ui->buttonRestartStructure->setEnabled(false);
+                ui->buttonStructure->setEnabled(false);
+                ui->buttonUndoStructure->setEnabled(false);
+                ui->buttonDoneStructure->setEnabled(false);
+                ui->buttonReviewFromStart->setEnabled(true);
+                ui->buttonBackToCurrent->setEnabled(true);
+                ui->buttonCompleteCurrentSegment->setEnabled(true);
+                ui->buttonGenerateReviewReport->setEnabled(true);
+                ui->buttonPreviousBugDescription->setEnabled(true);
+                ui->buttonNextBugDescription->setEnabled(true);
+            });
+
+    connect(ui->buttonReviewFromStart, &QPushButton::clicked, cscrToolMdiChild, &MdiChild::scrollToFirstLine);
+    connect(ui->buttonBackToCurrent, &QPushButton::clicked, cscrToolMdiChild, &MdiChild::scrollToCurrentReviewLine);
+    connect(ui->buttonCompleteCurrentSegment, &QPushButton::clicked, cscrToolMdiChild, &MdiChild::moveToNextReviewSegment);
+
+    connect(cscrToolMdiChild, &MdiChild::allSegmentsReviewComplete, [this, cscrToolMdiChild](){
+                QMessageBox::StandardButton reply;
+                reply = QMessageBox::question(this, "Generate Report Confirmation", "All the segments have been review. \nDo you want to generate the corresponding review report?",
+                                              QMessageBox::Ok | QMessageBox::Cancel);
+
+                if (reply == QMessageBox::Ok) {
+                    qDebug() << "User clicked OK!";
+                    generateReviewReport(cscrToolMdiChild);
+                } else {
+                    qDebug() << "User clicked Cancel!";
+                }
+            });
+
+    connect(ui->buttonGenerateReviewReport, &QPushButton::clicked, [this, cscrToolMdiChild](){
+        bool allIsReviewed = cscrToolMdiChild->isAllSegmentsReviewed();
+        QString text;
+        if(allIsReviewed){
+            text = "All the segments have been review. \nDo you want to generate the corresponding review report?";
+        }else{
+            text = "There are still some segments that have not been reviewed. \nAre you sure you want to generate the corresponding  review report?";
+        }
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Generate Report Confirmation", text,
+                                      QMessageBox::Ok | QMessageBox::Cancel);
+
+        if (reply == QMessageBox::Ok) {
+            qDebug() << "User clicked OK!";
+            generateReviewReport(cscrToolMdiChild);
+        } else {
+            qDebug() << "User clicked Cancel!";
+        }
+    });
+}
+
+void MainWindow::generateReviewReport(MdiChild* child)
+{
 
 }
 
@@ -2353,8 +2418,8 @@ void MainWindow::showSCMFaultTab(int faultLineNumber){
     QString line = "line " + QString::number(faultLineNumber + 1);
     QTableWidgetItem *item = new QTableWidgetItem(line);
     ui->tableWidgetReport->setItem(0, 1, item);
-    ui->verticalLayout->setStretch(0, 0);
-    ui->verticalLayout->setStretch(1, 1);
+    //ui->verticalLayout->setStretch(0, 0);
+    //ui->verticalLayout->setStretch(1, 1);
     ui->tabProgramOutput->setCurrentIndex(1);
     ui->tabProgramOutput->show();
     qDebug() << "31";
@@ -2468,8 +2533,8 @@ void MainWindow::showClassEncapsulateIssueTab()
         return;
     }
     qDebug() << "tabProgramOutputDebug";
-    ui->verticalLayout->setStretch(0, 0);
-    ui->verticalLayout->setStretch(1, 1);
+    //ui->verticalLayout->setStretch(0, 0);
+    //ui->verticalLayout->setStretch(1, 1);
     ui->tabProgramOutput->setCurrentIndex(0);
     ui->tabProgramOutput->show();
 }

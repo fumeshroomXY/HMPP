@@ -1,0 +1,587 @@
+void MdiChild::updateObjectInfoInSourceFile()
+{
+    qDebug() << "MdiChild::updateObjectInfoInSourceFile";
+    qDebug() << "-28";
+
+    qDebug() << "curFile: " << curFile;
+    if(!curFile.endsWith(".cpp")) {
+        qDebug() << "-28";
+        return;   //如果不是.cpp文件，?直接跳?
+    }
+
+    //找到全局作用域
+    updateTopParenthesis();
+    syntaxIssueList.clear();
+    classInfoHash->clear();
+    QString fileName = userFriendlyCurrentFile();
+    int dotIndex = fileName.lastIndexOf('.');
+    if(dotIndex <= 0) {
+        qDebug() << "Cannot resolve the file className";
+        qDebug() << "fileName: " << fileName;
+    }else{
+        fileClassName = fileName.left(dotIndex);
+    }
+    if(fileClassName != "main") classInfoHash->insert(fileClassName, ClassInfo(fileClassName));
+
+    QString text = document()->toPlainText(); // ?取文档中的所有文本
+
+    QHash<QString, QString> methodNameToCode;
+
+    // 遍?正?表?式列表，并??文本是否符合
+    foreach (const QRegExp &reg, syntaxRuleList) {
+        if(reg == classPattern){
+            int pos = 0;
+            int i = 0;
+            int start = 0;
+            int end = 0;
+            while ((pos = reg.indexIn(text, pos)) != -1) {
+                // 找到了匹配的内容
+                qDebug()  << "classPattern: " ;
+                qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;  //type需要??是否加上&或*，cap(2)
+                qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
+                //1?名，2*&，3?量名，4;(
+                ClassInfo info(reg.cap(1));
+                if(!classInfoHash->contains(reg.cap(1))) classInfoHash->insert(reg.cap(1), info);
+                classes.insert(reg.cap(3), reg.cap(1));
+
+                //?里???的?造函数
+                if(reg.cap(2) == "*"){   //如果是指?型??量，如Student* stu =
+                    // 1?名，2*，3?量名，4?名，5参数列表
+                    QRegExp regCtr = classConstructPattern1;
+                    regCtr.exactMatch(text.mid(pos));  //如果匹配到了，需要?当前?添加?造函数
+                    QString matchedStr = text.mid(pos, regCtr.matchedLength());
+                    if(regCtr.exactMatch(matchedStr)){
+                        //?里要分析参数列表
+                        //如果参数中返回的?型包含UNSPECIFIED，怎??理
+                        QString paramStr = completeMethodParamType(regCtr.cap(5), pos);
+                        QStringList params = onlyGetMethodParamType(paramStr);
+                        qDebug() << "params: " << params;
+                        qDebug() << "paramStr: " << paramStr;
+                        Method classCtr(regCtr.cap(1), regCtr.cap(1), regCtr.cap(1), params, paramStr, CLASS);
+                        ClassInfo& i = (*classInfoHash)[reg.cap(1)];   //用引用修改?
+                        if(!i.methods->contains(classCtr)){
+                            qDebug() << "not contains";
+                            qDebug() << "method size = " << i.methods->size();
+                            i.methods->append(classCtr);
+                            qDebug() << "method size = " << i.methods->size();
+                            qDebug() << i.methods;
+                        }
+
+                    }
+                }else{   //如果是普通??量，如Student stu()
+                    //1?名，2?量名，3参数列表
+                    QRegExp regCtr = classConstructPattern2;
+                    regCtr.exactMatch(text.mid(pos));  //如果匹配到了，需要?当前?添加?造函数
+                    QString matchedStr = text.mid(pos, regCtr.matchedLength());
+                    if(regCtr.exactMatch(matchedStr)){
+                        //?里要分析参数列表
+                        //如果参数中返回的?型包含UNSPECIFIED，怎??理
+                        QString paramStr = completeMethodParamType(regCtr.cap(3), pos);
+                        QStringList params = onlyGetMethodParamType(paramStr);
+                        qDebug() << "params: " << params;
+                        qDebug() << "paramStr: " << paramStr;
+                        Method classCtr(regCtr.cap(1), regCtr.cap(1), regCtr.cap(1), params, paramStr, CLASS);
+                        ClassInfo& i = (*classInfoHash)[reg.cap(1)];    //用引用修改?
+                        if(!i.methods->contains(classCtr)){
+                            qDebug() << "not contains";
+                            qDebug() << "method size = " << i.methods->size();
+                            i.methods->append(classCtr);
+                            qDebug() << "method size = " << i.methods->size();
+                            qDebug() << i.methods;
+                        }
+                    }
+                }
+
+                //找到??括号的?始和?束位置
+                if(i < topParenthesis.size()) {
+                    start = findParenthesisStartPos(topParenthesis.at(i));
+                    end = findParenthesisEndPos(topParenthesis.at(i));
+                }
+
+                if(pos <= start){
+                    //全局的??量
+                    Variable classVar(reg.cap(3), reg.cap(1), reg.cap(1) + reg.cap(2), GLOBAL);
+                    if(!globalVars->contains(classVar)) globalVars->append(classVar);
+                    pos += reg.matchedLength(); // ???找下一个匹配位置
+                }else if(pos > start && pos < end){  //??括号内，一定不是全局?量
+                    Variable classVar(reg.cap(3), reg.cap(1), reg.cap(1) + reg.cap(2), LOCAL);
+                    tmpVars.insert(classVar, pos);
+                    pos += reg.matchedLength(); // ???找下一个匹配位置
+                }else if(pos >= end){   //需要找到下一个??括号
+                    if(i >= topParenthesis.size() - 1){   //??括号?束了的?，就是全局的??量
+                        Variable classVar(reg.cap(3), reg.cap(1), reg.cap(1) + reg.cap(2), GLOBAL);
+                        if(!globalVars->contains(classVar)) globalVars->append(classVar);
+                        pos += reg.matchedLength(); // ???找下一个匹配位置
+                    }else{
+                        i++;
+                    }
+                }
+            }
+        }
+
+        else if(reg == classVarAssignPattern){
+            int pos = 0;
+            while ((pos = reg.indexIn(text, pos)) != -1) {
+                // 找到了匹配的内容
+                //1?的?例名，2.->，3成??量名，4[]，5??表?式
+                qDebug()  << "classAssignVar: " ;
+                qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;
+                qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
+                if(classes.contains(reg.cap(1)) || reg.cap(1) == "this"){
+                    QString expression = reg.cap(5).trimmed();
+                    QString varType = getExpressionType(expression, reg.pos(5));
+                    if(!basicType.contains(varType)&& varType != UNSPECIFIED) classes.insert(reg.cap(3), varType);
+                    QString className;
+                    if(reg.cap(1) == "this"){
+                        className = fileClassName;
+                        if(fileClassName == "main"){
+                            qDebug() << "Cannot use this pointer in main.cpp";
+                            pos += reg.matchedLength(); // ???找下一个匹配位置
+                            continue;
+                        }
+                    }else{
+                        className = classes.value(reg.cap(1));
+                    }
+                    Variable var(reg.cap(3), className, varType, CLASS);  //type未指定, className = ?例的??量名
+                    tmpVars.insert(var, pos);
+                    if(!classInfoHash->contains(className)){
+                        classInfoHash->insert(className, ClassInfo(className));
+                    }
+                    ClassInfo info = classInfoHash->value(className);
+                    //怎?保?不重?插入
+                    bool flag = false;  //用于??是否存在同名的??量
+                    for(int i = 0; i < info.vars->size(); ++i){
+                        if(info.vars->at(i).name == reg.cap(3)){
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if(flag == false) info.vars->append(var);
+                }else{
+                    qDebug() << "ClassUndefined: " << reg.cap(0) << "at position:" << pos;
+                    QString filePath = curFile;
+                    int lineNumber = document()->findBlock(pos).blockNumber();
+                    ClassUndefinedSyntaxIssue curIssue(reg.cap(1), filePath, lineNumber);
+                    if(!syntaxIssueList.contains(curIssue)) syntaxIssueList.append(curIssue);
+                }
+                pos += reg.matchedLength(); // ???找下一个匹配位置
+            }
+
+            qDebug() << "classVarPattern ends.";
+        }
+
+        else if(reg == classVarPattern){
+            int pos = 0;
+            while ((pos = reg.indexIn(text, pos)) != -1) {
+                // 找到了匹配的内容
+                //1?的?例名，2.->，3成??量名
+                qDebug()  << "classVar: " ;
+                qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;
+                qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
+                if(reg.cap(3) == "h" || reg.cap(3) == "cpp") {
+                    pos += reg.matchedLength();
+                    continue;
+                }
+                if(classes.contains(reg.cap(1)) || reg.cap(1) == "this"){
+                    QString className;
+                    if(reg.cap(1) == "this"){
+                        className = fileClassName;
+                        if(fileClassName == "main"){
+                            qDebug() << "Cannot use this pointer in main.cpp";
+                            pos += reg.matchedLength();
+                            continue;
+                        }
+                    }else{
+                        className = getExpressionType(reg.cap(1), reg.pos(1));
+                    }
+                    if(className == UNSPECIFIED){
+                        pos += reg.matchedLength();
+                        continue;
+                    }
+                    QString varType = getMainWindowPtr()->findClassMemberType(className, reg.cap(3));
+                    if(!basicType.contains(varType) && varType != UNSPECIFIED) classes.insert(reg.cap(3), varType);
+                    Variable var(reg.cap(3), className, varType, CLASS);  //type未指定, className = ?例的??量名
+                    tmpVars.insert(var, pos);
+                    if(!classInfoHash->contains(className)){
+                        classInfoHash->insert(className, ClassInfo(className));
+                    }
+
+                    ClassInfo info = classInfoHash->value(className);
+                    //怎?保?不重?插入
+                    bool flag = false;  //用于??是否存在同名的??量
+                    for(int i = 0; i < info.vars->size(); ++i){
+                        if(info.vars->at(i).name == reg.cap(3)){
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if(flag == false) info.vars->append(var);
+                }else{
+                    qDebug() << "ClassUndefined: " << reg.cap(0) << "at position:" << pos;
+                    QString filePath = curFile;
+                    int lineNumber = document()->findBlock(pos).blockNumber();
+                    ClassUndefinedSyntaxIssue curIssue(reg.cap(1), filePath, lineNumber);
+                    if(!syntaxIssueList.contains(curIssue)) syntaxIssueList.append(curIssue);
+                }
+                pos += reg.matchedLength(); // ???找下一个匹配位置
+            }
+
+            qDebug() << "classVarPattern ends.";
+        }
+
+        //先不?描函数，只呈?已定?好的函数
+        else if(reg == classMethodPattern){
+            int pos = 0;
+            while ((pos = reg.indexIn(text, pos)) != -1) {
+                // 找到了匹配的内容
+                //1?的?量名，2.->，3成?函数名，4参数列表
+                qDebug()  << "classMethod: " ;
+                qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;
+                qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
+
+                if(classes.contains(reg.cap(1)) || reg.cap(1) == "this"){
+                    QString className;
+                    if(reg.cap(1) == "this"){
+                        className = fileClassName;
+                        if(fileClassName == "main"){
+                            qDebug() << "Cannot use this pointer in main.cpp";
+                            pos += reg.matchedLength();
+                            continue;
+                        }
+                    }else{
+                        className = classes.value(reg.cap(1));
+                    }
+
+                    QString methodName = reg.cap(3);
+                    QString actual_params = reg.cap(4);
+
+                    QString paramStr = completeMethodParamType(actual_params, pos);
+                    qDebug() << "classMethod:paramStr: " << paramStr;
+                    QStringList params = onlyGetMethodParamType(paramStr);
+                    qDebug() << "classMethod:params: " << params;
+                    QString returnType = findMethodReturnType(methodName, className, params, CLASS);
+                    Method classMethod(methodName, className, returnType, params, paramStr, CLASS);
+
+
+                    //按理?，如果?里?描到的函数没有在源文件中定?，???充相?定?
+                    //可能有??情况
+                    //1. ?外?用
+                    //2. ?内?用
+                    ClassInfo& i = (*classInfoHash)[className];    //用引用修改?
+                    if(!i.methods->contains(classMethod)){
+                        qDebug() << "not contains";
+                        qDebug() << "method size = " << i.methods->size();
+                        i.methods->append(classMethod);
+                        qDebug() << "method size = " << i.methods->size();
+                        qDebug() << i.methods;
+                    }
+                    }else{
+                        qDebug() << "ClassUndefined: " << reg.cap(0) << "at position:" << pos;
+                        QString filePath = curFile;
+                        int lineNumber = document()->findBlock(pos).blockNumber();
+                        ClassUndefinedSyntaxIssue curIssue(reg.cap(1), filePath, lineNumber);
+                        qDebug() << "curIssue: " << curIssue.getName() << " " << curIssue.getDescription() << " " << curIssue.getFilePath();
+                        if(!syntaxIssueList.contains(curIssue)) syntaxIssueList.append(curIssue);
+                    }
+                pos += reg.matchedLength(); // ???找下一个匹配位置
+            }
+        }
+
+        //先不?描函数，只呈?已定?好的函数
+        else if(reg == classMethodEmbededCallPattern){
+            int pos = 0;
+            while ((pos = reg.indexIn(text, pos)) != -1) {
+                // 找到了匹配的内容
+                //1?的?量名，2.->，3成?函数名，4参数列表
+                qDebug()  << "classMethodEmbededCall: " ;
+                qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;
+                qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
+
+                if(classes.contains(reg.cap(1)) || reg.cap(1) == "this"){
+                    QString className;
+                    if(reg.cap(1) == "this"){
+                        className = fileClassName;
+                        if(fileClassName == "main"){
+                            qDebug() << "Cannot use this pointer in main.cpp";
+                            pos += reg.matchedLength();
+                            continue;
+                        }
+                    }else{
+                        className = classes.value(reg.cap(1));
+                    }
+
+                    QString methodName = reg.cap(3);
+                    QString actual_params = reg.cap(4);
+                    if (actual_params.endsWith(')')) {
+                        actual_params.chop(1);  // Removes the last character (closing parenthesis)
+                    }
+
+                    QString paramStr = completeMethodParamType(actual_params, pos);
+                    qDebug() << "classMethod:paramStr: " << paramStr;
+                    QStringList params = onlyGetMethodParamType(paramStr);
+                    qDebug() << "classMethod:params: " << params;
+                    QString returnType = findMethodReturnType(methodName, className, params, CLASS);
+                    Method classMethod(methodName, className, returnType, params, paramStr, CLASS);
+
+
+                    //按理?，如果?里?描到的函数没有在源文件中定?，???充相?定?
+                    //可能有??情况
+                    //1. ?外?用
+                    //2. ?内?用
+                    ClassInfo& i = (*classInfoHash)[className];    //用引用修改?
+                    if(!i.methods->contains(classMethod)){
+                        qDebug() << "not contains";
+                        qDebug() << "method size = " << i.methods->size();
+                        i.methods->append(classMethod);
+                        qDebug() << "method size = " << i.methods->size();
+                        qDebug() << i.methods;
+                    }
+                    }else{
+                        qDebug() << "ClassUndefined: " << reg.cap(0) << "at position:" << pos;
+                        QString filePath = curFile;
+                        int lineNumber = document()->findBlock(pos).blockNumber();
+                        ClassUndefinedSyntaxIssue curIssue(reg.cap(1), filePath, lineNumber);
+                        qDebug() << "curIssue: " << curIssue.getName() << " " << curIssue.getDescription() << " " << curIssue.getFilePath();
+                        if(!syntaxIssueList.contains(curIssue)) syntaxIssueList.append(curIssue);
+                    }
+                pos += reg.matchedLength(); // ???找下一个匹配位置
+            }
+        }
+
+        else if(reg == basicVarPattern){
+            int i = 0;
+            int start;
+            int end;
+
+            int pos = 0;
+            while ((pos = reg.indexIn(text, pos)) != -1) {
+                // 找到了匹配的内容
+                qDebug()  << "basicVar: " ;
+                qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;  //type需要??是否加上&或*，cap(2)
+                qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
+
+                //找到??括号的?始和?束位置
+                if(i < topParenthesis.size()) {
+                    start = findParenthesisStartPos(topParenthesis.at(i));
+                    end = findParenthesisEndPos(topParenthesis.at(i));
+                }
+
+                //1?型，2*&，3?量名，4[]
+                if(pos <= start){
+                    //全局?量
+                    Variable global = Variable(reg.cap(3), "", reg.cap(1) + reg.cap(2) + reg.cap(4), GLOBAL);
+                    if(!globalVars->contains(global)) globalVars->append(global);
+                    pos += reg.matchedLength(); // ???找下一个匹配位置
+                }else if(pos > start && pos < end){  //??括号内，一定不是全局?量
+                    Variable tmp = Variable(reg.cap(3), "", reg.cap(1) + reg.cap(2) + reg.cap(4), LOCAL);
+                    tmpVars.insert(tmp, pos);
+                    pos += reg.matchedLength(); // ???找下一个匹配位置
+                }else if(pos >= end){
+                    if(i >= topParenthesis.size() - 1){
+                        Variable global = Variable(reg.cap(3), "", reg.cap(1) + reg.cap(2) + reg.cap(4), GLOBAL);
+                        if(!globalVars->contains(global)) globalVars->append(global);
+                        pos += reg.matchedLength(); // ???找下一个匹配位置
+                    }else{
+                        i++;
+                    }
+                }
+            }
+        }
+
+        else if(reg == definedMethodPattern){
+            int pos = 0;
+            while ((pos = reg.indexIn(text, pos)) != -1) {
+                // 找到了匹配的内容
+                qDebug()  << "definedMethods: " ;
+                qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;  //type需要??是否加上&或*，cap(2)
+                //qDebug() << "ConstMethod: " << reg.cap(1) << " " << reg.cap(2) << " " << reg.cap(3) << " " << reg.cap(4) << " " << reg.cap(5);
+                int currentBlockNumber = document()->findBlock(pos).blockNumber();
+                qDebug() << "current block: " << currentBlockNumber;
+                QString methodCode = findMethodCodeByName(currentBlockNumber);
+                if(!methodCode.isEmpty()){
+                    QString methodName = reg.cap(0);
+                    if (methodName.endsWith("{")) {
+                        methodName.chop(1);
+                        methodName = methodName.trimmed(); // Remove last character '{'
+                    }
+                    methodNameToCode.insert(methodName, methodCode);
+                    qDebug() << "MethodNameAndCode";
+                    qDebug() << "MethodName: " << methodName;
+                    qDebug() << "MethodCode: " << methodCode;
+                }
+
+                //1返回?型，2*&，3?名，4函数名，5参数列表
+                SCOPE scope = (reg.cap(3).isEmpty() ? GLOBAL : CLASS);  //判断?作用域是否?空，比如Class::
+                //?里要把?名中的::去掉
+                QString className = (reg.cap(3).isEmpty() ?  "" : reg.cap(3).left(reg.cap(3).length() - 2) );
+                QStringList params = onlyGetMethodParamType(reg.cap(5));
+                Method m(reg.cap(4), className, reg.cap(1) + reg.cap(2), params, reg.cap(5), scope);
+                convertMethodParamToTemp(reg.cap(5), pos + reg.matchedLength());
+                if(!definedMethods->contains(m)) definedMethods->append(m);
+                pos += reg.matchedLength(); // ???找下一个匹配位置
+            }
+        }
+
+        else if(reg == classCtrMethodPattern){
+            int pos = 0;
+            while ((pos = reg.indexIn(text, pos)) != -1) {
+                // 找到了匹配的内容
+                //1?名，2?名，3参数列表，4形参，5?成??量
+                qDebug()  << "classCtrMethods: " ;
+                qDebug() << "Matched text:" << reg.cap(0) << "at position:" << pos;  //type需要??是否加上&或*，cap(2)
+                qDebug() << "current block: " << document()->findBlock(pos).blockNumber();
+                QStringList capturedTexts = reg.capturedTexts();
+                qDebug() << "Captured texts:";
+                for (const QString &text : capturedTexts) {
+                    qDebug() << text;
+                }
+
+                QString paramStr = reg.cap(3);
+                QStringList params = onlyGetMethodParamType(paramStr);
+                qDebug() << "params: " << params;
+                qDebug() << "paramStr: " << paramStr;
+                Method classCtr(reg.cap(1), reg.cap(1), reg.cap(1), params, paramStr, CLASS);
+                ClassInfo c(reg.cap(1));
+                if(!classInfoHash->contains(reg.cap(1))) classInfoHash->insert(reg.cap(1), c);
+                ClassInfo& i = (*classInfoHash)[reg.cap(1)];
+                if(!i.methods->contains(classCtr)){
+                    qDebug() << "not contains";
+                    qDebug() << "method size = " << i.methods->size();
+                    i.methods->append(classCtr);
+                    qDebug() << "method size = " << i.methods->size();
+                    qDebug() << i.methods;
+                }
+
+                int index = 0;   //?描?造函数的形参和?成??量
+                QRegExp reg_param = QRegExp("([A-Za-z_][A-Za-z0-9_]*)\\(([A-Za-z_][A-Za-z0-9_]*)\\)");
+                QString classVarType, classVar;
+                while ((index = reg_param.indexIn(reg.cap(0), index)) != -1){
+                    QString param = reg_param.cap(2);
+                    classVar = reg_param.cap(1);
+                    classVarType = getExpressionType(classVar);
+                    if(classVarType == "var"){
+                        //找到参数列表中??的?型
+                        QStringList paramList = paramStr.split(",", QString::SkipEmptyParts);
+                        for(QString parameter : paramList){
+                            parameter = parameter.trimmed();
+                            int p = parameter.indexOf(classVar);
+                            if(p != -1){
+                                classVarType = parameter.remove(p, classVar.length()).trimmed();
+                            }
+                        }
+                    }else if(classVarType == "classVar" || classVarType == "classMethod" || classVarType == "method"){
+                        classVarType = getExpressionType(classVar, reg_param.pos(1));
+                    }else{
+                        //do nothing
+                    }
+                    if(classVarType.isEmpty()) classVarType = UNSPECIFIED;
+                    Variable var(classVar, reg.cap(1), classVarType, CLASS);  //className = ?例的??量名
+                    ClassInfo info = classInfoHash->value(reg.cap(1));
+                    //怎?保?不重?插入
+                    if(!info.vars->contains(var)) info.vars->append(var);
+                    index += reg_param.matchedLength();
+                }
+
+                pos += reg.matchedLength();
+
+            }
+        }
+    }
+
+    qDebug() << "methodNameToCode:";
+    for (auto it = methodNameToCode.constBegin(); it != methodNameToCode.constEnd(); ++it) {
+        qDebug() << "Key:" << it.key() << ", Value:" << it.value();
+    }
+
+    if(!methodNameToCode.isEmpty()){
+        emit updateMethodNameToCode(methodNameToCode);
+    }else{
+        qDebug() << "Failed to set cscrToolMethodNameToCode.";
+    }
+
+    qDebug() << "arrange defined methods.";
+    //把已定?好的函数?到相?的?下
+    for(int i = 0; i < definedMethods->size(); i++){
+        if(definedMethods->at(i).scope == CLASS && !definedMethods->at(i).className.isEmpty()){  //全局函数跳?
+            QString className = definedMethods->at(i).className;
+
+            if(classInfoHash->contains(className)){
+                ClassInfo info = classInfoHash->value(className);
+                if(!info.methods->contains(definedMethods->at(i))) info.methods->append(definedMethods->at(i));
+            }else{
+                ClassInfo info(className);
+                info.methods->append(definedMethods->at(i));
+                classInfoHash->insert(className, info);
+            }
+        }
+    }
+
+    qDebug() << "TempVars:";
+
+    // 将 QMultiHash ??? QMap，只是?了打印看着方便
+    QMap<int, Variable> map;
+    QList<Variable> keys = tmpVars.uniqueKeys();
+    foreach (const Variable &key, keys) {
+        QList<int> values = tmpVars.values(key);
+        foreach (int value, values) {
+            map.insertMulti(value, key);
+        }
+    }
+
+    // ? QMap ?行排序
+    QMap<int, Variable>::iterator iter;
+    QMap<int, Variable> sortedMap;
+    for (iter = map.begin(); iter != map.end(); ++iter) {
+        sortedMap.insert(iter.key(), iter.value());
+    }
+
+    // 打印排序后的?果
+    QMap<int, Variable>::const_iterator it;
+    for (it = sortedMap.constBegin(); it != sortedMap.constEnd(); ++it) {
+        qDebug() << "type:" << it.value().type << " name:" << it.value().name << " pos:" << it.key();
+    }
+
+//    QMultiHash<Variable, int>::const_iterator it;
+//    for (it = tmpVars.constBegin(); it != tmpVars.constEnd(); ++it) {
+//        qDebug() << "type:" << it.key().type << " name:" << it.key().name << " pos:" << it.value();
+//    }
+
+    qDebug() << "Classes:";
+    for (auto i = classInfoHash->constBegin(); i != classInfoHash->constEnd(); ++i) {
+        qDebug() << "**************************************";
+        qDebug() << i.key() << ":";
+        qDebug() << "Variables:";
+        ClassInfo info = i.value();
+        if(info.name == "") info.name = i.key();
+        for(int j = 0; j < info.vars->size(); j++){
+            qDebug() << info.vars->at(j).type << " " <<
+                        info.vars->at(j).className << "::" <<info.vars->at(j).name;
+        }
+
+        qDebug() << "Methods:";
+        for(int j = 0; j < info.methods->size(); j++){
+            qDebug() << info.methods->at(j).returnType << " "
+                     << info.methods->at(j).className << "::" <<info.methods->at(j).name
+                     << "(" << info.methods->at(j).paramStr << ")";
+        }
+    }
+
+    qDebug() << "GlobalVar:";
+    for(int i = 0; i < globalVars->size(); ++i){
+        qDebug() << "type: " << globalVars->at(i).type << "name: " << globalVars->at(i).name;
+    }
+
+    qDebug() << "DefinedMethod:";
+    for(int i = 0; i < definedMethods->size(); ++i){
+        qDebug() << definedMethods->at(i).returnType << " " << definedMethods->at(i).className << " "
+                 << definedMethods->at(i).name << "(" << definedMethods->at(i).paramStr << ")";
+    }
+
+
+    qDebug() << "-28";
+
+
+    //通知主窗口更新?文件
+    emit updateClassFiles(currentFile(), *classInfoHash);
+    emit showSourceFileIssue(syntaxIssueList);
+}
