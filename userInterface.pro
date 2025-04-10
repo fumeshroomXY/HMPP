@@ -30,7 +30,9 @@ SOURCES += main.cpp\
     issue.cpp \
     issuemanager.cpp \
     guidewizard.cpp \
-    chatgptclient.cpp
+    chatgptclient.cpp \
+    cscrtoolbugset.cpp \
+    utils.cpp
 
 HEADERS  += mainwindow.h \
     mdichild.h \
@@ -49,7 +51,10 @@ HEADERS  += mainwindow.h \
     issue.h \
     issuemanager.h \
     guidewizard.h \
-    chatgptclient.h
+    chatgptclient.h \
+    cscrtoolbugset.h \
+    utils.h \
+    cscrtoolchallengerquestion.h
 
 RESOURCES += \
     ui_images.qrc

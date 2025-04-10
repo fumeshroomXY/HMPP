@@ -230,7 +230,6 @@ void BuildProFromSpecDialog::demoteToClassFunction() {
         }
         treeWidget->setCurrentItem(currentItem);
     }
-
 }
 
 // Promote the selected item to a class root

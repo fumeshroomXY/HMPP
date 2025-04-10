@@ -1,0 +1,19 @@
+{
+    "bugObjectList": [
+        {
+            "bugDescription": "    videoFileStream << \"Bitrate: \" << videoConfig.getBitrate() << \" kbps\\n\";",
+            "bugLine": 8,
+            "bugName": "write error",
+            "bugNature": "Functional Bug"
+        }
+    ],
+    "methodCode": "void VideoRecorder::writeMetadataHeader() {\n    videoFileStream << \"Metadata: \\n\";\n    videoFileStream << \"FrameRate: \" << videoConfig.getFrameRate() << \" fps\\n\";\n    videoFileStream << \"Resolution: \" << videoConfig.getResolution() << \"\\n\";\n    videoFileStream << \"Encoding: \" << videoConfig.getEncodingStandard() << \"\\n\";\n    videoFileStream << \"Bitrate: \" << videoConfig.getBitrate() << \" kbps\";\n    videoFileStream << \"Timestamp: \" << timeManager.getCurrentTimestamp() << \"\\n\";\n    std::cout << \"Metadata header written to video file.\" << std::endl;\n}",
+    "methodName": "void VideoRecorder::writeMetadataHeader()",
+    "projectName": "02251507",
+    "projectPath": "E:/HMPP-main/userInterface/testcode/02251507",
+    "segmentList": [
+        11,
+        20,
+        31
+    ]
+}

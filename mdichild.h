@@ -7,6 +7,8 @@
 #include <highlighter.h>
 #include <issue.h>
 #include "syntaxrule.h"
+#include "cscrtoolchallengerquestion.h"
+#include "utils.h"
 
 #include <QVector>
 #include <QEvent>
@@ -81,6 +83,7 @@ public:
     bool save();
     bool saveAs();
     bool saveFile(const QString &fileName);
+    bool saveReviewReport(const QJsonObject &project);
     QString userFriendlyCurrentFile();    //提取文件名
     QString currentFile() { return curFile; }   //返回当前文件路径
 
@@ -150,6 +153,18 @@ public:
 
     bool isAllSegmentsReviewed();
 
+    QList<int> getStructureNumberList() const;
+
+    void setStructureNumberList(const QList<int> &value);
+
+    bool getReviewCodeMode() const;
+    void setReviewCodeMode(bool value);
+
+    //根据鼠标所在位置，返回一段字符串
+    QString getSpaceSeparatedStringAtCursor();
+
+
+
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;   //关闭事件
 
@@ -179,7 +194,12 @@ public slots:
     void scrollToCurrentReviewLine();
     void scrollToFirstLine();
 
+    void startReview();
+
     void moveToNextReviewSegment();
+
+    //根据字符串格式，返回应该呈现的问题
+    void findChallengeQuestion();
 
 
 private slots:
@@ -220,8 +240,10 @@ private slots:
     void moveFaultPromptDialog();
 
     //绘制Structure后的代码块
-    void highlightSegments(const QList<int> &segments);
+    void highlightStructureSegments(const QList<int> &segments);
 
+    //绘制Review时的代码块
+    void highlightReviewSegment(const QList<int> &segments, QList<QTextEdit::ExtraSelection> &selections);
 private:
     //更新需求节点
     void updateRequireNotes(int start, int end, RequireNote* node);
@@ -266,6 +288,7 @@ private:
     bool fixedfalg = false;
 
     bool cscrToolMode = false;
+    bool reviewCodeMode = false;
 
     bool matchLeftMark(QTextBlock currentBlock, int index,
                               int numRightParentheses, int &matchLineNumber, int &matchPosition,
@@ -364,7 +387,9 @@ signals:
 
     void allSegmentsReviewComplete();
 
+    void reportBugLine(int);
 
+    void challengeQuestionFlag(QString currentStr, CodeElements flags);
 };
 
 class LineNumberArea : public QWidget

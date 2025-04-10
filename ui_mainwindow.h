@@ -110,11 +110,13 @@ public:
     QTextEdit *fixedCodeTextEdit;
     QWidget *pageCodeAnalysis;
     QVBoxLayout *verticalLayout_16;
-    QVBoxLayout *verticalLayout_15;
     QHBoxLayout *horizontalLayout_12;
     QPushButton *pushButton_11;
     QLabel *label_9;
+    QVBoxLayout *verticalLayout_15;
     QLabel *label_10;
+    QLineEdit *lineEditSyntax;
+    QLabel *label_11;
     QListWidget *listWidget;
     QWidget *pageHMPP;
     QGridLayout *gridLayout_2;
@@ -176,6 +178,7 @@ public:
     QPushButton *buttonGenerateReviewReport;
     QPushButton *buttonPreviousBugDescription;
     QPushButton *buttonNextBugDescription;
+    QPushButton *buttonAISuggestion;
     QSpacerItem *horizontalSpacer_2;
     QWidget *page_4;
     QVBoxLayout *verticalLayout_13;
@@ -184,21 +187,23 @@ public:
     QStackedWidget *stackedWidgetBugDescript;
     QWidget *page_5;
     QVBoxLayout *verticalLayout_12;
+    QHBoxLayout *horizontalLayout_13;
     QLabel *label_5;
+    QLabel *labelCurrentLine;
     QHBoxLayout *horizontalLayout_9;
     QLabel *label_6;
-    QLineEdit *lineEdit_2;
+    QLineEdit *lineEditBugName;
     QHBoxLayout *horizontalLayout_10;
     QLabel *label_7;
-    QComboBox *comboBox;
+    QComboBox *comboBoxBugNature;
     QSpacerItem *horizontalSpacer_3;
     QVBoxLayout *verticalLayout_9;
     QLabel *label_8;
-    QTextEdit *textEdit;
+    QTextEdit *textEditBugDescription;
     QHBoxLayout *horizontalLayout_11;
     QSpacerItem *horizontalSpacer;
-    QPushButton *pushButton_9;
-    QPushButton *pushButton_10;
+    QPushButton *buttonBugReportOK;
+    QPushButton *buttonBugReportCancel;
     QWidget *page_6;
     QMenuBar *menubar;
     QMenu *menuFile;
@@ -562,9 +567,7 @@ public:
         pageCodeAnalysis->setObjectName(QStringLiteral("pageCodeAnalysis"));
         verticalLayout_16 = new QVBoxLayout(pageCodeAnalysis);
         verticalLayout_16->setObjectName(QStringLiteral("verticalLayout_16"));
-        verticalLayout_16->setContentsMargins(0, 0, 0, 0);
-        verticalLayout_15 = new QVBoxLayout();
-        verticalLayout_15->setObjectName(QStringLiteral("verticalLayout_15"));
+        verticalLayout_16->setContentsMargins(0, -1, 0, 0);
         horizontalLayout_12 = new QHBoxLayout();
         horizontalLayout_12->setObjectName(QStringLiteral("horizontalLayout_12"));
         pushButton_11 = new QPushButton(pageCodeAnalysis);
@@ -587,24 +590,37 @@ public:
         horizontalLayout_12->addWidget(label_9);
 
 
-        verticalLayout_15->addLayout(horizontalLayout_12);
+        verticalLayout_16->addLayout(horizontalLayout_12);
 
+        verticalLayout_15 = new QVBoxLayout();
+        verticalLayout_15->setObjectName(QStringLiteral("verticalLayout_15"));
         label_10 = new QLabel(pageCodeAnalysis);
         label_10->setObjectName(QStringLiteral("label_10"));
 
         verticalLayout_15->addWidget(label_10);
 
-        listWidget = new QListWidget(pageCodeAnalysis);
-        new QListWidgetItem(listWidget);
-        new QListWidgetItem(listWidget);
-        new QListWidgetItem(listWidget);
-        new QListWidgetItem(listWidget);
-        listWidget->setObjectName(QStringLiteral("listWidget"));
+        lineEditSyntax = new QLineEdit(pageCodeAnalysis);
+        lineEditSyntax->setObjectName(QStringLiteral("lineEditSyntax"));
 
-        verticalLayout_15->addWidget(listWidget);
+        verticalLayout_15->addWidget(lineEditSyntax);
 
 
         verticalLayout_16->addLayout(verticalLayout_15);
+
+        label_11 = new QLabel(pageCodeAnalysis);
+        label_11->setObjectName(QStringLiteral("label_11"));
+
+        verticalLayout_16->addWidget(label_11);
+
+        listWidget = new QListWidget(pageCodeAnalysis);
+        listWidget->setObjectName(QStringLiteral("listWidget"));
+        listWidget->setAlternatingRowColors(true);
+        listWidget->setProperty("isWrapping", QVariant(false));
+        listWidget->setSpacing(5);
+        listWidget->setWordWrap(true);
+        listWidget->setSelectionRectVisible(false);
+
+        verticalLayout_16->addWidget(listWidget);
 
         stackedWidgetLeft->addWidget(pageCodeAnalysis);
         pageHMPP = new QWidget();
@@ -973,6 +989,12 @@ public:
 
         horizontalLayout_8->addWidget(buttonNextBugDescription);
 
+        buttonAISuggestion = new QPushButton(page_3);
+        buttonAISuggestion->setObjectName(QStringLiteral("buttonAISuggestion"));
+        buttonAISuggestion->setIcon(icon21);
+
+        horizontalLayout_8->addWidget(buttonAISuggestion);
+
 
         horizontalLayout->addLayout(horizontalLayout_8);
 
@@ -1006,10 +1028,23 @@ public:
         page_5->setObjectName(QStringLiteral("page_5"));
         verticalLayout_12 = new QVBoxLayout(page_5);
         verticalLayout_12->setObjectName(QStringLiteral("verticalLayout_12"));
+        verticalLayout_12->setContentsMargins(0, 0, 0, 0);
+        horizontalLayout_13 = new QHBoxLayout();
+        horizontalLayout_13->setObjectName(QStringLiteral("horizontalLayout_13"));
         label_5 = new QLabel(page_5);
         label_5->setObjectName(QStringLiteral("label_5"));
 
-        verticalLayout_12->addWidget(label_5);
+        horizontalLayout_13->addWidget(label_5);
+
+        labelCurrentLine = new QLabel(page_5);
+        labelCurrentLine->setObjectName(QStringLiteral("labelCurrentLine"));
+        sizePolicy2.setHeightForWidth(labelCurrentLine->sizePolicy().hasHeightForWidth());
+        labelCurrentLine->setSizePolicy(sizePolicy2);
+
+        horizontalLayout_13->addWidget(labelCurrentLine);
+
+
+        verticalLayout_12->addLayout(horizontalLayout_13);
 
         horizontalLayout_9 = new QHBoxLayout();
         horizontalLayout_9->setObjectName(QStringLiteral("horizontalLayout_9"));
@@ -1018,10 +1053,10 @@ public:
 
         horizontalLayout_9->addWidget(label_6);
 
-        lineEdit_2 = new QLineEdit(page_5);
-        lineEdit_2->setObjectName(QStringLiteral("lineEdit_2"));
+        lineEditBugName = new QLineEdit(page_5);
+        lineEditBugName->setObjectName(QStringLiteral("lineEditBugName"));
 
-        horizontalLayout_9->addWidget(lineEdit_2);
+        horizontalLayout_9->addWidget(lineEditBugName);
 
 
         verticalLayout_12->addLayout(horizontalLayout_9);
@@ -1033,10 +1068,10 @@ public:
 
         horizontalLayout_10->addWidget(label_7);
 
-        comboBox = new QComboBox(page_5);
-        comboBox->setObjectName(QStringLiteral("comboBox"));
+        comboBoxBugNature = new QComboBox(page_5);
+        comboBoxBugNature->setObjectName(QStringLiteral("comboBoxBugNature"));
 
-        horizontalLayout_10->addWidget(comboBox);
+        horizontalLayout_10->addWidget(comboBoxBugNature);
 
         horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
@@ -1054,10 +1089,10 @@ public:
 
         verticalLayout_9->addWidget(label_8);
 
-        textEdit = new QTextEdit(page_5);
-        textEdit->setObjectName(QStringLiteral("textEdit"));
+        textEditBugDescription = new QTextEdit(page_5);
+        textEditBugDescription->setObjectName(QStringLiteral("textEditBugDescription"));
 
-        verticalLayout_9->addWidget(textEdit);
+        verticalLayout_9->addWidget(textEditBugDescription);
 
 
         verticalLayout_12->addLayout(verticalLayout_9);
@@ -1068,15 +1103,15 @@ public:
 
         horizontalLayout_11->addItem(horizontalSpacer);
 
-        pushButton_9 = new QPushButton(page_5);
-        pushButton_9->setObjectName(QStringLiteral("pushButton_9"));
+        buttonBugReportOK = new QPushButton(page_5);
+        buttonBugReportOK->setObjectName(QStringLiteral("buttonBugReportOK"));
 
-        horizontalLayout_11->addWidget(pushButton_9);
+        horizontalLayout_11->addWidget(buttonBugReportOK);
 
-        pushButton_10 = new QPushButton(page_5);
-        pushButton_10->setObjectName(QStringLiteral("pushButton_10"));
+        buttonBugReportCancel = new QPushButton(page_5);
+        buttonBugReportCancel->setObjectName(QStringLiteral("buttonBugReportCancel"));
 
-        horizontalLayout_11->addWidget(pushButton_10);
+        horizontalLayout_11->addWidget(buttonBugReportCancel);
 
 
         verticalLayout_12->addLayout(horizontalLayout_11);
@@ -1214,9 +1249,9 @@ public:
 
         retranslateUi(MainWindow);
 
-        stackedWidgetLeft->setCurrentIndex(2);
+        stackedWidgetLeft->setCurrentIndex(0);
         stackedWidgetRightDown->setCurrentIndex(1);
-        tabProgramOutput->setCurrentIndex(2);
+        tabProgramOutput->setCurrentIndex(0);
         stackedWidgetCscrButtons->setCurrentIndex(0);
         stackedWidgetBugDescript->setCurrentIndex(0);
 
@@ -1409,20 +1444,8 @@ public:
                         "ttom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS UI Gothic'; font-size:9pt;\"><br /></p></body></html>", 0));
         pushButton_11->setText(QString());
         label_9->setText(QApplication::translate("MainWindow", "CSCR-Tool", 0));
-        label_10->setText(QApplication::translate("MainWindow", "The relevant questions on the checklist:", 0));
-
-        const bool __sortingEnabled1 = listWidget->isSortingEnabled();
-        listWidget->setSortingEnabled(false);
-        QListWidgetItem *___qlistwidgetitem = listWidget->item(0);
-        ___qlistwidgetitem->setText(QApplication::translate("MainWindow", "Question 1", 0));
-        QListWidgetItem *___qlistwidgetitem1 = listWidget->item(1);
-        ___qlistwidgetitem1->setText(QApplication::translate("MainWindow", "Question 2", 0));
-        QListWidgetItem *___qlistwidgetitem2 = listWidget->item(2);
-        ___qlistwidgetitem2->setText(QApplication::translate("MainWindow", "Question 3", 0));
-        QListWidgetItem *___qlistwidgetitem3 = listWidget->item(3);
-        ___qlistwidgetitem3->setText(QApplication::translate("MainWindow", "Question 4", 0));
-        listWidget->setSortingEnabled(__sortingEnabled1);
-
+        label_10->setText(QApplication::translate("MainWindow", "About the syntax: ", 0));
+        label_11->setText(QApplication::translate("MainWindow", "Can you answer the following questions?", 0));
         pushButton_2->setText(QString());
         label_2->setText(QApplication::translate("MainWindow", "Ask anything about programming", 0));
         lineEdit->setInputMask(QString());
@@ -1474,7 +1497,7 @@ public:
         QTableWidgetItem *___qtablewidgetitem3 = tableWidgetReport->verticalHeaderItem(0);
         ___qtablewidgetitem3->setText(QApplication::translate("MainWindow", "1", 0));
 
-        const bool __sortingEnabled2 = tableWidgetReport->isSortingEnabled();
+        const bool __sortingEnabled1 = tableWidgetReport->isSortingEnabled();
         tableWidgetReport->setSortingEnabled(false);
         QTableWidgetItem *___qtablewidgetitem4 = tableWidgetReport->item(0, 0);
         ___qtablewidgetitem4->setText(QApplication::translate("MainWindow", "codeeditor.cpp", 0));
@@ -1482,7 +1505,7 @@ public:
         ___qtablewidgetitem5->setText(QApplication::translate("MainWindow", "line 13", 0));
         QTableWidgetItem *___qtablewidgetitem6 = tableWidgetReport->item(0, 2);
         ___qtablewidgetitem6->setText(QApplication::translate("MainWindow", "The exception that is thrown when there is an attempt to divide an integral or Decimal value by zero.", 0));
-        tableWidgetReport->setSortingEnabled(__sortingEnabled2);
+        tableWidgetReport->setSortingEnabled(__sortingEnabled1);
 
         tabProgramOutput->setTabText(tabProgramOutput->indexOf(tabFaultReport), QApplication::translate("MainWindow", "Fault Report", 0));
         tabProgramOutput->setTabText(tabProgramOutput->indexOf(tabAppOutput), QApplication::translate("MainWindow", "App Output", 0));
@@ -1526,12 +1549,14 @@ public:
         buttonNextBugDescription->setToolTip(QApplication::translate("MainWindow", "View next bug description", 0));
 #endif // QT_NO_TOOLTIP
         buttonNextBugDescription->setText(QString());
+        buttonAISuggestion->setText(QString());
         label_5->setText(QApplication::translate("MainWindow", "Current Line: ", 0));
+        labelCurrentLine->setText(QString());
         label_6->setText(QApplication::translate("MainWindow", "Bug Name:", 0));
         label_7->setText(QApplication::translate("MainWindow", "Bug Nature:", 0));
         label_8->setText(QApplication::translate("MainWindow", "Brief Description:", 0));
-        pushButton_9->setText(QApplication::translate("MainWindow", "OK", 0));
-        pushButton_10->setText(QApplication::translate("MainWindow", "Cancel", 0));
+        buttonBugReportOK->setText(QApplication::translate("MainWindow", "OK", 0));
+        buttonBugReportCancel->setText(QApplication::translate("MainWindow", "Cancel", 0));
         menuFile->setTitle(QApplication::translate("MainWindow", "File(&F)", 0));
         menuEdit->setTitle(QApplication::translate("MainWindow", "Edit(&E)", 0));
         menuWindow->setTitle(QApplication::translate("MainWindow", "Window(&W)", 0));

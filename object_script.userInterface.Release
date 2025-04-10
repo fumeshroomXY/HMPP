@@ -18,6 +18,8 @@ INPUT(
 ./release\issuemanager.o
 ./release\guidewizard.o
 ./release\chatgptclient.o
+./release\cscrtoolbugset.o
+./release\utils.o
 ./release\qrc_ui_images.o
 ./release\moc_mainwindow.o
 ./release\moc_mdichild.o

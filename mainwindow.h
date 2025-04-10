@@ -8,6 +8,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include "mdichild.h"
+#include "cscrtoolbugset.h"
 
 class MdiChild;
 class IssueManager;
@@ -112,8 +113,10 @@ public:
     //将ChatGPT的回答分割为三部分
     void separateText(const QString &fullText, QString &problemPart, QString &codePart, QString &conclusionPart);
 
-    void generateReviewReport(MdiChild *child);
+    void generateReviewReport(MdiChild *child, QString methodName, QString methodCode);
 
+
+    void showReviewBugInfo(CscrToolBugSet *bugSet);
 
 public slots:
 
@@ -161,6 +164,8 @@ public slots:
     void reviewMethodCode(QString methodName);
 
     void setCscrToolMethodNameToCode(const QHash<QString, QString> &value);
+
+    void showChallengeQuestions(QString currentStr, CodeElements elements);
 
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;    //指定重载符
@@ -294,6 +299,8 @@ private:
     QHash<QString, QList<InformalSpecInfo>> fileInformalSpecs;
 
     QHash<QString, QString> cscrToolMethodNameToCode;
+
+    CscrToolBugSet* bugSet;
 
     //include文件中包含的类
     QStringList includedClass;

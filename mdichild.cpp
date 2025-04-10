@@ -44,6 +44,7 @@ MdiChild::MdiChild(QWidget *parent): QTextEdit(parent)
     connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(updateLineNumberArea/*_2*/(int)));
     connect(this, SIGNAL(textChanged()), this, SLOT(updateLineNumberArea()));
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(updateLineNumberArea()));
+    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(findChallengeQuestion()));
     //connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(showFaultPromptDialog()));
 
     updateLineNumberAreaWidth(0);
@@ -79,6 +80,8 @@ void MdiChild::newFile(QString fileName)
         curFile = fileName;
     }
     setWindowTitle(curFile + "[*]");
+
+    //setCurrentFile(fileName);   //设置当前文件
 
     connect(document(), &QTextDocument::contentsChanged,
             this, &MdiChild::documentWasModified);
@@ -179,6 +182,30 @@ bool MdiChild::saveFile(const QString &fileName)
 
     setCurrentFile(fileName);
     qDebug() << "-6";
+    return true;
+}
+
+bool MdiChild::saveReviewReport(const QJsonObject &project)
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"),
+                                                    curFile);
+    if (fileName.isEmpty()){
+        qDebug() << "saveReviewReport: fileName is empty.";
+        return false;
+    }
+
+    // Save JSON to file
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly)) {
+        //qDebug() << "Failed to open file for writing.";
+        QMessageBox::warning(this, tr("Error"),
+                             tr("Cannot write file %1:\n%2.")
+                             .arg(QDir::toNativeSeparators(fileName), file.errorString()));
+        return false;
+    }
+    file.write(QJsonDocument(project).toJson(QJsonDocument::Indented));
+    file.close();
+    qDebug() << "Project saved to JSON file.";
     return true;
 }
 
@@ -308,6 +335,27 @@ void MdiChild::setCurrentFile(const QString &fileName)
 QString MdiChild::strippedName(const QString &fullFileName)
 {
     return QFileInfo(fullFileName).fileName();
+}
+
+bool MdiChild::getReviewCodeMode() const
+{
+    return reviewCodeMode;
+}
+
+void MdiChild::setReviewCodeMode(bool value)
+{
+    reviewCodeMode = value;
+}
+
+void MdiChild::setStructureNumberList(const QList<int> &value)
+{
+    structureNumberList = value;
+    highlightStructureSegments(this->structureNumberList);
+}
+
+QList<int> MdiChild::getStructureNumberList() const
+{
+    return structureNumberList;
 }
 
 int MdiChild::getCurrentReviewLine() const
@@ -503,7 +551,7 @@ void MdiChild::highlightCurrentLine()
 void MdiChild::clearStructureNumberList()
 {
     this->structureNumberList.clear();
-    highlightSegments(this->structureNumberList);
+    highlightStructureSegments(this->structureNumberList);
 }
 
 void MdiChild::addToStructureNumberList()
@@ -529,13 +577,13 @@ void MdiChild::addToStructureNumberList()
     qDebug() << "structureNumberList: " <<stringList.join(", ");
 
     recentlyInsertedNumber = number;
-    highlightSegments(this->structureNumberList);
+    highlightStructureSegments(this->structureNumberList);
 }
 
 void MdiChild::undoStructureNumberList()
 {
     structureNumberList.removeOne(recentlyInsertedNumber);
-    highlightSegments(this->structureNumberList);
+    highlightStructureSegments(this->structureNumberList);
 }
 
 void MdiChild::scrollToLine(int lineNumber) {
@@ -572,6 +620,19 @@ void MdiChild::scrollToFirstLine()
     scrollToLine(0);
 }
 
+void MdiChild::startReview()
+{
+    if(reviewCodeMode){
+        return;
+    }
+    reviewCodeMode = true;
+    setExtraSelections(QList<QTextEdit::ExtraSelection>());
+    currentReviewLine = 0;
+    QList<QTextEdit::ExtraSelection> selections = this->extraSelections();
+    highlightReviewSegment(structureNumberList, selections);
+    scrollToCurrentReviewLine();
+}
+
 bool MdiChild::isAllSegmentsReviewed()
 {
     if(currentReviewLine >= document()->blockCount()){
@@ -600,15 +661,19 @@ void MdiChild::moveToNextReviewSegment()
         //resetBlockColors(currentReviewLine, document()->blockCount(), Qt::transparent, selections);
         emit allSegmentsReviewComplete();
         currentReviewLine = document()->blockCount();
+        QList<QTextEdit::ExtraSelection> emptySelections;
+        highlightReviewSegment(structureNumberList, emptySelections);
         scrollToCurrentReviewLine();
     }else{
         //structureNumberList.removeOne((*it));
         //highlightSegments(structureNumberList);
         //resetBlockColors(currentReviewLine, (*it) + 1, Qt::transparent, selections);
         currentReviewLine = (*it) + 1;
+        QList<QTextEdit::ExtraSelection> emptySelections;
+        highlightReviewSegment(structureNumberList, emptySelections);
         scrollToCurrentReviewLine();
     }
-    setExtraSelections(selections);
+    //setExtraSelections(selections);
 }
 
 void MdiChild::resetBlockColors(int startLine, int endLine, const QColor &color, QList<QTextEdit::ExtraSelection>& selections) {
@@ -656,7 +721,65 @@ void MdiChild::resetBlockColors(int startLine, int endLine, const QColor &color,
     update();
 }
 
+void MdiChild::findChallengeQuestion(){
+    if(reviewCodeMode == false){
+        return;
+    }
+    //QString currentStr = getSpaceSeparatedStringAtCursor();
+    QTextCursor cursor = textCursor();  // Get the current cursor
+    QTextBlock currentBlock = cursor.block();  // Get the block at the cursor position
+    QString currentStr = currentBlock.text();  // Return the text of the block
+    qDebug() << "findChallengeQuestion: currentStr = " << currentStr;
 
+    CodeElements elements = Utils::extractCppElements(currentStr);
+
+    emit challengeQuestionFlag(currentStr, elements);
+}
+
+QString MdiChild::getSpaceSeparatedStringAtCursor() {
+    QTextCursor cursor = textCursor();
+    QTextBlock block = cursor.block();
+    QString text = block.text();  // Full line text
+
+    int posInBlock = cursor.position() - block.position();
+    if (posInBlock < 0 || posInBlock > text.length())
+        return QString();  // Out of bounds safety check
+
+    // Case: cursor is at a space (or just before a space)
+    if (text[posInBlock] == ' ' || (posInBlock > 0 && text[posInBlock - 1] == ' ')) {
+        // Scan outward to find the surrounding non-space text blocks
+        int spaceLeft = posInBlock;
+        while (spaceLeft > 0 && text[spaceLeft - 1] == ' ')
+            --spaceLeft;
+
+        int spaceRight = posInBlock;
+        while (spaceRight < text.length() && text[spaceRight] == ' ')
+            ++spaceRight;
+
+        // Look left for start of previous word
+        int leftSegStart = spaceLeft;
+        while (leftSegStart > 0 && text[leftSegStart - 1] != ' ')
+            --leftSegStart;
+
+        // Look right for end of next word
+        int rightSegEnd = spaceRight;
+        while (rightSegEnd < text.length() && text[rightSegEnd] != ' ')
+            ++rightSegEnd;
+
+        return text.mid(leftSegStart, rightSegEnd - leftSegStart);
+    }
+
+    // Normal case: cursor is inside a word
+    int left = posInBlock;
+    while (left > 0 && text[left - 1] != ' ')
+        --left;
+
+    int right = posInBlock;
+    while (right < text.length() && text[right] != ' ')
+        ++right;
+
+    return text.mid(left, right - left);
+}
 
 void MdiChild::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
@@ -1108,7 +1231,9 @@ void MdiChild::fixCodeTriggered()
 
 void MdiChild::addBugTriggered()
 {
-
+    QTextCursor cursor = textCursor();  // Get the current cursor
+    QTextBlock block = cursor.block();   // Get the current block
+    emit reportBugLine(block.blockNumber());          // Return the block's line number
 }
 
 void MdiChild::updateMatch()
@@ -2671,7 +2796,7 @@ void MdiChild::matchFaultPattern(const QRegExp& faultPattern, const QTextCharFor
 
 }
 
-void MdiChild::highlightSegments(const QList<int> &segments) {
+void MdiChild::highlightStructureSegments(const QList<int> &segments) {
     QList<QTextEdit::ExtraSelection> selections;
 
     if (segments.isEmpty() || (segments.size() == 1 && segments.at(0) == -1)){
@@ -2700,6 +2825,44 @@ void MdiChild::highlightSegments(const QList<int> &segments) {
     }
 
     setExtraSelections(selections);
+
+    // Restore the original cursor position
+    setTextCursor(originalCursor);
+}
+
+
+void MdiChild::highlightReviewSegment(const QList<int> &segments, QList<QTextEdit::ExtraSelection>& selections) {
+    //resetBlockColors(0, document()->blockCount(), Qt::transparent, selections);
+
+//    if (segments.isEmpty() || (segments.size() == 1 && segments.at(0) == -1)){
+//        resetBlockColors(0, document()->blockCount(), Qt::transparent, selections);
+//        setExtraSelections(selections);
+//        return;
+//    }
+    if(currentReviewLine >= document()->blockCount()){
+        return;
+    }
+
+    // Save the current cursor position
+    QTextCursor originalCursor = textCursor();
+
+    QColor highlightColor = Qt::yellow;
+
+    auto begin = segments.begin();
+    auto end = segments.end();
+
+    auto highlightBlockEndIt = std::lower_bound(begin, end, currentReviewLine);
+    if (highlightBlockEndIt == end) {
+        return;
+    }
+
+    int endPos = *highlightBlockEndIt;
+    qDebug() << "highlightReviewSegment: ";
+    resetBlockColors(currentReviewLine, endPos+1, highlightColor, selections);
+
+    setExtraSelections(selections);
+
+    //update();
 
     // Restore the original cursor position
     setTextCursor(originalCursor);

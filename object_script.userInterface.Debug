@@ -18,6 +18,8 @@ INPUT(
 ./debug\issuemanager.o
 ./debug\guidewizard.o
 ./debug\chatgptclient.o
+./debug\cscrtoolbugset.o
+./debug\utils.o
 ./debug\qrc_ui_images.o
 ./debug\moc_mainwindow.o
 ./debug\moc_mdichild.o

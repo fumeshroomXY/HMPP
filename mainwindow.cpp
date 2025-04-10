@@ -25,6 +25,8 @@
 #include "screenfactor.h"
 #include "chatgptclient.h"
 #include "requirementtreeview.h"
+#include "utils.h"
+#include "cscrtoolchallengerquestion.h"
 
 const QString iconFilePath = "/images/toolbar_images";
 
@@ -57,6 +59,8 @@ MainWindow::MainWindow()
 
     setWindowTitle(tr("HMPP supporting tool demo"));
     setUnifiedTitleAndToolBarOnMac(true);
+
+    ui->comboBoxBugNature->addItems(bugNatureList);
 
     //setToolBarLayout();
     //先隐藏问题面板，需要调试或代码分析时再唤出
@@ -204,6 +208,7 @@ MainWindow::MainWindow()
     //测试用动作
     connect(ui->testAct, &QAction::triggered, this, &MainWindow::testSlot);
     connect(ui->SCMDemoAct, &QAction::triggered, this, &MainWindow::showDemoSCM);
+
     qDebug() << "1";
 }
 
@@ -820,9 +825,6 @@ void MainWindow::receiveGuideWizardFileInfo(bool createNewFlag, const QString &p
 }
 
 
-
-
-
 bool MainWindow::clearAndModifyClassHeaderFile(const ClassInfo& info, QString className)
 {
     qDebug() << "clearAndModifyClassHeaderFile";
@@ -1049,7 +1051,8 @@ void MainWindow::doubleClickedProjectTree(const QModelIndex &index)
 void MainWindow::showProjectView()
 {
     ui->stackedWidgetLeft->setCurrentIndex(0);
-    ui->stackedWidgetRightDown->hide();
+    ui->stackedWidgetRightDown->setCurrentIndex(0);
+    ui->stackedWidgetRightDown->show();
 }
 
 void MainWindow::showHMPPView()
@@ -1075,6 +1078,28 @@ void MainWindow::showCSCRTool()
     QList<QString> itemList = cscrToolMethodNameToCode.keys();
     itemList.sort();
     CscrToolDialog *cscrToolDialog = new CscrToolDialog(this, itemList);
+
+    // 点击按钮可以来回浏览bug set
+    showReviewBugInfo(bugSet);
+    disconnect(ui->buttonPreviousBugDescription, nullptr, nullptr, nullptr);
+    connect(ui->buttonPreviousBugDescription, &QPushButton::clicked, [this](){
+        if (bugSet->getCurrentIndex() == 0) {
+            return; // Already at begin(), do nothing
+        }
+        bugSet->setCurrentIndex(bugSet->getCurrentIndex() - 1);
+        showReviewBugInfo(bugSet);
+
+    });
+
+    disconnect(ui->buttonNextBugDescription, nullptr, nullptr, nullptr);
+    connect(ui->buttonNextBugDescription, &QPushButton::clicked, [this](){
+        if (bugSet->getCurrentIndex() == bugSet->getBugObjectList().size() - 1) {
+            return; // Already at end(), do nothing
+        }
+        bugSet->setCurrentIndex(bugSet->getCurrentIndex() + 1);
+        showReviewBugInfo(bugSet);
+    });
+
     connect(cscrToolDialog, &CscrToolDialog::reviewMethod, this, &MainWindow::reviewMethodCode);
     connect(cscrToolDialog, &CscrToolDialog::loadBugReportFile, this, &MainWindow::loadBugReportFile);
     cscrToolDialog->exec();
@@ -1083,7 +1108,104 @@ void MainWindow::showCSCRTool()
 
 void MainWindow::loadBugReportFile(QString bugReportFilePath)
 {
+    //ui->buttonPreviousBugDescription->setFocusPolicy(Qt::NoFocus);
+    //ui->buttonNextBugDescription->setFocusPolicy(Qt::NoFocus);
 
+    QFile file(bugReportFilePath);
+    if (!file.open(QIODevice::ReadOnly)) {
+        qDebug() << "Failed to open file for reading: " << bugReportFilePath;
+        return;
+    }
+
+    QByteArray jsonData = file.readAll();
+    file.close();
+
+    QJsonDocument doc = QJsonDocument::fromJson(jsonData);
+    if (doc.isNull() || !doc.isObject()) {
+        qDebug() << "Invalid JSON file.";
+        return;
+    }
+
+    QJsonObject project = doc.object();
+
+    QString methodName = project["methodName"].toString();
+    QString methodCode = project["methodCode"].toString();
+
+    QString sanatizedMethodName = Utils::sanitizeFileName(Utils::getLeftSubstring(methodName, "("));
+
+    // Read bugObjectList
+    QList<BugObject> bugList;
+    QJsonArray bugArray = project["bugObjectList"].toArray();
+    for (const QJsonValue &val : bugArray) {
+        bugList.append(BugObject::fromJson(val.toObject()));
+    }
+
+    // Read segmentList
+    QList<int> segmentList;
+    QJsonArray segmentsArray = project["segmentList"].toArray();
+    for (const QJsonValue &val : segmentsArray) {
+        segmentList.append(val.toInt());
+    }
+
+    // Print retrieved data
+    qDebug() << "Method Name:" << methodName;
+    qDebug() << "Method Code:" << methodCode;
+
+    for (const BugObject &bug : bugList) {
+        qDebug() << "BugLine:" << bug.bugLine
+                 << "BugName:" << bug.bugName
+                 << "BugNature:" << bug.bugNature
+                 << "BugDescription:" << bug.bugDescription;
+    }
+
+    qDebug() << "Segment List:" << segmentList;
+
+    MdiChild* cscrToolMdiChild = newReviewCodeFile("review_" + sanatizedMethodName + ".txt");
+    bugSet = new CscrToolBugSet("review_" + sanatizedMethodName + ".txt");
+    bugSet->setBugObjectList(bugList);
+    cscrToolMdiChild->setCscrToolMode(true);
+    cscrToolMdiChild->setText(methodCode);
+
+    cscrToolMdiChild->setStructureNumberList(segmentList);
+
+//    showReviewBugInfo(bugSet);
+
+//    connect(ui->buttonPreviousBugDescription, &QPushButton::clicked, [this](){
+//        if (bugSet->getCurrentIndex() == 0) {
+//            return; // Already at begin(), do nothing
+//        }
+//        bugSet->setCurrentIndex(bugSet->getCurrentIndex() - 1);
+//        showReviewBugInfo(bugSet);
+
+//    });
+
+//    connect(ui->buttonNextBugDescription, &QPushButton::clicked, [this](){
+//        if (bugSet->getCurrentIndex() == bugSet->getBugObjectList().size() - 1) {
+//            return; // Already at end(), do nothing
+//        }
+//        bugSet->setCurrentIndex(bugSet->getCurrentIndex() + 1);
+//        showReviewBugInfo(bugSet);
+//    });
+
+}
+
+void MainWindow::showReviewBugInfo(CscrToolBugSet* bugSet)
+{
+    BugObject obj = bugSet->getCurrentBugObject();
+    int lineNumber = obj.bugLine;
+    QString bugName = obj.bugName;
+    QString bugNature = obj.bugNature;
+    QString bugDescription = obj.bugDescription;
+
+    ui->labelCurrentLine->setText(QString::number(lineNumber + 1));
+    ui->lineEditBugName->setText(bugName);
+    int index = ui->comboBoxBugNature->findText(bugNature);
+    if (index != -1) {  // Ensure the text exists in the combo box
+        ui->comboBoxBugNature->setCurrentIndex(index);
+    } else {
+        qDebug() << "Target string not found in the combo box!";
+    }
+    ui->textEditBugDescription->setText(bugDescription);
 }
 
 void MainWindow::reviewMethodCode(QString methodName)
@@ -1094,16 +1216,28 @@ void MainWindow::reviewMethodCode(QString methodName)
     ui->buttonGenerateReviewReport->setEnabled(false);
     ui->buttonPreviousBugDescription->setEnabled(false);
     ui->buttonNextBugDescription->setEnabled(false);
+    ui->buttonRestartStructure->setEnabled(true);
+    ui->buttonStructure->setEnabled(true);
+    ui->buttonUndoStructure->setEnabled(true);
+    ui->buttonDoneStructure->setEnabled(true);
+
+    ui->buttonBugReportOK->setFocusPolicy(Qt::NoFocus);
+    ui->buttonBugReportCancel->setFocusPolicy(Qt::NoFocus);
 
     QString methodCode = cscrToolMethodNameToCode.value(methodName);
-    MdiChild* cscrToolMdiChild = newReviewCodeFile("review_" + methodName + ".txt");
+    QString seperatedMethodName = Utils::getLeftSubstring(methodName, "(");
+    QString sanatizedMethodName = Utils::sanitizeFileName(seperatedMethodName);
+    qDebug() << "reviewMethod: active: " << this->activeMdiChild();
+    MdiChild* cscrToolMdiChild = newReviewCodeFile("review_" + sanatizedMethodName + ".txt");
+    bugSet = new CscrToolBugSet("review_" + sanatizedMethodName + ".txt");
+    qDebug() << "reviewMethod: active: " << this->activeMdiChild();
     cscrToolMdiChild->setCscrToolMode(true);
     cscrToolMdiChild->setText(methodCode);
 
     connect(ui->buttonRestartStructure, &QPushButton::clicked, cscrToolMdiChild, &MdiChild::clearStructureNumberList);
     connect(ui->buttonStructure, &QPushButton::clicked, cscrToolMdiChild, &MdiChild::addToStructureNumberList);
     connect(ui->buttonUndoStructure, &QPushButton::clicked, cscrToolMdiChild, &MdiChild::undoStructureNumberList);
-    connect(ui->buttonDoneStructure, &QPushButton::clicked, cscrToolMdiChild, [this](){
+    connect(ui->buttonDoneStructure, &QPushButton::clicked, [this, cscrToolMdiChild](){
                 ui->buttonRestartStructure->setEnabled(false);
                 ui->buttonStructure->setEnabled(false);
                 ui->buttonUndoStructure->setEnabled(false);
@@ -1114,26 +1248,122 @@ void MainWindow::reviewMethodCode(QString methodName)
                 ui->buttonGenerateReviewReport->setEnabled(true);
                 ui->buttonPreviousBugDescription->setEnabled(true);
                 ui->buttonNextBugDescription->setEnabled(true);
+                cscrToolMdiChild->startReview();
             });
 
     connect(ui->buttonReviewFromStart, &QPushButton::clicked, cscrToolMdiChild, &MdiChild::scrollToFirstLine);
     connect(ui->buttonBackToCurrent, &QPushButton::clicked, cscrToolMdiChild, &MdiChild::scrollToCurrentReviewLine);
     connect(ui->buttonCompleteCurrentSegment, &QPushButton::clicked, cscrToolMdiChild, &MdiChild::moveToNextReviewSegment);
+    connect(cscrToolMdiChild, &MdiChild::challengeQuestionFlag, this, &MainWindow::showChallengeQuestions);
 
-    connect(cscrToolMdiChild, &MdiChild::allSegmentsReviewComplete, [this, cscrToolMdiChild](){
+    connect(cscrToolMdiChild, &MdiChild::reportBugLine, [this, cscrToolMdiChild](int lineNumber){
+        ui->buttonBugReportOK->setEnabled(true);
+        ui->buttonBugReportCancel->setEnabled(true);
+        ui->labelCurrentLine->setText(QString::number(lineNumber + 1));
+    });
+
+
+    connect(ui->buttonBugReportOK, &QPushButton::clicked, [this, cscrToolMdiChild](){
+        qDebug() << "okbutton: active: " << this->activeMdiChild();
+        int lineNumber;
+        if(!ui->labelCurrentLine->text().isEmpty()){
+            lineNumber = ui->labelCurrentLine->text().toInt() - 1;
+            QString bugName = ui->lineEditBugName->text();
+            QString bugNature = ui->comboBoxBugNature->currentText();
+            QString bugDescription = ui->textEditBugDescription->toPlainText();
+
+            BugObject bugObj(lineNumber, bugName, bugNature, bugDescription);
+            bugSet->append(cscrToolMdiChild->userFriendlyCurrentFile(), bugObj);
+
+            ui->labelCurrentLine->clear();
+            ui->lineEditBugName->clear();
+            ui->comboBoxBugNature->setCurrentIndex(-1);
+            ui->textEditBugDescription->clear();
+            ui->buttonBugReportOK->setEnabled(false);
+            ui->buttonBugReportCancel->setEnabled(false);
+
+        }else{
+            qDebug() << "cannot find the right lineNumber: ";
+        }
+        qDebug() << "okbutton: active: " << this->activeMdiChild();
+    });
+
+    connect(ui->buttonBugReportCancel, &QPushButton::clicked, [this](){
+        ui->labelCurrentLine->clear();
+        ui->lineEditBugName->clear();
+        ui->comboBoxBugNature->setCurrentIndex(-1);
+        ui->textEditBugDescription->clear();
+        ui->buttonBugReportOK->setEnabled(false);
+        ui->buttonBugReportCancel->setEnabled(false);
+    });
+
+    connect(ui->buttonAISuggestion, &QPushButton::clicked, [this, cscrToolMdiChild](){
+        QMessageBox::StandardButton replyAISuggestion;
+        replyAISuggestion = QMessageBox::question(this, "AI Suggestion", "Would you like to receive AI-based advice on the code being reviewed?",
+                                      QMessageBox::Ok | QMessageBox::Cancel);
+        if(replyAISuggestion == QMessageBox::Ok){
+            ChatgptClient* client = new ChatgptClient(this);
+            QString request = fixCodePrompt + cscrToolMdiChild->toPlainText();
+            client->sendUserMessage(request);
+
+            connect(client, &ChatgptClient::replyIsReady, [this, cscrToolMdiChild](const QString &reply){
+                qDebug() << "AI Suggestion Reply Received:" << reply;
+
+                // TODO:  extract the AI suggestion from the reply.
+                // due to the rate limit, the api key is not available. So I just use an example to show.
+
+                int lineNumber = 0;
+                QString bugName = "Bug found by ChatGPT";
+                QString bugNature = "AI Suggestion";
+                QString bugDescription = "This is a bug found by ChatGPT";
+                BugObject bugObj(lineNumber, bugName, bugNature, bugDescription);
+                bugSet->append(cscrToolMdiChild->userFriendlyCurrentFile(), bugObj);
+            });
+
+        }else{
+
+        }
+    });
+
+//    showReviewBugInfo(bugSet);
+//    connect(ui->buttonPreviousBugDescription, &QPushButton::clicked, [this](){
+//        if (bugSet->getCurrentIndex() == 0) {
+//            return; // Already at begin(), do nothing
+//        }
+//        bugSet->setCurrentIndex(bugSet->getCurrentIndex() - 1);
+//        showReviewBugInfo(bugSet);
+
+//    });
+
+//    connect(ui->buttonNextBugDescription, &QPushButton::clicked, [this](){
+//        if (bugSet->getCurrentIndex() == bugSet->getBugObjectList().size() - 1) {
+//            return; // Already at end(), do nothing
+//        }
+//        bugSet->setCurrentIndex(bugSet->getCurrentIndex() + 1);
+//        showReviewBugInfo(bugSet);
+//    });
+
+    connect(cscrToolMdiChild, &MdiChild::allSegmentsReviewComplete, [this, cscrToolMdiChild, methodName, methodCode](){
                 QMessageBox::StandardButton reply;
                 reply = QMessageBox::question(this, "Generate Report Confirmation", "All the segments have been review. \nDo you want to generate the corresponding review report?",
                                               QMessageBox::Ok | QMessageBox::Cancel);
 
                 if (reply == QMessageBox::Ok) {
                     qDebug() << "User clicked OK!";
-                    generateReviewReport(cscrToolMdiChild);
+                    cscrToolMdiChild->setReviewCodeMode(false);
+                    generateReviewReport(cscrToolMdiChild, methodName, methodCode);
+                    QMdiSubWindow *window = ui->mdiArea->currentSubWindow();
+                    if (window) {
+                        window->close();  // closes the whole window that holds the QTextEdit
+                    }
+                    ui->lineEditSyntax->clear();
+                    ui->listWidget->clear();
                 } else {
                     qDebug() << "User clicked Cancel!";
                 }
             });
 
-    connect(ui->buttonGenerateReviewReport, &QPushButton::clicked, [this, cscrToolMdiChild](){
+    connect(ui->buttonGenerateReviewReport, &QPushButton::clicked, [this, cscrToolMdiChild, methodName, methodCode](){
         bool allIsReviewed = cscrToolMdiChild->isAllSegmentsReviewed();
         QString text;
         if(allIsReviewed){
@@ -1147,16 +1377,178 @@ void MainWindow::reviewMethodCode(QString methodName)
 
         if (reply == QMessageBox::Ok) {
             qDebug() << "User clicked OK!";
-            generateReviewReport(cscrToolMdiChild);
+            cscrToolMdiChild->setReviewCodeMode(false);
+            generateReviewReport(cscrToolMdiChild, methodName, methodCode);
+            QMdiSubWindow *window = ui->mdiArea->currentSubWindow();
+            if (window) {
+                window->close();  // closes the whole window that holds the QTextEdit
+            }
+            ui->lineEditSyntax->clear();
+            ui->listWidget->clear();
         } else {
             qDebug() << "User clicked Cancel!";
         }
     });
+    qDebug() << "reviewMethod: active: " << this->activeMdiChild();
 }
 
-void MainWindow::generateReviewReport(MdiChild* child)
+void MainWindow::generateReviewReport(MdiChild* child, QString methodName, QString methodCode)
 {
+    qDebug() << "generateReviewReport:";
+    if(child->userFriendlyCurrentFile() != bugSet->getBugFileName()){
+        qDebug() << "fileName not matches. " << child->userFriendlyCurrentFile() << " is not equal to " << bugSet->getBugFileName();
+        return;
+    }
+    for (const BugObject &bug : bugSet->getBugObjectList()) {
+        qDebug() << "BugLine:" << bug.bugLine
+                 << "BugName:" << bug.bugName
+                 << "BugNature:" << bug.bugNature
+                 << "BugDescription:" << bug.bugDescription;
+    }
 
+    QJsonObject project;
+    project["projectName"] = currentPro->projectName;
+    project["projectPath"] = currentPro->projectPath;
+    project["methodName"] = methodName;
+    project["methodCode"] = methodCode;
+
+    // Convert bugObjectList to QJsonArray
+    QJsonArray bugArray;
+    for (const BugObject &bug : bugSet->getBugObjectList()) {
+        bugArray.append(bug.toJson());
+    }
+    project["bugObjectList"] = bugArray;
+
+    QJsonArray segmentsArray;
+    for (int num : child->getStructureNumberList()) {
+        segmentsArray.append(num);
+    }
+    project["segmentList"] = segmentsArray;
+
+    child->saveReviewReport(project);
+
+}
+
+void MainWindow::showChallengeQuestions(QString currentStr, CodeElements elements){
+//    QStringList functions;
+//    QStringList variables;
+//    QStringList classes;
+//    QStringList loopKeywords;
+//    QStringList conditionKeywords;
+//    QStringList exceptionHandlingKeywords;
+//    QStringList constants;
+//    QStringList assignmentOps;
+    ui->listWidget->clear();
+    QFont font = ui->lineEditSyntax->font();
+    font.setBold(true);  // Make the font bold
+    ui->lineEditSyntax->setFont(font);  // Apply the font to the QLineEdit
+    ui->lineEditSyntax->setText(currentStr);
+    //QStringList questions;
+    if(!elements.functions.isEmpty()){
+        for(const QString &func : elements.functions){
+            QListWidgetItem *item = new QListWidgetItem(func);
+            // Set the font to bold
+            QFont font = item->font();
+            font.setBold(true);  // Make the font bold
+            item->setFont(font);
+            ui->listWidget->addItem(item);
+            for (const QString &item : methodNameQuestions) {
+                ui->listWidget->addItem(item);
+            }
+        }
+    }
+    if(!elements.variables.isEmpty()){
+        for(const QString &func : elements.variables){
+            QListWidgetItem *item = new QListWidgetItem(func);
+            // Set the font to bold
+            QFont font = item->font();
+            font.setBold(true);  // Make the font bold
+            item->setFont(font);
+            ui->listWidget->addItem(item);
+            for (const QString &item : varDeclarationQuestions) {
+                ui->listWidget->addItem(item);
+            }
+        }
+
+    }
+    if(!elements.classes.isEmpty()){
+        for(const QString &func : elements.classes){
+            QListWidgetItem *item = new QListWidgetItem(func);
+            // Set the font to bold
+            QFont font = item->font();
+            font.setBold(true);  // Make the font bold
+            item->setFont(font);
+            ui->listWidget->addItem(item);
+            for (const QString &item : classNameQuestions) {
+                ui->listWidget->addItem(item);
+            }
+        }
+    }
+    if(!elements.loopKeywords.isEmpty()){
+        for(const QString &func : elements.loopKeywords){
+            QListWidgetItem *item = new QListWidgetItem(func);
+            // Set the font to bold
+            QFont font = item->font();
+            font.setBold(true);  // Make the font bold
+            item->setFont(font);
+            ui->listWidget->addItem(item);
+            for (const QString &item : forLoopQuestions) {
+                ui->listWidget->addItem(item);
+            }
+        }
+    }
+    if(!elements.conditionKeywords.isEmpty()){
+        for(const QString &func : elements.conditionKeywords){
+            QListWidgetItem *item = new QListWidgetItem(func);
+            // Set the font to bold
+            QFont font = item->font();
+            font.setBold(true);  // Make the font bold
+            item->setFont(font);
+            ui->listWidget->addItem(item);
+            for (const QString &item : ifElseQuestions) {
+                ui->listWidget->addItem(item);
+            }
+        }
+    }
+    if(!elements.exceptionHandlingKeywords.isEmpty()){
+        for(const QString &func : elements.exceptionHandlingKeywords){
+            QListWidgetItem *item = new QListWidgetItem(func);
+            // Set the font to bold
+            QFont font = item->font();
+            font.setBold(true);  // Make the font bold
+            item->setFont(font);
+            ui->listWidget->addItem(item);
+            for (const QString &item : exceptionHandlingStatementQuestions) {
+                ui->listWidget->addItem(item);
+            }
+        }
+    }
+    if(!elements.constants.isEmpty()){
+        for(const QString &func : elements.constants){
+            QListWidgetItem *item = new QListWidgetItem(func);
+            // Set the font to bold
+            QFont font = item->font();
+            font.setBold(true);  // Make the font bold
+            item->setFont(font);
+            ui->listWidget->addItem(item);
+            for (const QString &item : constantQuestions) {
+                ui->listWidget->addItem(item);
+            }
+        }
+    }
+    if(!elements.assignmentOps.isEmpty()){
+        for(const QString &func : elements.assignmentOps){
+            QListWidgetItem *item = new QListWidgetItem(func);
+            // Set the font to bold
+            QFont font = item->font();
+            font.setBold(true);  // Make the font bold
+            item->setFont(font);
+            ui->listWidget->addItem(item);
+            for (const QString &item : assignmentStatementQuestions) {
+                ui->listWidget->addItem(item);
+            }
+        }
+    }
 }
 
 bool MainWindow::createNewClassFiles(const QString& className)
@@ -2791,6 +3183,8 @@ void MainWindow::init()
 
     //当前项目使用的目标语言
     targetLanginCurrentPro = QString();
+
+    bugSet = new CscrToolBugSet;
 }
 
 void MainWindow::setCscrToolMethodNameToCode(const QHash<QString, QString> &value)

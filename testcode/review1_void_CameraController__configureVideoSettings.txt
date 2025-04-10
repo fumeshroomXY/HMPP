@@ -1,0 +1,33 @@
+{
+    "bugObjectList": [
+        {
+            "bugDescription": "videoConfig.setFrameRate(30); ",
+            "bugLine": 10,
+            "bugName": "param type error",
+            "bugNature": "Functional Bug"
+        },
+        {
+            "bugDescription": "if (videoRecorder && videoRecorder->getCurrentVideoFilePath().empty() == true) {",
+            "bugLine": 32,
+            "bugName": "condition error",
+            "bugNature": "Functional Bug"
+        },
+        {
+            "bugDescription": "this->storageManager.write(encryptedData);",
+            "bugLine": 46,
+            "bugName": "param error",
+            "bugNature": "Functional Bug"
+        }
+    ],
+    "methodCode": "void CameraController::configureVideoSettings() {\n    videoConfig.setFrameRate(30fps);                 // 30 fps\n    videoConfig.setResolution(\"1920x1080\");       // Full HD\n    videoConfig.setEncodingStandard(\"H264\");      // H.264 encoding\n    videoConfig.setBitrate(2500);                 // 2500 kbps\n}",
+    "methodName": "void CameraController::configureVideoSettings()",
+    "projectName": "02251442",
+    "projectPath": "E:/HMPP-main/userInterface/testcode/02251442",
+    "segmentList": [
+        7,
+        16,
+        30,
+        40,
+        48
+    ]
+}
