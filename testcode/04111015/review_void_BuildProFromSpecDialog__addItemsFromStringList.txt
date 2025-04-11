@@ -1,0 +1,14 @@
+{
+    "bugObjectList": [
+    ],
+    "methodCode": "void BuildProFromSpecDialog::addItemsFromStringList(const QStringList& stringList) {\n    existingClassList = stringList;\n    for (const QString& str : stringList) {\n        QTreeWidgetItem* funcItem = new QTreeWidgetItem(treeWidget);\n        funcItem->setText(0, str);\n        funcItem->setIcon(0, QIcon(\":/images/toolbar_images/class.svg\"));\n        funcItem->setData(0, Qt::UserRole, classUserRole);\n        funcItem->setData(0, Qt::UserRole + 1, true);  // Mark as non-modifiable (from QStringList)\n    }\n}",
+    "methodName": "void BuildProFromSpecDialog::addItemsFromStringList(const QStringList& stringList)",
+    "projectName": "04111015",
+    "projectPath": "E:/HMPP-main/userInterface/testcode/04111015",
+    "segmentList": [
+        0,
+        2,
+        5,
+        9
+    ]
+}

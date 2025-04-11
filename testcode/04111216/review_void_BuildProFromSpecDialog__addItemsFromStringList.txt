@@ -1,0 +1,32 @@
+{
+    "bugObjectList": [
+        {
+            "bugDescription": "This is a bug found by ChatGPT",
+            "bugLine": 0,
+            "bugName": "Bug found by ChatGPT",
+            "bugNature": "AI Suggestion"
+        },
+        {
+            "bugDescription": "333333",
+            "bugLine": 2,
+            "bugName": "33",
+            "bugNature": "Performance Bug"
+        },
+        {
+            "bugDescription": "55555",
+            "bugLine": 4,
+            "bugName": "55",
+            "bugNature": "UI/UX Bug"
+        }
+    ],
+    "methodCode": "void BuildProFromSpecDialog::addItemsFromStringList(const QStringList& stringList) {\n    existingClassList = stringList;\n    for (const QString& str : stringList) {\n        QTreeWidgetItem* funcItem = new QTreeWidgetItem(treeWidget);\n        funcItem->setText(0, str);\n        funcItem->setIcon(0, QIcon(\":/images/toolbar_images/class.svg\"));\n        funcItem->setData(0, Qt::UserRole, classUserRole);\n        funcItem->setData(0, Qt::UserRole + 1, true);  // Mark as non-modifiable (from QStringList)\n    }\n}",
+    "methodName": "void BuildProFromSpecDialog::addItemsFromStringList(const QStringList& stringList)",
+    "projectName": "04111216",
+    "projectPath": "E:/HMPP-main/userInterface/testcode/04111216",
+    "segmentList": [
+        0,
+        2,
+        5,
+        9
+    ]
+}

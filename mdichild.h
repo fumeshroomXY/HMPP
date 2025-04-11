@@ -201,6 +201,11 @@ public slots:
     //根据字符串格式，返回应该呈现的问题
     void findChallengeQuestion();
 
+    //根据当前鼠标位置，改变currentReviewLine
+    void changeCurrentReviewLine();
+
+    //为bug行画上红色波浪线
+    void markBugLines(const QList<int> &bugLineNumbers);
 
 private slots:
     void documentWasModified();    //文件被更改时显示更改窗口状态

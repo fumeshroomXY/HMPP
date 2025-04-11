@@ -116,7 +116,7 @@ public:
     void generateReviewReport(MdiChild *child, QString methodName, QString methodCode);
 
 
-    void showReviewBugInfo(CscrToolBugSet *bugSet);
+    void showReviewBugInfo(CscrToolBugSet *bugSet, MdiChild* cscrToolMdiChild);
 
 public slots:
 

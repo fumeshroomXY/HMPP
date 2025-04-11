@@ -21,8 +21,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MdiChild_t {
-    QByteArrayData data[71];
-    char stringdata0[1222];
+    QByteArrayData data[74];
+    char stringdata0[1274];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -80,28 +80,31 @@ QT_MOC_LITERAL(45, 733, 17), // "scrollToFirstLine"
 QT_MOC_LITERAL(46, 751, 11), // "startReview"
 QT_MOC_LITERAL(47, 763, 23), // "moveToNextReviewSegment"
 QT_MOC_LITERAL(48, 787, 21), // "findChallengeQuestion"
-QT_MOC_LITERAL(49, 809, 19), // "documentWasModified"
-QT_MOC_LITERAL(50, 829, 25), // "updateLineNumberAreaWidth"
-QT_MOC_LITERAL(51, 855, 13), // "newBlockCount"
-QT_MOC_LITERAL(52, 869, 20), // "updateLineNumberArea"
-QT_MOC_LITERAL(53, 890, 21), // "showFaultPromptDialog"
-QT_MOC_LITERAL(54, 912, 16), // "fixButtonHovered"
-QT_MOC_LITERAL(55, 929, 16), // "fixButtonClicked"
-QT_MOC_LITERAL(56, 946, 12), // "clearPreview"
-QT_MOC_LITERAL(57, 959, 14), // "highlightMatch"
-QT_MOC_LITERAL(58, 974, 19), // "askChatGPTTriggered"
-QT_MOC_LITERAL(59, 994, 16), // "fixCodeTriggered"
-QT_MOC_LITERAL(60, 1011, 15), // "addBugTriggered"
-QT_MOC_LITERAL(61, 1027, 11), // "updateMatch"
-QT_MOC_LITERAL(62, 1039, 27), // "updateInformalSpecPosInFile"
-QT_MOC_LITERAL(63, 1067, 17), // "autoCompleteMatch"
-QT_MOC_LITERAL(64, 1085, 21), // "moveFaultPromptDialog"
-QT_MOC_LITERAL(65, 1107, 26), // "highlightStructureSegments"
-QT_MOC_LITERAL(66, 1134, 10), // "QList<int>"
-QT_MOC_LITERAL(67, 1145, 8), // "segments"
-QT_MOC_LITERAL(68, 1154, 22), // "highlightReviewSegment"
-QT_MOC_LITERAL(69, 1177, 33), // "QList<QTextEdit::ExtraSelecti..."
-QT_MOC_LITERAL(70, 1211, 10) // "selections"
+QT_MOC_LITERAL(49, 809, 23), // "changeCurrentReviewLine"
+QT_MOC_LITERAL(50, 833, 12), // "markBugLines"
+QT_MOC_LITERAL(51, 846, 10), // "QList<int>"
+QT_MOC_LITERAL(52, 857, 14), // "bugLineNumbers"
+QT_MOC_LITERAL(53, 872, 19), // "documentWasModified"
+QT_MOC_LITERAL(54, 892, 25), // "updateLineNumberAreaWidth"
+QT_MOC_LITERAL(55, 918, 13), // "newBlockCount"
+QT_MOC_LITERAL(56, 932, 20), // "updateLineNumberArea"
+QT_MOC_LITERAL(57, 953, 21), // "showFaultPromptDialog"
+QT_MOC_LITERAL(58, 975, 16), // "fixButtonHovered"
+QT_MOC_LITERAL(59, 992, 16), // "fixButtonClicked"
+QT_MOC_LITERAL(60, 1009, 12), // "clearPreview"
+QT_MOC_LITERAL(61, 1022, 14), // "highlightMatch"
+QT_MOC_LITERAL(62, 1037, 19), // "askChatGPTTriggered"
+QT_MOC_LITERAL(63, 1057, 16), // "fixCodeTriggered"
+QT_MOC_LITERAL(64, 1074, 15), // "addBugTriggered"
+QT_MOC_LITERAL(65, 1090, 11), // "updateMatch"
+QT_MOC_LITERAL(66, 1102, 27), // "updateInformalSpecPosInFile"
+QT_MOC_LITERAL(67, 1130, 17), // "autoCompleteMatch"
+QT_MOC_LITERAL(68, 1148, 21), // "moveFaultPromptDialog"
+QT_MOC_LITERAL(69, 1170, 26), // "highlightStructureSegments"
+QT_MOC_LITERAL(70, 1197, 8), // "segments"
+QT_MOC_LITERAL(71, 1206, 22), // "highlightReviewSegment"
+QT_MOC_LITERAL(72, 1229, 33), // "QList<QTextEdit::ExtraSelecti..."
+QT_MOC_LITERAL(73, 1263, 10) // "selections"
 
     },
     "MdiChild\0showSCMFault\0\0hideProblemTab\0"
@@ -126,16 +129,18 @@ QT_MOC_LITERAL(70, 1211, 10) // "selections"
     "lineNumber\0scrollToCurrentReviewLine\0"
     "scrollToFirstLine\0startReview\0"
     "moveToNextReviewSegment\0findChallengeQuestion\0"
-    "documentWasModified\0updateLineNumberAreaWidth\0"
-    "newBlockCount\0updateLineNumberArea\0"
-    "showFaultPromptDialog\0fixButtonHovered\0"
-    "fixButtonClicked\0clearPreview\0"
-    "highlightMatch\0askChatGPTTriggered\0"
-    "fixCodeTriggered\0addBugTriggered\0"
-    "updateMatch\0updateInformalSpecPosInFile\0"
+    "changeCurrentReviewLine\0markBugLines\0"
+    "QList<int>\0bugLineNumbers\0documentWasModified\0"
+    "updateLineNumberAreaWidth\0newBlockCount\0"
+    "updateLineNumberArea\0showFaultPromptDialog\0"
+    "fixButtonHovered\0fixButtonClicked\0"
+    "clearPreview\0highlightMatch\0"
+    "askChatGPTTriggered\0fixCodeTriggered\0"
+    "addBugTriggered\0updateMatch\0"
+    "updateInformalSpecPosInFile\0"
     "autoCompleteMatch\0moveFaultPromptDialog\0"
-    "highlightStructureSegments\0QList<int>\0"
-    "segments\0highlightReviewSegment\0"
+    "highlightStructureSegments\0segments\0"
+    "highlightReviewSegment\0"
     "QList<QTextEdit::ExtraSelection>&\0"
     "selections"
 };
@@ -147,7 +152,7 @@ static const uint qt_meta_data_MdiChild[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      46,   14, // methods
+      48,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -155,54 +160,56 @@ static const uint qt_meta_data_MdiChild[] = {
       13,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,  244,    2, 0x06 /* Public */,
-       3,    0,  247,    2, 0x06 /* Public */,
-       4,    0,  248,    2, 0x06 /* Public */,
-       5,    1,  249,    2, 0x06 /* Public */,
-       8,    2,  252,    2, 0x06 /* Public */,
-      12,    2,  257,    2, 0x06 /* Public */,
-      15,    2,  262,    2, 0x06 /* Public */,
-      18,    1,  267,    2, 0x06 /* Public */,
-      21,    1,  270,    2, 0x06 /* Public */,
-      22,    1,  273,    2, 0x06 /* Public */,
-      23,    0,  276,    2, 0x06 /* Public */,
-      24,    1,  277,    2, 0x06 /* Public */,
-      25,    2,  280,    2, 0x06 /* Public */,
+       1,    1,  254,    2, 0x06 /* Public */,
+       3,    0,  257,    2, 0x06 /* Public */,
+       4,    0,  258,    2, 0x06 /* Public */,
+       5,    1,  259,    2, 0x06 /* Public */,
+       8,    2,  262,    2, 0x06 /* Public */,
+      12,    2,  267,    2, 0x06 /* Public */,
+      15,    2,  272,    2, 0x06 /* Public */,
+      18,    1,  277,    2, 0x06 /* Public */,
+      21,    1,  280,    2, 0x06 /* Public */,
+      22,    1,  283,    2, 0x06 /* Public */,
+      23,    0,  286,    2, 0x06 /* Public */,
+      24,    1,  287,    2, 0x06 /* Public */,
+      25,    2,  290,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      29,    1,  285,    2, 0x0a /* Public */,
-      32,    1,  288,    2, 0x0a /* Public */,
-      34,    2,  291,    2, 0x0a /* Public */,
-      37,    0,  296,    2, 0x0a /* Public */,
-      38,    0,  297,    2, 0x0a /* Public */,
-      39,    0,  298,    2, 0x0a /* Public */,
-      40,    0,  299,    2, 0x0a /* Public */,
-      41,    0,  300,    2, 0x0a /* Public */,
-      42,    1,  301,    2, 0x0a /* Public */,
-      44,    0,  304,    2, 0x0a /* Public */,
-      45,    0,  305,    2, 0x0a /* Public */,
-      46,    0,  306,    2, 0x0a /* Public */,
-      47,    0,  307,    2, 0x0a /* Public */,
-      48,    0,  308,    2, 0x0a /* Public */,
-      49,    0,  309,    2, 0x08 /* Private */,
-      50,    1,  310,    2, 0x08 /* Private */,
-      52,    1,  313,    2, 0x08 /* Private */,
-      52,    1,  316,    2, 0x08 /* Private */,
-      52,    0,  319,    2, 0x08 /* Private */,
-      53,    1,  320,    2, 0x08 /* Private */,
-      54,    0,  323,    2, 0x08 /* Private */,
-      55,    0,  324,    2, 0x08 /* Private */,
-      56,    0,  325,    2, 0x08 /* Private */,
-      57,    0,  326,    2, 0x08 /* Private */,
-      58,    0,  327,    2, 0x08 /* Private */,
-      59,    0,  328,    2, 0x08 /* Private */,
-      60,    0,  329,    2, 0x08 /* Private */,
-      61,    0,  330,    2, 0x08 /* Private */,
-      62,    0,  331,    2, 0x08 /* Private */,
-      63,    0,  332,    2, 0x08 /* Private */,
-      64,    0,  333,    2, 0x08 /* Private */,
-      65,    1,  334,    2, 0x08 /* Private */,
-      68,    2,  337,    2, 0x08 /* Private */,
+      29,    1,  295,    2, 0x0a /* Public */,
+      32,    1,  298,    2, 0x0a /* Public */,
+      34,    2,  301,    2, 0x0a /* Public */,
+      37,    0,  306,    2, 0x0a /* Public */,
+      38,    0,  307,    2, 0x0a /* Public */,
+      39,    0,  308,    2, 0x0a /* Public */,
+      40,    0,  309,    2, 0x0a /* Public */,
+      41,    0,  310,    2, 0x0a /* Public */,
+      42,    1,  311,    2, 0x0a /* Public */,
+      44,    0,  314,    2, 0x0a /* Public */,
+      45,    0,  315,    2, 0x0a /* Public */,
+      46,    0,  316,    2, 0x0a /* Public */,
+      47,    0,  317,    2, 0x0a /* Public */,
+      48,    0,  318,    2, 0x0a /* Public */,
+      49,    0,  319,    2, 0x0a /* Public */,
+      50,    1,  320,    2, 0x0a /* Public */,
+      53,    0,  323,    2, 0x08 /* Private */,
+      54,    1,  324,    2, 0x08 /* Private */,
+      56,    1,  327,    2, 0x08 /* Private */,
+      56,    1,  330,    2, 0x08 /* Private */,
+      56,    0,  333,    2, 0x08 /* Private */,
+      57,    1,  334,    2, 0x08 /* Private */,
+      58,    0,  337,    2, 0x08 /* Private */,
+      59,    0,  338,    2, 0x08 /* Private */,
+      60,    0,  339,    2, 0x08 /* Private */,
+      61,    0,  340,    2, 0x08 /* Private */,
+      62,    0,  341,    2, 0x08 /* Private */,
+      63,    0,  342,    2, 0x08 /* Private */,
+      64,    0,  343,    2, 0x08 /* Private */,
+      65,    0,  344,    2, 0x08 /* Private */,
+      66,    0,  345,    2, 0x08 /* Private */,
+      67,    0,  346,    2, 0x08 /* Private */,
+      68,    0,  347,    2, 0x08 /* Private */,
+      69,    1,  348,    2, 0x08 /* Private */,
+      71,    2,  351,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Int,    2,
@@ -235,7 +242,9 @@ static const uint qt_meta_data_MdiChild[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,   51,
+    QMetaType::Void, 0x80000000 | 51,   52,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::Int,   55,
     QMetaType::Void, QMetaType::QRectF,    2,
     QMetaType::Void, QMetaType::Int,    2,
     QMetaType::Void,
@@ -251,8 +260,8 @@ static const uint qt_meta_data_MdiChild[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 66,   67,
-    QMetaType::Void, 0x80000000 | 66, 0x80000000 | 69,   67,   70,
+    QMetaType::Void, 0x80000000 | 51,   70,
+    QMetaType::Void, 0x80000000 | 51, 0x80000000 | 72,   70,   73,
 
        0        // eod
 };
@@ -290,38 +299,47 @@ void MdiChild::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
         case 24: _t->startReview(); break;
         case 25: _t->moveToNextReviewSegment(); break;
         case 26: _t->findChallengeQuestion(); break;
-        case 27: _t->documentWasModified(); break;
-        case 28: _t->updateLineNumberAreaWidth((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 29: _t->updateLineNumberArea((*reinterpret_cast< QRectF(*)>(_a[1]))); break;
-        case 30: _t->updateLineNumberArea((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 31: _t->updateLineNumberArea(); break;
-        case 32: _t->showFaultPromptDialog((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 33: _t->fixButtonHovered(); break;
-        case 34: _t->fixButtonClicked(); break;
-        case 35: _t->clearPreview(); break;
-        case 36: _t->highlightMatch(); break;
-        case 37: _t->askChatGPTTriggered(); break;
-        case 38: _t->fixCodeTriggered(); break;
-        case 39: _t->addBugTriggered(); break;
-        case 40: _t->updateMatch(); break;
-        case 41: _t->updateInformalSpecPosInFile(); break;
-        case 42: _t->autoCompleteMatch(); break;
-        case 43: _t->moveFaultPromptDialog(); break;
-        case 44: _t->highlightStructureSegments((*reinterpret_cast< const QList<int>(*)>(_a[1]))); break;
-        case 45: _t->highlightReviewSegment((*reinterpret_cast< const QList<int>(*)>(_a[1])),(*reinterpret_cast< QList<QTextEdit::ExtraSelection>(*)>(_a[2]))); break;
+        case 27: _t->changeCurrentReviewLine(); break;
+        case 28: _t->markBugLines((*reinterpret_cast< const QList<int>(*)>(_a[1]))); break;
+        case 29: _t->documentWasModified(); break;
+        case 30: _t->updateLineNumberAreaWidth((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 31: _t->updateLineNumberArea((*reinterpret_cast< QRectF(*)>(_a[1]))); break;
+        case 32: _t->updateLineNumberArea((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 33: _t->updateLineNumberArea(); break;
+        case 34: _t->showFaultPromptDialog((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 35: _t->fixButtonHovered(); break;
+        case 36: _t->fixButtonClicked(); break;
+        case 37: _t->clearPreview(); break;
+        case 38: _t->highlightMatch(); break;
+        case 39: _t->askChatGPTTriggered(); break;
+        case 40: _t->fixCodeTriggered(); break;
+        case 41: _t->addBugTriggered(); break;
+        case 42: _t->updateMatch(); break;
+        case 43: _t->updateInformalSpecPosInFile(); break;
+        case 44: _t->autoCompleteMatch(); break;
+        case 45: _t->moveFaultPromptDialog(); break;
+        case 46: _t->highlightStructureSegments((*reinterpret_cast< const QList<int>(*)>(_a[1]))); break;
+        case 47: _t->highlightReviewSegment((*reinterpret_cast< const QList<int>(*)>(_a[1])),(*reinterpret_cast< QList<QTextEdit::ExtraSelection>(*)>(_a[2]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
         switch (_id) {
         default: *reinterpret_cast<int*>(_a[0]) = -1; break;
-        case 44:
+        case 28:
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<int*>(_a[0]) = -1; break;
             case 0:
                 *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< QList<int> >(); break;
             }
             break;
-        case 45:
+        case 46:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<int*>(_a[0]) = -1; break;
+            case 0:
+                *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< QList<int> >(); break;
+            }
+            break;
+        case 47:
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<int*>(_a[0]) = -1; break;
             case 0:
@@ -451,13 +469,13 @@ int MdiChild::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 46)
+        if (_id < 48)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 46;
+        _id -= 48;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 46)
+        if (_id < 48)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 46;
+        _id -= 48;
     }
     return _id;
 }

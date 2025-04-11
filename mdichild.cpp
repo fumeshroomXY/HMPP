@@ -45,6 +45,7 @@ MdiChild::MdiChild(QWidget *parent): QTextEdit(parent)
     connect(this, SIGNAL(textChanged()), this, SLOT(updateLineNumberArea()));
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(updateLineNumberArea()));
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(findChallengeQuestion()));
+    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(changeCurrentReviewLine()));
     //connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(showFaultPromptDialog()));
 
     updateLineNumberAreaWidth(0);
@@ -129,7 +130,6 @@ bool MdiChild::save()
 {
     qDebug() << "-4";
     //当用户保存时，分析文件结构，得到函数和变量信息
-
 
     if (isUntitled) {
         bool flag = saveAs();
@@ -532,10 +532,11 @@ void MdiChild::highlightCurrentLine()
 
     qDebug() << "-15";
     QList<QTextEdit::ExtraSelection> extraSelections = this->extraSelections();
-    if (!isReadOnly()) {
+    if (!isReadOnly() && reviewCodeMode) {
+        qDebug() << "highlightCurrentLine: currentLine = " << textCursor().blockNumber();
         QTextEdit::ExtraSelection selection;
 
-        QColor lineColor = QColor(Qt::yellow).lighter(160);
+        QColor lineColor = QColor(Qt::yellow);
 
         selection.format.setBackground(lineColor);
         selection.format.setProperty(QTextFormat::FullWidthSelection, true);
@@ -1564,7 +1565,8 @@ void MdiChild::completeToDoNote(int lineNumber)
 void MdiChild::goToLine(int lineNumber)
 {
     qDebug() << "-27";
-    QTextCursor cursor(document());
+    if (lineNumber < 0 || lineNumber >= document()->blockCount()) return;
+    QTextCursor cursor(textCursor());
     QTextBlock block = document()->findBlockByLineNumber(lineNumber);
     cursor.setPosition(block.position());
     QString text = block.text();
@@ -2797,7 +2799,7 @@ void MdiChild::matchFaultPattern(const QRegExp& faultPattern, const QTextCharFor
 }
 
 void MdiChild::highlightStructureSegments(const QList<int> &segments) {
-    QList<QTextEdit::ExtraSelection> selections;
+    QList<QTextEdit::ExtraSelection> selections = this->extraSelections();
 
     if (segments.isEmpty() || (segments.size() == 1 && segments.at(0) == -1)){
         resetBlockColors(0, document()->blockCount(), Qt::transparent, selections);
@@ -2808,7 +2810,8 @@ void MdiChild::highlightStructureSegments(const QList<int> &segments) {
     // Save the current cursor position
     QTextCursor originalCursor = textCursor();
 
-    QColor colors[] = {Qt::yellow, Qt::cyan};  // Two alternating colors
+    QColor colors[] = {QColor("#F7F7BB"),
+                       QColor("#D9E8F5")};  // Two alternating colors, 米黄色 淡蓝色
 
     int prev = 0;
     for (int i = 0; i < segments.size(); ++i) {
@@ -2830,6 +2833,42 @@ void MdiChild::highlightStructureSegments(const QList<int> &segments) {
     setTextCursor(originalCursor);
 }
 
+void MdiChild::markBugLines(const QList<int> &bugLineNumbers)
+{
+    QList<QTextEdit::ExtraSelection> selections = this->extraSelections();
+
+    QTextDocument *doc = document();
+
+    for (int lineNum : bugLineNumbers) {
+        if (lineNum < 0 || lineNum >= doc->blockCount())
+            continue;
+
+        QTextBlock block = doc->findBlockByNumber(lineNum);
+        QString text = block.text();
+        int startOffset = text.indexOf(QRegularExpression("\\S"));  // first non-whitespace
+        int endOffset = text.lastIndexOf(QRegularExpression("\\S"));  // last non-whitespace
+
+        if (startOffset == -1 || endOffset == -1)
+            return;  // empty or whitespace-only line
+
+        QTextCursor cursor(block);
+        cursor.setPosition(block.position() + startOffset);
+        cursor.setPosition(block.position() + endOffset + 1, QTextCursor::KeepAnchor);  // +1 to include last char
+
+        QTextEdit::ExtraSelection selection;
+        selection.cursor = cursor;
+
+        QTextCharFormat format;
+        format.setUnderlineColor(Qt::red);
+        format.setUnderlineStyle(QTextCharFormat::WaveUnderline);  // Red wavy underline
+        selection.format = format;
+
+        selections.append(selection);
+    }
+
+    setExtraSelections(selections);
+}
+
 
 void MdiChild::highlightReviewSegment(const QList<int> &segments, QList<QTextEdit::ExtraSelection>& selections) {
     //resetBlockColors(0, document()->blockCount(), Qt::transparent, selections);
@@ -2846,7 +2885,7 @@ void MdiChild::highlightReviewSegment(const QList<int> &segments, QList<QTextEdi
     // Save the current cursor position
     QTextCursor originalCursor = textCursor();
 
-    QColor highlightColor = Qt::yellow;
+    QColor highlightColor = QColor("#F7F7BB");   //米黄色
 
     auto begin = segments.begin();
     auto end = segments.end();
@@ -2855,10 +2894,15 @@ void MdiChild::highlightReviewSegment(const QList<int> &segments, QList<QTextEdi
     if (highlightBlockEndIt == end) {
         return;
     }
+    int startPos = 0;
+    if(highlightBlockEndIt != begin){
+        startPos = *(highlightBlockEndIt - 1) + 1;
+    }
 
     int endPos = *highlightBlockEndIt;
     qDebug() << "highlightReviewSegment: ";
-    resetBlockColors(currentReviewLine, endPos+1, highlightColor, selections);
+    qDebug() << "currentReviewLine = " << currentReviewLine;
+    resetBlockColors(startPos, endPos+1, highlightColor, selections);
 
     setExtraSelections(selections);
 
@@ -2866,6 +2910,18 @@ void MdiChild::highlightReviewSegment(const QList<int> &segments, QList<QTextEdi
 
     // Restore the original cursor position
     setTextCursor(originalCursor);
+}
+
+
+void MdiChild::changeCurrentReviewLine(){
+    if(reviewCodeMode){
+        QTextCursor cursor = textCursor();
+        currentReviewLine = cursor.blockNumber();
+        QList<QTextEdit::ExtraSelection> emptySelections;
+        highlightReviewSegment(structureNumberList, emptySelections);
+        highlightCurrentLine();
+        qDebug() << "changeCurrentReviewLine: currentReviewLine = " << currentReviewLine;
+    }
 }
 
 

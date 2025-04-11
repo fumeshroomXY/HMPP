@@ -24,8 +24,9 @@ bool CscrToolBugSet::append(QString fileName, const BugObject& obj)
     }
 
     auto it = std::lower_bound(bugObjectList.begin(), bugObjectList.end(), obj);
-    bugObjectList.insert(it, obj);
-
+    auto insertedIt = bugObjectList.insert(it, obj);
+    int index = std::distance(bugObjectList.begin(), insertedIt);
+    setCurrentIndex(index);
     return true;
 }
 

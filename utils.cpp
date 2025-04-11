@@ -21,8 +21,13 @@ QString Utils::getLeftSubstring(const QString &str, const QString &targetSeperat
 }
 
 CodeElements Utils::extractCppElements(const QString &line) {
-    CodeElements result;
+    QString processedLine = line;
+    int commentIndex = processedLine.indexOf("//");
+    if (commentIndex != -1) {
+        processedLine = processedLine.left(commentIndex);
+    }
 
+    CodeElements result;
     QStringList keywordList = {
         "if", "else", "for", "while", "switch", "case", "return", "class", "struct", "namespace",
         "int", "float", "double", "char", "bool", "void", "public", "private", "protected",
@@ -45,7 +50,7 @@ CodeElements Utils::extractCppElements(const QString &line) {
 
     // Match all tokens
     QRegularExpression tokenRegex(R"([\w_]+|\S)");
-    auto tokens = tokenRegex.globalMatch(line);
+    auto tokens = tokenRegex.globalMatch(processedLine);
 
     QStringList tokenList;
     while (tokens.hasNext()) {
@@ -59,46 +64,61 @@ CodeElements Utils::extractCppElements(const QString &line) {
     for (int i = 0; i < tokenList.size(); ++i) {
         QString tok = tokenList[i];
 
-        // Function detection (look ahead for "(")
-        if (i + 1 < tokenList.size() && tokenList[i + 1] == "(") {
-            result.functions << tok;
-        }
-
         // Assignment detection
         if (assignmentList.contains(tok)) {
             result.assignmentOps << tok;
+            continue;
         }
 
         // Keyword detection
         if (loopKeywordList.contains(tok)) {
             result.loopKeywords << tok;
+            continue;
         }
 
         if (conditionKeywordList.contains(tok)) {
             result.conditionKeywords << tok;
+            continue;
         }
 
         if (exceptionHandlingKeywordList.contains(tok)) {
             result.exceptionHandlingKeywords << tok;
+            continue;
         }
 
-        // Class detection: class X or new X
-        if ((i > 0 && tokenList[i - 1] == "class") ||
-            (i > 0 && tokenList[i - 1] == "new")) {
-            result.classes << tok;
+        // Function detection (look ahead for "(")
+        if (i + 1 < tokenList.size() && tokenList[i + 1] == "(" && !keywordList.contains(tok)) {
+            result.functions << tok;
+            continue;
         }
 
-        // Variable detection: primitiveType varName [= ...];
-        if (i > 0 && keywordList.contains(tokenList[i - 1]) &&
-            QRegularExpression(R"([a-zA-Z_][a-zA-Z0-9_]*)").match(tok).hasMatch()) {
-            result.variables << tok;
+        if(QRegularExpression(R"([a-zA-Z_][a-zA-Z0-9_]*)").match(tok).hasMatch() && !keywordList.contains(tok)){
+            // Class detection: class X or new X
+            if ((i > 0 && tokenList[i - 1] == "class") ||
+                (i > 0 && tokenList[i - 1] == "new")) {
+                result.classes << tok;
+                continue;
+            }
+            // Variable detection;
+            else{
+                result.variables << tok;
+                continue;
+            }
         }
+
+//        // Variable detection: primitiveType varName [= ...];
+//        if (i > 0 && keywordList.contains(tokenList[i - 1]) &&
+//            QRegularExpression(R"([a-zA-Z_][a-zA-Z0-9_]*)").match(tok).hasMatch()) {
+//            result.variables << tok;
+//        }
 
         // Constant detection: numeric constants or string literals
         if (numberRegex.match(tok).hasMatch()) {
             result.constants << tok;  // Add number as a constant
+            continue;
         } else if (stringLiteralRegex.match(tok).hasMatch()) {
             result.constants << tok;  // Add string literal as a constant
+            continue;
         }
     }
 

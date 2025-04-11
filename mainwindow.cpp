@@ -157,6 +157,12 @@ MainWindow::MainWindow()
     ui->projectTreeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->toDoTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
+    // 初始化bug description部分
+    ui->labelCurrentLine->clear();
+    ui->comboBoxBugNature->setCurrentIndex(-1);
+    ui->lineEditBugName->clear();
+    ui->textEditBugDescription->clear();
+
 
     // 获取QHeaderView
     QHeaderView *projectHeader = ui->projectTreeView->header();
@@ -1079,27 +1085,6 @@ void MainWindow::showCSCRTool()
     itemList.sort();
     CscrToolDialog *cscrToolDialog = new CscrToolDialog(this, itemList);
 
-    // 点击按钮可以来回浏览bug set
-    showReviewBugInfo(bugSet);
-    disconnect(ui->buttonPreviousBugDescription, nullptr, nullptr, nullptr);
-    connect(ui->buttonPreviousBugDescription, &QPushButton::clicked, [this](){
-        if (bugSet->getCurrentIndex() == 0) {
-            return; // Already at begin(), do nothing
-        }
-        bugSet->setCurrentIndex(bugSet->getCurrentIndex() - 1);
-        showReviewBugInfo(bugSet);
-
-    });
-
-    disconnect(ui->buttonNextBugDescription, nullptr, nullptr, nullptr);
-    connect(ui->buttonNextBugDescription, &QPushButton::clicked, [this](){
-        if (bugSet->getCurrentIndex() == bugSet->getBugObjectList().size() - 1) {
-            return; // Already at end(), do nothing
-        }
-        bugSet->setCurrentIndex(bugSet->getCurrentIndex() + 1);
-        showReviewBugInfo(bugSet);
-    });
-
     connect(cscrToolDialog, &CscrToolDialog::reviewMethod, this, &MainWindow::reviewMethodCode);
     connect(cscrToolDialog, &CscrToolDialog::loadBugReportFile, this, &MainWindow::loadBugReportFile);
     cscrToolDialog->exec();
@@ -1108,9 +1093,6 @@ void MainWindow::showCSCRTool()
 
 void MainWindow::loadBugReportFile(QString bugReportFilePath)
 {
-    //ui->buttonPreviousBugDescription->setFocusPolicy(Qt::NoFocus);
-    //ui->buttonNextBugDescription->setFocusPolicy(Qt::NoFocus);
-
     QFile file(bugReportFilePath);
     if (!file.open(QIODevice::ReadOnly)) {
         qDebug() << "Failed to open file for reading: " << bugReportFilePath;
@@ -1168,34 +1150,42 @@ void MainWindow::loadBugReportFile(QString bugReportFilePath)
 
     cscrToolMdiChild->setStructureNumberList(segmentList);
 
-//    showReviewBugInfo(bugSet);
+    QList<int> bugLineNumbers;
+    for (const BugObject &bug : bugList) {
+        bugLineNumbers.append(bug.bugLine);
+    }
+    cscrToolMdiChild->markBugLines(bugLineNumbers);
 
-//    connect(ui->buttonPreviousBugDescription, &QPushButton::clicked, [this](){
-//        if (bugSet->getCurrentIndex() == 0) {
-//            return; // Already at begin(), do nothing
-//        }
-//        bugSet->setCurrentIndex(bugSet->getCurrentIndex() - 1);
-//        showReviewBugInfo(bugSet);
+    // 点击按钮可以来回浏览bug set
+    showReviewBugInfo(bugSet, cscrToolMdiChild);
+    disconnect(ui->buttonPreviousBugDescription, nullptr, nullptr, nullptr);
+    connect(ui->buttonPreviousBugDescription, &QPushButton::clicked, [this, cscrToolMdiChild](){
+        if (bugSet->getCurrentIndex() != 0) {
+            bugSet->setCurrentIndex(bugSet->getCurrentIndex() - 1);
+        }
+        showReviewBugInfo(bugSet, cscrToolMdiChild);
 
-//    });
+    });
 
-//    connect(ui->buttonNextBugDescription, &QPushButton::clicked, [this](){
-//        if (bugSet->getCurrentIndex() == bugSet->getBugObjectList().size() - 1) {
-//            return; // Already at end(), do nothing
-//        }
-//        bugSet->setCurrentIndex(bugSet->getCurrentIndex() + 1);
-//        showReviewBugInfo(bugSet);
-//    });
+    disconnect(ui->buttonNextBugDescription, nullptr, nullptr, nullptr);
+    connect(ui->buttonNextBugDescription, &QPushButton::clicked, [this, cscrToolMdiChild](){
+        if (bugSet->getCurrentIndex() != bugSet->getBugObjectList().size() - 1) {
+            bugSet->setCurrentIndex(bugSet->getCurrentIndex() + 1);
+        }
 
+        showReviewBugInfo(bugSet, cscrToolMdiChild);
+    });
 }
 
-void MainWindow::showReviewBugInfo(CscrToolBugSet* bugSet)
+void MainWindow::showReviewBugInfo(CscrToolBugSet* bugSet, MdiChild* cscrToolMdiChild)
 {
     BugObject obj = bugSet->getCurrentBugObject();
     int lineNumber = obj.bugLine;
     QString bugName = obj.bugName;
     QString bugNature = obj.bugNature;
     QString bugDescription = obj.bugDescription;
+
+    cscrToolMdiChild->goToLine(lineNumber);
 
     ui->labelCurrentLine->setText(QString::number(lineNumber + 1));
     ui->lineEditBugName->setText(bugName);
@@ -1260,6 +1250,29 @@ void MainWindow::reviewMethodCode(QString methodName)
         ui->buttonBugReportOK->setEnabled(true);
         ui->buttonBugReportCancel->setEnabled(true);
         ui->labelCurrentLine->setText(QString::number(lineNumber + 1));
+        ui->lineEditBugName->clear();
+        ui->comboBoxBugNature->setCurrentIndex(-1);
+        ui->textEditBugDescription->clear();
+    });
+
+    // 点击按钮可以来回浏览bug set
+    showReviewBugInfo(bugSet, cscrToolMdiChild);
+    disconnect(ui->buttonPreviousBugDescription, nullptr, nullptr, nullptr);
+    connect(ui->buttonPreviousBugDescription, &QPushButton::clicked, [this, cscrToolMdiChild](){
+        if (bugSet->getCurrentIndex() != 0) {
+            bugSet->setCurrentIndex(bugSet->getCurrentIndex() - 1);
+        }
+        showReviewBugInfo(bugSet, cscrToolMdiChild);
+
+    });
+
+    disconnect(ui->buttonNextBugDescription, nullptr, nullptr, nullptr);
+    connect(ui->buttonNextBugDescription, &QPushButton::clicked, [this, cscrToolMdiChild](){
+        if (bugSet->getCurrentIndex() != bugSet->getBugObjectList().size() - 1) {
+            bugSet->setCurrentIndex(bugSet->getCurrentIndex() + 1);
+        }
+
+        showReviewBugInfo(bugSet, cscrToolMdiChild);
     });
 
 
@@ -1273,7 +1286,9 @@ void MainWindow::reviewMethodCode(QString methodName)
             QString bugDescription = ui->textEditBugDescription->toPlainText();
 
             BugObject bugObj(lineNumber, bugName, bugNature, bugDescription);
-            bugSet->append(cscrToolMdiChild->userFriendlyCurrentFile(), bugObj);
+            if(bugSet->append(cscrToolMdiChild->userFriendlyCurrentFile(), bugObj)){
+                showReviewBugInfo(bugSet, cscrToolMdiChild);
+            }
 
             ui->labelCurrentLine->clear();
             ui->lineEditBugName->clear();
@@ -1317,7 +1332,9 @@ void MainWindow::reviewMethodCode(QString methodName)
                 QString bugNature = "AI Suggestion";
                 QString bugDescription = "This is a bug found by ChatGPT";
                 BugObject bugObj(lineNumber, bugName, bugNature, bugDescription);
-                bugSet->append(cscrToolMdiChild->userFriendlyCurrentFile(), bugObj);
+                if(bugSet->append(cscrToolMdiChild->userFriendlyCurrentFile(), bugObj)){
+                    showReviewBugInfo(bugSet, cscrToolMdiChild);
+                }
             });
 
         }else{
@@ -1358,6 +1375,10 @@ void MainWindow::reviewMethodCode(QString methodName)
                     }
                     ui->lineEditSyntax->clear();
                     ui->listWidget->clear();
+                    ui->labelCurrentLine->clear();
+                    ui->lineEditBugName->clear();
+                    ui->comboBoxBugNature->setCurrentIndex(-1);
+                    ui->textEditBugDescription->clear();
                 } else {
                     qDebug() << "User clicked Cancel!";
                 }
@@ -1385,6 +1406,10 @@ void MainWindow::reviewMethodCode(QString methodName)
             }
             ui->lineEditSyntax->clear();
             ui->listWidget->clear();
+            ui->labelCurrentLine->clear();
+            ui->lineEditBugName->clear();
+            ui->comboBoxBugNature->setCurrentIndex(-1);
+            ui->textEditBugDescription->clear();
         } else {
             qDebug() << "User clicked Cancel!";
         }
