@@ -31,6 +31,10 @@ namespace Ui{
     class MainWindow;
 }
 
+/**
+ * @brief the project information class
+ */
+
 class projectTree{
 
 public:
@@ -58,6 +62,14 @@ public:
 
 class QErrorMessage;
 
+/**
+ * @brief the mainwindow of the tool,
+ * 1. manage the widgets: tool bar, menu bar, stacked widget, mdi area, menu bar
+ * 2. manage the project: open, create, close project; update the project structure; add new files to the project
+ * 3. manage the files in the mdi area: create, open files; save files; modify the file content
+ * 4. interact with the mdiChild: send signals or receive signals
+ */
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -67,6 +79,8 @@ public:
     ~MainWindow();
 
     bool openFile(const QString &fileName);
+
+    //控制主窗口缩放比例
     double screenFactor = 0;
 
     double getScreenFactor();
@@ -77,7 +91,7 @@ public:
 
     bool addFileToProject(const projectTree* pro, QString fileName);
 
-
+    //创建项目时初始化CmakeFile，CmakeFile保存项目信息：项目名，项目路径，项目所含文件，定义的类等
     void initCMakeFile(const projectTree *pro);
 
     //当新添加类时，修改CmakeFile，添加类的源文件
@@ -113,8 +127,8 @@ public:
     //将ChatGPT的回答分割为三部分
     void separateText(const QString &fullText, QString &problemPart, QString &codePart, QString &conclusionPart);
 
+    //生成code review report
     void generateReviewReport(MdiChild *child, QString methodName, QString methodCode);
-
 
     void showReviewBugInfo(CscrToolBugSet *bugSet, MdiChild* cscrToolMdiChild);
 
@@ -126,7 +140,7 @@ public slots:
     //展示实例类名未定义的问题
     void showClassUndefinedSyntaxIssue(const QList<ClassUndefinedSyntaxIssue> &list);
 
-    //UNSPECIFIED type 问题
+    //UNSPECIFIED type问题
     void showClassUnspecifiedTypeIssue();
 
     //获取向导中打开的文件信息
@@ -165,6 +179,7 @@ public slots:
 
     void setCscrToolMethodNameToCode(const QHash<QString, QString> &value);
 
+    //展示review 代码时提出的问题
     void showChallengeQuestions(QString currentStr, CodeElements elements);
 
 protected:
@@ -190,6 +205,7 @@ private slots:
     MdiChild *createMdiChild();
     void switchLayoutDirection();
 
+    //展示一些界面，无需改动
     void configCodeAnalysis();
     void managePropertySet();
     void showAllRuleDescript();
@@ -197,12 +213,15 @@ private slots:
 
     void setCursorToFaultLine(QTableWidgetItem *);
 
+    //更新视图
     void showHMPPView();
     void showProjectView();
     void showFixedCodeView();
     void showCSCRTool();
     void showSCMFaultTab(int);
     void lineEditPrompt();
+
+    //双击某些控件后执行的动作
     void doubleClickedProjectTree(const QModelIndex &index);
     void doubleClickedSpecificationView(const QModelIndex &index);
     void doubleClickedToDoTableView(const QModelIndex &index);
@@ -210,6 +229,7 @@ private slots:
     //void updateSpecificationModel();
     void completeSpecification(const QModelIndex &index);
 
+    //更新模型中的数据
     void updateToDoListModel();
     void clearToDoListModel();
     void completeToDoNote(const QModelIndex &index);
@@ -269,18 +289,22 @@ private:
 
     QTimer *timer;
 
+    //当前项目
     projectTree* currentPro;
 
+    //issue管理类
     IssueManager* proIssueManager;
 
-
+    //文本修饰类
     Highlighter* fixedCodeHighlighter;
 
+    //文本修饰类
     Highlighter* hmppCodeHighlighter;
 
     //保存已打开的项目
     QMultiHash<QString, projectTree*> projects;
 
+    //各类模型
     QStandardItemModel* projectModel;
 
     QStandardItemModel* todoListModel;
@@ -296,10 +320,13 @@ private:
     //每个文件对应的todo requirement notes, key = 文件名
     QHash<QString, QVector<RequireNote*>> fileToDoRequireNotes;
 
+    //每个文件对应的specification中每小节的文本
     QHash<QString, QList<InformalSpecInfo>> fileInformalSpecs;
 
+    //review code时函数名对应的代码
     QHash<QString, QString> cscrToolMethodNameToCode;
 
+    //review code时的bug汇总类
     CscrToolBugSet* bugSet;
 
     //include文件中包含的类
@@ -316,6 +343,7 @@ private:
     bool loadProject(const QString &fileName, const QString &specDir);
     void initProjectModel(projectTree *newPro);
 
+    //管理specification模型
     void clearSpecificationModel();
     void updateSpecificationModel(const QHash<QString, QString>& informalSpec);
 
@@ -323,7 +351,6 @@ private:
     void initProjectInfo();
 
     //寻找Model中符合特定条件的项
-
     QModelIndex findModelItem(const QString &searchString, const QModelIndex &parentIndex, QStandardItemModel *model, int role);
 
     //为新创建的类的头文件，添加类的成员变量和函数信息

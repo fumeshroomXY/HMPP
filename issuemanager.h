@@ -5,6 +5,9 @@
 #include <memory>
 #include "issue.h"
 
+/**
+ * @brief the issue manager
+ */
 class IssueManager : public QObject
 {
     Q_OBJECT

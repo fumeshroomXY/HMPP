@@ -18,7 +18,10 @@ extern const QString ParenthesisEndStr;
 extern const QString RequireNoteStartStr;
 extern const QString RequireNoteEndStr;
 
-
+/**
+ * @brief the mark information
+ * including the parentheses, todoNotes
+ */
 struct MarkInfo
 {
     QString character;
@@ -28,12 +31,19 @@ struct MarkInfo
 };
 
 
+/**
+ * @brief match the parentheses, todoComments
+ *
+ */
 class TextBlockData : public QTextBlockUserData
 {
 public:
     TextBlockData();
 
+    //大括号信息
     QVector<MarkInfo *> parentheses();
+
+    //to-do comment信息
     QVector<MarkInfo *> todoNotes();
     QVector<MarkInfo *> getInfos(QString targetStr);
     void insertParenthesisInfo(MarkInfo *info);
@@ -44,6 +54,10 @@ private:
     QVector<MarkInfo *> m_todoNotes;  //用于存需求注释的信息/*todo: */
 };
 
+/**
+ * @brief decorate the text in the mdiChild in a specific format
+ *
+ */
 //! [0]
 class Highlighter : public QSyntaxHighlighter
 {
@@ -51,6 +65,8 @@ class Highlighter : public QSyntaxHighlighter
 
 public:
     Highlighter(QTextDocument *parent = 0);
+
+    //添加修饰类型
     void addHighlightingRule(const QRegExp &pattern, const QTextCharFormat &format);
 
     void deleteHighlightingRule(const QRegExp &pattern, const QTextCharFormat &format);
@@ -70,11 +86,11 @@ private:
     };
     QVector<HighlightingRule> highlightingRules;
 
-
+    //多行注释
     QRegExp commentStartExpression;
     QRegExp commentEndExpression;
 
-    //伪码需求的开始和结束符
+    //todo伪码需求的开始和结束符
     QRegExp requireStartExpression;
     QRegExp requireEndExpression;
 
@@ -88,6 +104,7 @@ private:
     //伪码需求的格式
     QTextCharFormat singleLineRequireFormat;
 
+    //演示用的fault指示格式
     QTextCharFormat faultLineFormat;
     QRegExp faultRegExp = QRegExp("([a-zA-Z_][a-zA-Z0-9_]*)\\s*/\\s*([a-zA-Z_][a-zA-Z0-9_]*)");
     HighlightingRule faultHighlightRule;

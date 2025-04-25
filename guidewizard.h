@@ -11,6 +11,12 @@ class QRadioButton;
 class QComboBox;
 QT_END_NAMESPACE
 
+/**
+ * @brief the guide interface of the tool
+ *
+ * including open exisiting projects, create new projects, project name, project path, specification path
+ *
+ */
 
 class GuideWizard : public QWizard
 {

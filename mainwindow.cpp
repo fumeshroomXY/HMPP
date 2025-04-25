@@ -35,6 +35,8 @@ const QString headDir = "include";
 
 const QStringList  LanguageSet = {"C++", "Java", "C#"};
 
+
+
 MainWindow::MainWindow()
     : ui(new Ui::MainWindow)   //mdiArea = new QMdiArea, ui = new Ui::MainWindow
 {

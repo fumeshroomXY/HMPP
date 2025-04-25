@@ -2,7 +2,6 @@
 #include <QRegularExpression>
 
 
-
 QString Utils::sanitizeFileName(const QString &fileName)
 {
     QString sanitized = fileName;

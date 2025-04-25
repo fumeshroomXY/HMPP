@@ -5,6 +5,12 @@
 #include <QList>
 #include "cscrtoolchallengerquestion.h"
 
+/**
+ * @brief the comment template
+ *
+ *
+ *
+ */
 
 class Utils
 {

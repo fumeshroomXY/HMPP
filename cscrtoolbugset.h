@@ -7,7 +7,9 @@
 
 const QStringList bugNatureList = {"Default Bug", "Functional Bug", "Performance Bug", "UI/UX Bug", "Security Bug",
                                   "Compatibility Bug", "Concurrency Bug", "AI Suggestion"};
-
+/**
+ * @brief the review bug class
+ */
 
 struct BugObject{
     int bugLine;
@@ -48,6 +50,9 @@ struct BugObject{
     }
 };
 
+/**
+ * @brief manage the bugs
+ */
 
 class CscrToolBugSet
 {
@@ -67,7 +72,6 @@ public:
     void setBugObjectList(const QList<BugObject> &value);
 
     BugObject getCurrentBugObject();
-
 
     void setCurrentIndex(int value);
 

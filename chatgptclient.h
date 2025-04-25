@@ -16,7 +16,10 @@ const QString fixCodePrompt = "You are a coding assistant that helps fix bugs in
                               "Please list all potential bugs in the code and provide suggestions for how to fix them."
                               "Please provide the output as a JSON array of bug objects."
                               "Here is the code I want you to analyze:";
-
+/**
+ * @brief the chaggpt client class
+ * use the class to send and receive messages from ChatGPT
+ */
 
 class ChatgptClient : public QWidget
 {
@@ -35,6 +38,8 @@ private:
     QString chatgptReply;
     QString userInput;
     QNetworkAccessManager* networkManager;
+
+    //由于加密原因，从本地文件读取apikey
     const QString apiKey = "";
 
 signals:

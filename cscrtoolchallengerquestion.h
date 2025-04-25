@@ -1,6 +1,10 @@
 #ifndef CSCRTOOLCHALLENGERQUESTION_H
 #define CSCRTOOLCHALLENGERQUESTION_H
 
+/**
+ * @brief about the challenge questions when reviewing code
+ */
+
 struct ExpressionPatternFlags {
     bool hasUppercaseWord = false;
     bool hasLowercaseWord = false;

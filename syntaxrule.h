@@ -8,6 +8,11 @@
 #include <QRegularExpression>
 
 
+/**
+ * @brief the syntax rules to analyze the class information in the text
+ *
+ */
+
 //定义C++的基础数据类型
 extern const QStringList basicType;
 

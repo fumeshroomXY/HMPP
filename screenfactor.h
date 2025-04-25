@@ -3,6 +3,11 @@
 
 #include <QObject>
 
+
+/**
+ * @brief control the size of the mainwindow or other widgets for different environments
+ *
+ */
 class ScreenFactor : public QObject
 {
     Q_OBJECT

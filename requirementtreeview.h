@@ -39,6 +39,10 @@ signals:
 
 };
 
+/**
+ * @brief todo requirement
+ *
+ */
 class ToDoTableView : public QTableView
 {
     Q_OBJECT
@@ -54,6 +58,10 @@ signals:
 
 };
 
+/**
+ * @brief generate the source and header files based on the sub titles of the specification
+ *
+ */
 class BuildProFromSpecDialog : public QDialog {
     Q_OBJECT
 
@@ -89,6 +97,7 @@ private slots:
     void onOkClicked();
     void onCancelClicked();
 };
+
 
 class SameNameMethodHandleDialog : public QDialog {
     Q_OBJECT

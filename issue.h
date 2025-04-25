@@ -4,7 +4,10 @@
 #include <QImage>
 #include <QDebug>
 
-
+/**
+ * @brief the issues when transforming into OOP
+ *
+ */
 class Issue
 {
 public:

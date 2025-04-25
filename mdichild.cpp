@@ -2764,14 +2764,14 @@ void MdiChild::autoCompleteMatch()
     // 获取当前光标所在行的文本
     QString currentLineText = cursor.block().text();
 
-    // 判断当前行是否为空行并且以">>>"结尾
+    // 判断当前行是否为空行并且以"/*todo"结尾
     if (currentLineText.endsWith(ParenthesisStartStr)) {
         //调整光标到本行末尾
         cursor.setPosition(currentBlock.position() + currentBlock.length());
         setTextCursor(cursor);
         // 插入一个新行
         cursor.insertBlock();
-        // 在新行中插入"<<<"
+        // 在新行中插入"*/"
         cursor.insertText(ParenthesisEndStr);
     }
     //qDebug()  <<  "end: " << "autoCompleteMatch";

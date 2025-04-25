@@ -42,7 +42,7 @@ struct InformalSpecInfo;
 
 
 
-//记录文档中的伪码需求注释节点
+//记录文档中的todo伪码需求注释节点
 struct RequireNote{
     QString note = "";
     int startLine = -1;
@@ -56,7 +56,7 @@ struct RequireNote{
         startLine(start), endLine(end), filePath(file){}
 };
 
-//记录文档中的伪码需求注释节点
+//记录文档中的大括号{}节点
 struct Parenthesis{
     QString type;
     int startLine;
@@ -71,6 +71,15 @@ struct Parenthesis{
         startLine(start), startPos(startPos), endLine(end), endPos(endPos){}
 };
 
+/**
+ * @brief the mdichild class, manage the text and files
+ * 1. open, load, create, save, close files; change current files; return file name;
+ * 2. manage the text in the file
+ * 3. analyze the class information in the text, identify the issues
+ * 4. decorate the text: lineNumber, highlighter,
+ * 5. implement the features when reviewing code: structure the code, etc.
+ *
+ */
 class MdiChild : public QTextEdit
 {
     Q_OBJECT
@@ -92,6 +101,8 @@ public:
 
     //和绘制行号有关的代码
     int getFirstVisibleBlockId();
+
+    //绘制行号
     void lineNumberAreaPaintEvent(QPaintEvent *event);
     int lineNumberAreaWidth();
     int getFaultLineNumber();
@@ -109,7 +120,7 @@ public:
     void foldingWidgetHighlight(QPoint pos);
     void foldingWidgetHighlightEvent(QPaintEvent *event);
 
-    //将需求伪码改为注释
+    //将todo需求伪码改为注释
     void changeRequirementToNote(int lineNumber);
 
     //跳转到当前文档的指定行
@@ -143,6 +154,7 @@ public:
     //根据当前行号找到对应的函数代码
     QString findMethodCodeByName(int currentBlockNumber);
 
+    //review code模式
     bool getCscrToolMode() const;
     void setCscrToolMode(bool value);
 
@@ -153,6 +165,7 @@ public:
 
     bool isAllSegmentsReviewed();
 
+    //structure代码后保存的行信息
     QList<int> getStructureNumberList() const;
 
     void setStructureNumberList(const QList<int> &value);
@@ -170,13 +183,15 @@ protected:
 
     void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;   //用于检测快捷按键
 
-    void contextMenuEvent(QContextMenuEvent* event) Q_DECL_OVERRIDE;
+    void contextMenuEvent(QContextMenuEvent* event) Q_DECL_OVERRIDE;   //用于展示右键单击后出现的menu并执行对应动作
 
 
     //void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
 
 public slots:
     void resizeEvent(QResizeEvent *event);
+
+    //演示用，绘制fault所在行
     void faultLinePaint(int blockNumber);
     void setFixText(QString var1, QString var2);
 
@@ -185,7 +200,7 @@ public slots:
 
     void highlightCurrentLine();
 
-    //更改StructureNumberList
+    //更新StructureNumberList
     void clearStructureNumberList();
     void addToStructureNumberList();
     void undoStructureNumberList();
@@ -196,6 +211,7 @@ public slots:
 
     void startReview();
 
+    //转到下一个review segment
     void moveToNextReviewSegment();
 
     //根据字符串格式，返回应该呈现的问题
@@ -210,6 +226,7 @@ public slots:
 private slots:
     void documentWasModified();    //文件被更改时显示更改窗口状态
 
+    //绘制行号
     void updateLineNumberAreaWidth(int newBlockCount);
 
     //void updateLineNumberArea(const QRect &, int);
@@ -225,6 +242,7 @@ private slots:
 
     void highlightMatch();
 
+    //调用ChatGPT类
     void askChatGPTTriggered();
 
     void fixCodeTriggered();
@@ -232,13 +250,13 @@ private slots:
     void addBugTriggered();
 
 
-    //更新需求括号的匹配
+    //更新todo需求，大括号的匹配
     void updateMatch();
 
     //更新文件中的自然语言规格的位置
     void updateInformalSpecPosInFile();
 
-    //当检测到>>>，自动插入<<<
+    //当检测到/*todo，自动插入*/
     void autoCompleteMatch();
 
     //更新faultBox的位置
@@ -250,7 +268,7 @@ private slots:
     //绘制Review时的代码块
     void highlightReviewSegment(const QList<int> &segments, QList<QTextEdit::ExtraSelection> &selections);
 private:
-    //更新需求节点
+    //更新todo需求节点
     void updateRequireNotes(int start, int end, RequireNote* node);
 
     bool maybeSave();   //是否需要保存
@@ -265,6 +283,7 @@ private:
     //绘制行号的区域
     LineNumberArea *lineNumberArea;
 
+    //绘制折叠行区域，暂未实现
     QWidget *foldingWidget;
 
     Highlighter* highlighter;
@@ -287,6 +306,7 @@ private:
 
     QList<ClassMemberUnspecifiedIssue> unspecifiedTypeIssueList;
 
+    //演示用，fault行绘制
     QString previewText;
     bool insertPreview = false;
     bool faultflag = true;
@@ -295,6 +315,7 @@ private:
     bool cscrToolMode = false;
     bool reviewCodeMode = false;
 
+    //匹配todo需求标记和大括号{}标记
     bool matchLeftMark(QTextBlock currentBlock, int index,
                               int numRightParentheses, int &matchLineNumber, int &matchPosition,
                               QString startStr, QString endStr);
@@ -317,7 +338,7 @@ private:
     QList<Parenthesis*> parenthesis;
     QList<Parenthesis*> topParenthesis;   //顶层括号信息
 
-
+    //文本中的类信息
     QHash<QString, QString> classes;   //key = 实例的类名，value = 类名
     QMultiHash<Variable, int> tmpVars;   //局部变量表，key = 实例的变量， value = 文档中绝对位置
     QList<Variable>* globalVars;   //全局变量表
@@ -397,6 +418,10 @@ signals:
     void challengeQuestionFlag(QString currentStr, CodeElements flags);
 };
 
+/**
+ * @brief paint the lineNumber
+ *
+ */
 class LineNumberArea : public QWidget
 {
     Q_OBJECT
@@ -444,6 +469,11 @@ private slots:
     }
 };
 
+
+/**
+ * @brief paint the folding lines
+ * not been implemented yet
+ */
 class FoldingWidget: public QWidget
 {
     Q_OBJECT
@@ -479,7 +509,10 @@ private:
 };
 
 
-
+/**
+ * @brief the information of variables, methods, classes in the text
+ *
+ */
 //定义变量结构
 struct Variable
 {
