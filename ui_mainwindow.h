@@ -503,7 +503,7 @@ public:
         scrollArea_3->setWidgetResizable(true);
         scrollAreaWidgetContents_3 = new QWidget();
         scrollAreaWidgetContents_3->setObjectName(QStringLiteral("scrollAreaWidgetContents_3"));
-        scrollAreaWidgetContents_3->setGeometry(QRect(0, 0, 251, 184));
+        scrollAreaWidgetContents_3->setGeometry(QRect(0, 0, 83, 75));
         verticalLayout_6 = new QVBoxLayout(scrollAreaWidgetContents_3);
         verticalLayout_6->setObjectName(QStringLiteral("verticalLayout_6"));
         verticalLayout_6->setContentsMargins(0, 0, 0, 0);
@@ -539,7 +539,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         scrollAreaWidgetContents_4 = new QWidget();
         scrollAreaWidgetContents_4->setObjectName(QStringLiteral("scrollAreaWidgetContents_4"));
-        scrollAreaWidgetContents_4->setGeometry(QRect(0, 0, 251, 185));
+        scrollAreaWidgetContents_4->setGeometry(QRect(0, 0, 83, 77));
         verticalLayout_7 = new QVBoxLayout(scrollAreaWidgetContents_4);
         verticalLayout_7->setObjectName(QStringLiteral("verticalLayout_7"));
         verticalLayout_7->setContentsMargins(0, 0, 0, 0);
@@ -660,7 +660,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QStringLiteral("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 249, 446));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 131, 659));
         verticalLayout_8 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_8->setObjectName(QStringLiteral("verticalLayout_8"));
         horizontalLayout_3 = new QHBoxLayout();
@@ -1249,7 +1249,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        stackedWidgetLeft->setCurrentIndex(0);
+        stackedWidgetLeft->setCurrentIndex(2);
         stackedWidgetRightDown->setCurrentIndex(1);
         tabProgramOutput->setCurrentIndex(0);
         stackedWidgetCscrButtons->setCurrentIndex(0);
@@ -1343,9 +1343,9 @@ public:
 #ifndef QT_NO_TOOLTIP
         projectShowAct->setToolTip(QApplication::translate("MainWindow", "Show the project framework", 0));
 #endif // QT_NO_TOOLTIP
-        cscrToolAct->setText(QApplication::translate("MainWindow", "CSCR-Tool", 0));
+        cscrToolAct->setText(QApplication::translate("MainWindow", "CRCI-Tool", 0));
 #ifndef QT_NO_TOOLTIP
-        cscrToolAct->setToolTip(QApplication::translate("MainWindow", "CSCR-Tool", 0));
+        cscrToolAct->setToolTip(QApplication::translate("MainWindow", "Challenge-Responsive Code Instruction", 0));
 #endif // QT_NO_TOOLTIP
         codeAnalysisAct->setText(QApplication::translate("MainWindow", "SCM Configure", 0));
 #ifndef QT_NO_TOOLTIP
@@ -1443,7 +1443,7 @@ public:
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bo"
                         "ttom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS UI Gothic'; font-size:9pt;\"><br /></p></body></html>", 0));
         pushButton_11->setText(QString());
-        label_9->setText(QApplication::translate("MainWindow", "CSCR-Tool", 0));
+        label_9->setText(QApplication::translate("MainWindow", "CRCI-Tool", 0));
         label_10->setText(QApplication::translate("MainWindow", "About the syntax: ", 0));
         label_11->setText(QApplication::translate("MainWindow", "Can you answer the following questions?", 0));
         pushButton_2->setText(QString());
@@ -1554,7 +1554,7 @@ public:
         labelCurrentLine->setText(QString());
         label_6->setText(QApplication::translate("MainWindow", "Bug Name:", 0));
         label_7->setText(QApplication::translate("MainWindow", "Bug Nature:", 0));
-        label_8->setText(QApplication::translate("MainWindow", "Brief Description:", 0));
+        label_8->setText(QApplication::translate("MainWindow", "Solution:", 0));
         buttonBugReportOK->setText(QApplication::translate("MainWindow", "OK", 0));
         buttonBugReportCancel->setText(QApplication::translate("MainWindow", "Cancel", 0));
         menuFile->setTitle(QApplication::translate("MainWindow", "File(&F)", 0));

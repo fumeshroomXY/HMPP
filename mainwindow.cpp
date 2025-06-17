@@ -1158,6 +1158,12 @@ void MainWindow::loadBugReportFile(QString bugReportFilePath)
     }
     cscrToolMdiChild->markBugLines(bugLineNumbers);
 
+    ui->lineEditBugName->setReadOnly(true);
+    //ui->comboBoxBugNature->setEnabled(false);
+    ui->textEditBugDescription->setReadOnly(true);
+    ui->buttonBugReportOK->setEnabled(false);
+    ui->buttonBugReportCancel->setEnabled(false);
+
     // 点击按钮可以来回浏览bug set
     showReviewBugInfo(bugSet, cscrToolMdiChild);
     disconnect(ui->buttonPreviousBugDescription, nullptr, nullptr, nullptr);
@@ -1213,6 +1219,12 @@ void MainWindow::reviewMethodCode(QString methodName)
     ui->buttonUndoStructure->setEnabled(true);
     ui->buttonDoneStructure->setEnabled(true);
 
+    ui->lineEditBugName->setEnabled(false);
+    ui->comboBoxBugNature->setEnabled(false);
+    ui->textEditBugDescription->setEnabled(false);
+    ui->buttonBugReportOK->setEnabled(false);
+    ui->buttonBugReportCancel->setEnabled(false);
+
     ui->buttonBugReportOK->setFocusPolicy(Qt::NoFocus);
     ui->buttonBugReportCancel->setFocusPolicy(Qt::NoFocus);
 
@@ -1240,6 +1252,12 @@ void MainWindow::reviewMethodCode(QString methodName)
                 ui->buttonGenerateReviewReport->setEnabled(true);
                 ui->buttonPreviousBugDescription->setEnabled(true);
                 ui->buttonNextBugDescription->setEnabled(true);
+
+                ui->lineEditBugName->setEnabled(false);
+                ui->comboBoxBugNature->setEnabled(false);
+                ui->textEditBugDescription->setEnabled(false);
+                ui->buttonBugReportOK->setEnabled(false);
+                ui->buttonBugReportCancel->setEnabled(false);
                 cscrToolMdiChild->startReview();
             });
 
@@ -1249,6 +1267,9 @@ void MainWindow::reviewMethodCode(QString methodName)
     connect(cscrToolMdiChild, &MdiChild::challengeQuestionFlag, this, &MainWindow::showChallengeQuestions);
 
     connect(cscrToolMdiChild, &MdiChild::reportBugLine, [this, cscrToolMdiChild](int lineNumber){
+        ui->lineEditBugName->setEnabled(true);
+        ui->comboBoxBugNature->setEnabled(true);
+        ui->textEditBugDescription->setEnabled(true);
         ui->buttonBugReportOK->setEnabled(true);
         ui->buttonBugReportCancel->setEnabled(true);
         ui->labelCurrentLine->setText(QString::number(lineNumber + 1));
@@ -1296,8 +1317,12 @@ void MainWindow::reviewMethodCode(QString methodName)
             ui->lineEditBugName->clear();
             ui->comboBoxBugNature->setCurrentIndex(-1);
             ui->textEditBugDescription->clear();
+            ui->lineEditBugName->setEnabled(false);
+            ui->comboBoxBugNature->setEnabled(false);
+            ui->textEditBugDescription->setEnabled(false);
             ui->buttonBugReportOK->setEnabled(false);
             ui->buttonBugReportCancel->setEnabled(false);
+
 
         }else{
             qDebug() << "cannot find the right lineNumber: ";
@@ -1310,6 +1335,9 @@ void MainWindow::reviewMethodCode(QString methodName)
         ui->lineEditBugName->clear();
         ui->comboBoxBugNature->setCurrentIndex(-1);
         ui->textEditBugDescription->clear();
+        ui->lineEditBugName->setEnabled(false);
+        ui->comboBoxBugNature->setEnabled(false);
+        ui->textEditBugDescription->setEnabled(false);
         ui->buttonBugReportOK->setEnabled(false);
         ui->buttonBugReportCancel->setEnabled(false);
     });
@@ -1437,7 +1465,7 @@ void MainWindow::generateReviewReport(MdiChild* child, QString methodName, QStri
     project["projectName"] = currentPro->projectName;
     project["projectPath"] = currentPro->projectPath;
     project["methodName"] = methodName;
-    project["methodCode"] = methodCode;
+    project["sourceCode"] = methodCode;
 
     // Convert bugObjectList to QJsonArray
     QJsonArray bugArray;

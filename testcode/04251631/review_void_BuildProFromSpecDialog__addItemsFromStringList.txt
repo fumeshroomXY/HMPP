@@ -1,0 +1,37 @@
+{
+    "bugObjectList": [
+        {
+            "bugDescription": "11111",
+            "bugLine": 0,
+            "bugName": "11",
+            "bugNature": "UI/UX Bug"
+        },
+        {
+            "bugDescription": "3333333",
+            "bugLine": 2,
+            "bugName": "3333",
+            "bugNature": "UI/UX Bug"
+        },
+        {
+            "bugDescription": "55555555555",
+            "bugLine": 4,
+            "bugName": "555",
+            "bugNature": "Functional Bug"
+        },
+        {
+            "bugDescription": "888888888888",
+            "bugLine": 7,
+            "bugName": "88",
+            "bugNature": "Performance Bug"
+        }
+    ],
+    "methodCode": "void BuildProFromSpecDialog::addItemsFromStringList(const QStringList& stringList) {\n    existingClassList = stringList;\n    for (const QString& str : stringList) {\n        QTreeWidgetItem* funcItem = new QTreeWidgetItem(treeWidget);\n        funcItem->setText(0, str);\n        funcItem->setIcon(0, QIcon(\":/images/toolbar_images/class.svg\"));\n        funcItem->setData(0, Qt::UserRole, classUserRole);\n        funcItem->setData(0, Qt::UserRole + 1, true);  // Mark as non-modifiable (from QStringList)\n    }\n}",
+    "methodName": "void BuildProFromSpecDialog::addItemsFromStringList(const QStringList& stringList)",
+    "projectName": "04251631",
+    "projectPath": "E:/HMPP-main/userInterface/testcode/04251631",
+    "segmentList": [
+        2,
+        5,
+        9
+    ]
+}

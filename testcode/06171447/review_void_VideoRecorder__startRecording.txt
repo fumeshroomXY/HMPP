@@ -1,0 +1,32 @@
+{
+    "bugObjectList": [
+        {
+            "bugDescription": "10101010",
+            "bugLine": 9,
+            "bugName": "10101010",
+            "bugNature": "Performance Bug"
+        },
+        {
+            "bugDescription": "16161616161616",
+            "bugLine": 15,
+            "bugName": "161616",
+            "bugNature": "UI/UX Bug"
+        },
+        {
+            "bugDescription": "2323232323",
+            "bugLine": 22,
+            "bugName": "2323233",
+            "bugNature": "Concurrency Bug"
+        }
+    ],
+    "methodCode": "void VideoRecorder::startRecording() {\n    if (recording) {\n        std::cerr << \"Error: Recording is already in progress.\" << std::endl;\n        return;\n    }\n\n    std::string timestamp = timeManager.getCurrentTimestamp();\n    currentVideoFilePath = \"video_\" + timestamp + \".mp4\";\n\n    videoFileStream.open(currentVideoFilePath, std::ios::binary);\n    if (!videoFileStream.is_open()) {\n        std::cerr << \"Error: Failed to open video file for recording.\" << std::endl;\n        return;\n    }\n\n    writeMetadataHeader();\n\n    recording = true;\n    std::cout << \"Recording started. Saving to: \" << currentVideoFilePath << std::endl;\n\n    for (int i = 0; i < 150; ++i) { \n        if (!recording) break; \n        embedTimestampAndGPS(); \n        videoFileStream << \"VideoFrameData\"; \n        std::this_thread::sleep_for(std::chrono::milliseconds(33)); // Simulate 30 fps (1000/30 ≈ 33 ms)\n    }\n\n}",
+    "methodName": "void VideoRecorder::startRecording()",
+    "projectName": "06171447",
+    "projectPath": "E:/HMPP-main/userInterface/testcode/06171447",
+    "segmentList": [
+        4,
+        13,
+        18,
+        27
+    ]
+}

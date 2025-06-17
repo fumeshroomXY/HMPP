@@ -1,0 +1,19 @@
+{
+    "bugObjectList": [
+        {
+            "bugDescription": "11111",
+            "bugLine": 0,
+            "bugName": "1",
+            "bugNature": "Performance Bug"
+        }
+    ],
+    "methodCode": "void BuildProFromSpecDialog::createNewClass() {\n    bool ok;\n    QString className = QInputDialog::getText(this, \"New Class\", \"Class Name:\", QLineEdit::Normal, \"\", &ok);\n    if (ok && !className.isEmpty()) {\n        QTreeWidgetItem* newItem = new QTreeWidgetItem(treeWidget);\n        newItem->setText(0, className);\n        newItem->setIcon(0, QIcon(\":/images/toolbar_images/class.svg\"));\n        newItem->setData(0, Qt::UserRole, classUserRole);\n        newItem->setData(0, Qt::UserRole + 1, false);  // Mark as modifiable\n        treeWidget->setCurrentItem(newItem);\n    }\n}",
+    "methodName": "void BuildProFromSpecDialog::createNewClass()",
+    "projectName": "04251523",
+    "projectPath": "E:/HMPP-main/userInterface/testcode/04251523",
+    "segmentList": [
+        2,
+        6,
+        11
+    ]
+}
