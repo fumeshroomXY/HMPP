@@ -1,0 +1,39 @@
+{
+    "bugObjectList": [
+        {
+            "bugDescription": "did not check if file can be opened before openning it",
+            "bugLine": 9,
+            "bugName": "file open error",
+            "bugNature": "Security Bug",
+            "bugSolution": "if (videoFileStream.is_open()) {...}",
+            "reviewerQuestion": "Q1： Is it possible to produce file open exception?\nQ2： Will it affect the content of the file if fails to open?"
+        },
+        {
+            "bugDescription": "should pass in the parameters like timestamp",
+            "bugLine": 15,
+            "bugName": "parameter error",
+            "bugNature": "Functional Bug",
+            "bugSolution": "writerMetadataHeader(timestamp);",
+            "reviewerQuestion": ""
+        },
+        {
+            "bugDescription": "should pass in the parameter like timestamp and gpsInfo.",
+            "bugLine": 22,
+            "bugName": "parameter error",
+            "bugNature": "Functional Bug",
+            "bugSolution": "embedTimestampAndGPS(timestamp, this->gpsInfo);",
+            "reviewerQuestion": "Q1： Will the method change the parameters?"
+        }
+    ],
+    "methodName": "void VideoRecorder::startRecording()",
+    "projectName": "06241553",
+    "projectPath": "E:/HMPP-main/userInterface/testcode/06241553",
+    "segmentList": [
+        4,
+        7,
+        13,
+        18,
+        27
+    ],
+    "sourceCode": "void VideoRecorder::startRecording() {\n    if (recording) {\n        std::cerr << \"Error: Recording is already in progress.\" << std::endl;\n        return;\n    }\n\n    std::string timestamp = timeManager.getCurrentTimestamp();\n    currentVideoFilePath = \"video_\" + timestamp + \".mp4\";\n\n    videoFileStream.open(currentVideoFilePath, std::ios::binary);\n    if (!videoFileStream.is_open()) {\n        std::cerr << \"Error: Failed to open video file for recording.\" << std::endl;\n        return;\n    }\n\n    writeMetadataHeader();\n\n    recording = true;\n    std::cout << \"Recording started. Saving to: \" << currentVideoFilePath << std::endl;\n\n    for (int i = 0; i < 150; ++i) { \n        if (!recording) break; \n        embedTimestampAndGPS(); \n        videoFileStream << \"VideoFrameData\"; \n        std::this_thread::sleep_for(std::chrono::milliseconds(33)); // Simulate 30 fps (1000/30 ≈ 33 ms)\n    }\n\n}"
+}

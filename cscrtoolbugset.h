@@ -16,11 +16,13 @@ struct BugObject{
     QString bugName;
     QString bugNature;
     QString bugDescription;
+    QString reviewerQuestion;
+    QString bugSolution;
 
     BugObject(){}
 
-    BugObject(int line, const QString& name, const QString& nature, const QString& description)
-         : bugLine(line), bugName(name), bugNature(nature), bugDescription(description) {}
+    BugObject(int line, const QString& name, const QString& nature, const QString& description, const QString& question, const QString& solution)
+         : bugLine(line), bugName(name), bugNature(nature), bugDescription(description), reviewerQuestion(question), bugSolution(solution) {}
 
     // Overload the < operator for sorting based on bugLine and bugName
     bool operator<(const BugObject& other) const {
@@ -37,16 +39,20 @@ struct BugObject{
         obj["bugName"] = bugName;
         obj["bugNature"] = bugNature;
         obj["bugDescription"] = bugDescription;
+        obj["reviewerQuestion"] = reviewerQuestion;
+        obj["bugSolution"] = bugSolution;
         return obj;
     }
 
     static BugObject fromJson(const QJsonObject &obj) {
-        return {
-            obj["bugLine"].toInt(),
-            obj["bugName"].toString(),
-            obj["bugNature"].toString(),
-            obj["bugDescription"].toString()
-        };
+        BugObject bug;
+        bug.bugLine = obj["bugLine"].toInt();
+        bug.bugName = obj["bugName"].toString();
+        bug.bugNature = obj["bugNature"].toString();
+        bug.bugDescription = obj["bugDescription"].toString();
+        bug.reviewerQuestion = obj["reviewerQuestion"].toString();
+        bug.bugSolution = obj["bugSolution"].toString();
+        return bug;
     }
 };
 

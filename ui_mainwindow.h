@@ -200,6 +200,10 @@ public:
     QVBoxLayout *verticalLayout_9;
     QLabel *label_8;
     QTextEdit *textEditBugDescription;
+    QLabel *label_13;
+    QTextEdit *textEditReviewerQuestion;
+    QLabel *label_12;
+    QTextEdit *textEditBugSolution;
     QHBoxLayout *horizontalLayout_11;
     QSpacerItem *horizontalSpacer;
     QPushButton *buttonBugReportOK;
@@ -1091,8 +1095,40 @@ public:
 
         textEditBugDescription = new QTextEdit(page_5);
         textEditBugDescription->setObjectName(QStringLiteral("textEditBugDescription"));
+        QSizePolicy sizePolicy4(QSizePolicy::Preferred, QSizePolicy::Fixed);
+        sizePolicy4.setHorizontalStretch(0);
+        sizePolicy4.setVerticalStretch(0);
+        sizePolicy4.setHeightForWidth(textEditBugDescription->sizePolicy().hasHeightForWidth());
+        textEditBugDescription->setSizePolicy(sizePolicy4);
+        textEditBugDescription->setMinimumSize(QSize(0, 50));
 
         verticalLayout_9->addWidget(textEditBugDescription);
+
+        label_13 = new QLabel(page_5);
+        label_13->setObjectName(QStringLiteral("label_13"));
+
+        verticalLayout_9->addWidget(label_13);
+
+        textEditReviewerQuestion = new QTextEdit(page_5);
+        textEditReviewerQuestion->setObjectName(QStringLiteral("textEditReviewerQuestion"));
+        sizePolicy4.setHeightForWidth(textEditReviewerQuestion->sizePolicy().hasHeightForWidth());
+        textEditReviewerQuestion->setSizePolicy(sizePolicy4);
+        textEditReviewerQuestion->setMinimumSize(QSize(0, 50));
+
+        verticalLayout_9->addWidget(textEditReviewerQuestion);
+
+        label_12 = new QLabel(page_5);
+        label_12->setObjectName(QStringLiteral("label_12"));
+
+        verticalLayout_9->addWidget(label_12);
+
+        textEditBugSolution = new QTextEdit(page_5);
+        textEditBugSolution->setObjectName(QStringLiteral("textEditBugSolution"));
+        sizePolicy4.setHeightForWidth(textEditBugSolution->sizePolicy().hasHeightForWidth());
+        textEditBugSolution->setSizePolicy(sizePolicy4);
+        textEditBugSolution->setMinimumSize(QSize(0, 50));
+
+        verticalLayout_9->addWidget(textEditBugSolution);
 
 
         verticalLayout_12->addLayout(verticalLayout_9);
@@ -1160,19 +1196,19 @@ public:
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QStringLiteral("statusbar"));
-        QSizePolicy sizePolicy4(QSizePolicy::Preferred, QSizePolicy::Expanding);
-        sizePolicy4.setHorizontalStretch(0);
-        sizePolicy4.setVerticalStretch(255);
-        sizePolicy4.setHeightForWidth(statusbar->sizePolicy().hasHeightForWidth());
-        statusbar->setSizePolicy(sizePolicy4);
+        QSizePolicy sizePolicy5(QSizePolicy::Preferred, QSizePolicy::Expanding);
+        sizePolicy5.setHorizontalStretch(0);
+        sizePolicy5.setVerticalStretch(255);
+        sizePolicy5.setHeightForWidth(statusbar->sizePolicy().hasHeightForWidth());
+        statusbar->setSizePolicy(sizePolicy5);
         MainWindow->setStatusBar(statusbar);
         toolBar = new QToolBar(MainWindow);
         toolBar->setObjectName(QStringLiteral("toolBar"));
-        QSizePolicy sizePolicy5(QSizePolicy::Fixed, QSizePolicy::Preferred);
-        sizePolicy5.setHorizontalStretch(0);
-        sizePolicy5.setVerticalStretch(0);
-        sizePolicy5.setHeightForWidth(toolBar->sizePolicy().hasHeightForWidth());
-        toolBar->setSizePolicy(sizePolicy5);
+        QSizePolicy sizePolicy6(QSizePolicy::Fixed, QSizePolicy::Preferred);
+        sizePolicy6.setHorizontalStretch(0);
+        sizePolicy6.setVerticalStretch(0);
+        sizePolicy6.setHeightForWidth(toolBar->sizePolicy().hasHeightForWidth());
+        toolBar->setSizePolicy(sizePolicy6);
         toolBar->setMinimumSize(QSize(0, 0));
         QFont font1;
         font1.setFamily(QStringLiteral("Arial"));
@@ -1554,7 +1590,9 @@ public:
         labelCurrentLine->setText(QString());
         label_6->setText(QApplication::translate("MainWindow", "Bug Name:", 0));
         label_7->setText(QApplication::translate("MainWindow", "Bug Nature:", 0));
-        label_8->setText(QApplication::translate("MainWindow", "Solution:", 0));
+        label_8->setText(QApplication::translate("MainWindow", "Bug Description:", 0));
+        label_13->setText(QApplication::translate("MainWindow", "Reviewer Question:", 0));
+        label_12->setText(QApplication::translate("MainWindow", "Solution:", 0));
         buttonBugReportOK->setText(QApplication::translate("MainWindow", "OK", 0));
         buttonBugReportCancel->setText(QApplication::translate("MainWindow", "Cancel", 0));
         menuFile->setTitle(QApplication::translate("MainWindow", "File(&F)", 0));

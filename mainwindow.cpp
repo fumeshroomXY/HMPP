@@ -164,6 +164,8 @@ MainWindow::MainWindow()
     ui->comboBoxBugNature->setCurrentIndex(-1);
     ui->lineEditBugName->clear();
     ui->textEditBugDescription->clear();
+    ui->textEditBugSolution->clear();
+    ui->textEditReviewerQuestion->clear();
 
 
     // 获取QHeaderView
@@ -1113,7 +1115,7 @@ void MainWindow::loadBugReportFile(QString bugReportFilePath)
     QJsonObject project = doc.object();
 
     QString methodName = project["methodName"].toString();
-    QString methodCode = project["methodCode"].toString();
+    QString methodCode = project["sourceCode"].toString();
 
     QString sanatizedMethodName = Utils::sanitizeFileName(Utils::getLeftSubstring(methodName, "("));
 
@@ -1161,6 +1163,8 @@ void MainWindow::loadBugReportFile(QString bugReportFilePath)
     ui->lineEditBugName->setReadOnly(true);
     //ui->comboBoxBugNature->setEnabled(false);
     ui->textEditBugDescription->setReadOnly(true);
+    ui->textEditBugSolution->setReadOnly(true);
+    ui->textEditReviewerQuestion->setReadOnly(true);
     ui->buttonBugReportOK->setEnabled(false);
     ui->buttonBugReportCancel->setEnabled(false);
 
@@ -1192,6 +1196,8 @@ void MainWindow::showReviewBugInfo(CscrToolBugSet* bugSet, MdiChild* cscrToolMdi
     QString bugName = obj.bugName;
     QString bugNature = obj.bugNature;
     QString bugDescription = obj.bugDescription;
+    QString bugSolution = obj.bugSolution;
+    QString reviewerQuestion = obj.reviewerQuestion;
 
     cscrToolMdiChild->goToLine(lineNumber);
 
@@ -1204,6 +1210,8 @@ void MainWindow::showReviewBugInfo(CscrToolBugSet* bugSet, MdiChild* cscrToolMdi
         qDebug() << "Target string not found in the combo box!";
     }
     ui->textEditBugDescription->setText(bugDescription);
+    ui->textEditBugSolution->setText(bugSolution);
+    ui->textEditReviewerQuestion->setText(reviewerQuestion);
 }
 
 void MainWindow::reviewMethodCode(QString methodName)
@@ -1222,6 +1230,8 @@ void MainWindow::reviewMethodCode(QString methodName)
     ui->lineEditBugName->setEnabled(false);
     ui->comboBoxBugNature->setEnabled(false);
     ui->textEditBugDescription->setEnabled(false);
+    ui->textEditBugSolution->setEnabled(false);
+    ui->textEditReviewerQuestion->setEnabled(false);
     ui->buttonBugReportOK->setEnabled(false);
     ui->buttonBugReportCancel->setEnabled(false);
 
@@ -1256,6 +1266,8 @@ void MainWindow::reviewMethodCode(QString methodName)
                 ui->lineEditBugName->setEnabled(false);
                 ui->comboBoxBugNature->setEnabled(false);
                 ui->textEditBugDescription->setEnabled(false);
+                ui->textEditBugSolution->setEnabled(false);
+                ui->textEditReviewerQuestion->setEnabled(false);
                 ui->buttonBugReportOK->setEnabled(false);
                 ui->buttonBugReportCancel->setEnabled(false);
                 cscrToolMdiChild->startReview();
@@ -1270,12 +1282,16 @@ void MainWindow::reviewMethodCode(QString methodName)
         ui->lineEditBugName->setEnabled(true);
         ui->comboBoxBugNature->setEnabled(true);
         ui->textEditBugDescription->setEnabled(true);
+        ui->textEditBugSolution->setEnabled(true);
+        ui->textEditReviewerQuestion->setEnabled(true);
         ui->buttonBugReportOK->setEnabled(true);
         ui->buttonBugReportCancel->setEnabled(true);
         ui->labelCurrentLine->setText(QString::number(lineNumber + 1));
         ui->lineEditBugName->clear();
         ui->comboBoxBugNature->setCurrentIndex(-1);
         ui->textEditBugDescription->clear();
+        ui->textEditBugSolution->clear();
+        ui->textEditReviewerQuestion->clear();
     });
 
     // 点击按钮可以来回浏览bug set
@@ -1307,8 +1323,10 @@ void MainWindow::reviewMethodCode(QString methodName)
             QString bugName = ui->lineEditBugName->text();
             QString bugNature = ui->comboBoxBugNature->currentText();
             QString bugDescription = ui->textEditBugDescription->toPlainText();
+            QString bugSolution = ui->textEditBugSolution->toPlainText();
+            QString reviewerQuestion = ui->textEditReviewerQuestion->toPlainText();
 
-            BugObject bugObj(lineNumber, bugName, bugNature, bugDescription);
+            BugObject bugObj(lineNumber, bugName, bugNature, bugDescription, reviewerQuestion, bugSolution);
             if(bugSet->append(cscrToolMdiChild->userFriendlyCurrentFile(), bugObj)){
                 showReviewBugInfo(bugSet, cscrToolMdiChild);
             }
@@ -1317,9 +1335,13 @@ void MainWindow::reviewMethodCode(QString methodName)
             ui->lineEditBugName->clear();
             ui->comboBoxBugNature->setCurrentIndex(-1);
             ui->textEditBugDescription->clear();
+            ui->textEditBugSolution->clear();
+            ui->textEditReviewerQuestion->clear();
             ui->lineEditBugName->setEnabled(false);
             ui->comboBoxBugNature->setEnabled(false);
             ui->textEditBugDescription->setEnabled(false);
+            ui->textEditBugSolution->setEnabled(false);
+            ui->textEditReviewerQuestion->setEnabled(false);
             ui->buttonBugReportOK->setEnabled(false);
             ui->buttonBugReportCancel->setEnabled(false);
 
@@ -1335,9 +1357,13 @@ void MainWindow::reviewMethodCode(QString methodName)
         ui->lineEditBugName->clear();
         ui->comboBoxBugNature->setCurrentIndex(-1);
         ui->textEditBugDescription->clear();
+        ui->textEditBugSolution->clear();
+        ui->textEditReviewerQuestion->clear();
         ui->lineEditBugName->setEnabled(false);
         ui->comboBoxBugNature->setEnabled(false);
         ui->textEditBugDescription->setEnabled(false);
+        ui->textEditBugSolution->setEnabled(false);
+        ui->textEditReviewerQuestion->setEnabled(false);
         ui->buttonBugReportOK->setEnabled(false);
         ui->buttonBugReportCancel->setEnabled(false);
     });
@@ -1361,7 +1387,9 @@ void MainWindow::reviewMethodCode(QString methodName)
                 QString bugName = "Bug found by ChatGPT";
                 QString bugNature = "AI Suggestion";
                 QString bugDescription = "This is a bug found by ChatGPT";
-                BugObject bugObj(lineNumber, bugName, bugNature, bugDescription);
+                QString reviewerQuestion = "These are questions from ChatGPT";
+                QString bugSolution = "This is a solution provided by ChatGPT";
+                BugObject bugObj(lineNumber, bugName, bugNature, bugDescription, reviewerQuestion, bugSolution);
                 if(bugSet->append(cscrToolMdiChild->userFriendlyCurrentFile(), bugObj)){
                     showReviewBugInfo(bugSet, cscrToolMdiChild);
                 }
@@ -1409,6 +1437,8 @@ void MainWindow::reviewMethodCode(QString methodName)
                     ui->lineEditBugName->clear();
                     ui->comboBoxBugNature->setCurrentIndex(-1);
                     ui->textEditBugDescription->clear();
+                    ui->textEditBugSolution->clear();
+                    ui->textEditReviewerQuestion->clear();
                 } else {
                     qDebug() << "User clicked Cancel!";
                 }
@@ -1440,6 +1470,8 @@ void MainWindow::reviewMethodCode(QString methodName)
             ui->lineEditBugName->clear();
             ui->comboBoxBugNature->setCurrentIndex(-1);
             ui->textEditBugDescription->clear();
+            ui->textEditBugSolution->clear();
+            ui->textEditReviewerQuestion->clear();
         } else {
             qDebug() << "User clicked Cancel!";
         }
