@@ -20,6 +20,8 @@ INPUT(
 ./debug\chatgptclient.o
 ./debug\cscrtoolbugset.o
 ./debug\utils.o
+./debug\challengequestionmanager.o
+./debug\challengequestionmanagerdialog.o
 ./debug\qrc_ui_images.o
 ./debug\moc_mainwindow.o
 ./debug\moc_mdichild.o
@@ -37,4 +39,6 @@ INPUT(
 ./debug\moc_issuemanager.o
 ./debug\moc_guidewizard.o
 ./debug\moc_chatgptclient.o
+./debug\moc_challengequestionmanager.o
+./debug\moc_challengequestionmanagerdialog.o
 );

@@ -5,6 +5,9 @@
  * @brief about the challenge questions when reviewing code
  */
 
+#include <QStringList>
+#include <QMap>
+
 struct ExpressionPatternFlags {
     bool hasUppercaseWord = false;
     bool hasLowercaseWord = false;
@@ -21,9 +24,13 @@ struct CodeElements {
     QStringList classes;
     QStringList loopKeywords;
     QStringList conditionKeywords;
+    QStringList outputKeywords;
+    QStringList inputKeywords;
     QStringList exceptionHandlingKeywords;
+    QStringList controlKeywords;
     QStringList constants;
     QStringList assignmentOps;
+    QStringList uniqueKeywords;
 };
 
 const QStringList classNameQuestions = {"What is the purpose of this class?",
@@ -78,5 +85,75 @@ const QStringList syntacticalExpressionQuestions = {"What is its purpose?",
                                                     "Why is it necessary?",
                                                    "Is there any mistake in using it?"
                                                    };
+
+const QMap<QString, QStringList> defaultQuestionList = {
+    {"ClassName", {
+        "What is the purpose of this class?",
+        "Is the class name appropriate?",
+        "Why is the class designed to possess the current structure?"
+    }},
+    {"MethodName", {
+        "What does this method do?",
+        "Are all parameters of this method necessary?",
+        "Are all parameters of this method enough?",
+        "What is the purpose of this method invocation?",
+        "Are all arguments provided correctly?"
+    }},
+    {"VarDeclaration", {
+        "What data does this variable represent?",
+        "Is the type used to declare this variable appropriate?",
+        "Is the initialization of this variable appropriate?"
+    }},
+    {"Constant", {
+        "What does this constant mean?",
+        "Is it used correctly?"
+    }},
+    {"AssignmentStatement", {
+        "What is the purpose of this assignment?",
+        "Are all the variables, function invocations, and operators used in the expression appropriate?"
+    }},
+    {"DecisionExpression", {
+        "What role does this decision expression play?",
+        "Is this decision an unexpected contradiction?",
+        "Is this decision an unexpected tautology?"
+    }},
+    {"IfElseStatement", {
+        "What is the purpose of this conditional statement?",
+        "What to do if the condition is true?",
+        "What to do if the condition is false?"
+    }},
+    {"WhileLoopStatement", {
+        "What does this loop statement accomplish?",
+        "Is there any mistake in the loop condition?",
+        "How are the loop variables updated?"
+    }},
+    {"ForLoopStatement", {
+        "What is the purpose of the loop statement?",
+        "Is the loop variable initialized correctly?",
+        "Is the loop termination condition correct?",
+        "Is the update expression correct?"
+    }},
+    {"InputStatement", {
+        "What data does this statement provide to the system?",
+        "Is it possible to produce any exception?"
+    }},
+    {"OutputStatement", {
+        "What data does this statement output to the outside of the system?",
+        "Is it possible to produce any exception?"
+    }},
+    {"ControlStatement", {
+        "Why do you need this statement?",
+        "Is every variable and constant correct in this statement?"
+    }},
+    {"ExceptionHandlingBlocks", {
+        "What exception does the try block throw?",
+        "How is the exception handled by the catch block?"
+    }},
+    {"SyntacticalExpression", {
+        "What is its purpose?",
+        "Why is it necessary?",
+        "Is there any mistake in using it?"
+    }}
+};
 
 #endif // CSCRTOOLCHALLENGERQUESTION_H

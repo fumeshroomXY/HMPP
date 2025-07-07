@@ -201,7 +201,7 @@ public:
         cscrtooldialog->setWindowTitle(QApplication::translate("cscrtooldialog", "Dialog", 0));
         reviewButton->setText(QApplication::translate("cscrtooldialog", "Review the method in the current file", 0));
         loadButton->setText(QApplication::translate("cscrtooldialog", "Load a bug report from a directory", 0));
-        label->setText(QApplication::translate("cscrtooldialog", "Choose the method you would like to review in CSCR-Tool:", 0));
+        label->setText(QApplication::translate("cscrtooldialog", "Choose the method you would like to review in CRCI-Tool:", 0));
         label_2->setText(QApplication::translate("cscrtooldialog", "Target Method:", 0));
         label_3->setText(QApplication::translate("cscrtooldialog", "Load the bug report:", 0));
         loadFileButton->setText(QString());

@@ -12,6 +12,7 @@
 
 class MdiChild;
 class IssueManager;
+class ChallengeQuestionManager;
 struct RequireNote;
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -258,6 +259,9 @@ private slots:
     //展示用
     void showDemoSCM();
 
+    //配置ChallengeQuestion
+    void configureChallengeQuestionManager();
+
 private:
     enum { MaxRecentFiles = 5 };
 
@@ -288,6 +292,9 @@ private:
     QAction *recentFileSubMenuAct;
 
     QTimer *timer;
+
+    ChallengeQuestionManager* challengeQuestionManager;
+    QString questionListName = "Default Question List";
 
     //当前项目
     projectTree* currentPro;

@@ -1,0 +1,72 @@
+{
+    "AssignmentStatement": [
+        "What is the purpose of this assignment?",
+        "Are all the variables, function invocations, and operators used in the expression appropriate?",
+        "test1",
+        "test2",
+        "test3"
+    ],
+    "ClassName": [
+        "What is the purpose of this class?",
+        "Is the class name appropriate?",
+        "Why is the class designed to possess the current structure?"
+    ],
+    "Constant": [
+        "What does this constant mean?",
+        "Is it used correctly?"
+    ],
+    "ControlStatement": [
+        "Why do you need this statement?",
+        "Is every variable and constant correct in this statement?"
+    ],
+    "DecisionExpression": [
+        "What role does this decision expression play?",
+        "Is this decision an unexpected contradiction?",
+        "Is this decision an unexpected tautology?"
+    ],
+    "ExceptionHandlingStatement": [
+        "What exception does the try block throw?",
+        "How is the exception handled by the catch block?"
+    ],
+    "ForLoop": [
+        "What is the purpose of the loop statement?",
+        "Is the loop variable initialized correctly?",
+        "Is the loop termination condition correct?",
+        "Is the update expression correct?"
+    ],
+    "IfElse": [
+        "What is the purpose of this conditional statement?",
+        "What to do if the condition is true?",
+        "What to do if the condition is false?"
+    ],
+    "InputStatement": [
+        "What data does this statement provide to the system?",
+        "Is it possible to produce any exception?"
+    ],
+    "MethodName": [
+        "What does this method do?",
+        "Are all parameters of this method necessary?",
+        "Are all parameters of this method enough?",
+        "What is the purpose of this method invocation?",
+        "Are all arguments provided correctly?"
+    ],
+    "OutputStatement": [
+        "What data does this statement output to the outside of the system?",
+        "Is it possible to produce any exception?"
+    ],
+    "SyntacticalExpression": [
+        "What is its purpose?",
+        "Why is it necessary?",
+        "Is there any mistake in using it?"
+    ],
+    "VarDeclaration": [
+        "What data does this variable represent?",
+        "Is the type used to declare this variable appropriate?",
+        "Is the initialization of this variable appropriate?"
+    ],
+    "WhileLoop": [
+        "What does this loop statement accomplish?",
+        "Is there any mistake in the loop condition?",
+        "How are the loop variables updated?"
+    ]
+}

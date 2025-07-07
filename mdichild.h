@@ -176,7 +176,12 @@ public:
     //根据鼠标所在位置，返回一段字符串
     QString getSpaceSeparatedStringAtCursor();
 
+    //添加或去除bug行
+    void addBugLine(int lineNumber);
+    void removeBugLine(int lineNumber);
 
+    QList<int> getBugLineNumbers() const;
+    void setBugLineNumbers(const QList<int> &value);
 
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;   //关闭事件
@@ -221,7 +226,7 @@ public slots:
     void changeCurrentReviewLine();
 
     //为bug行画上红色波浪线
-    void markBugLines(const QList<int> &bugLineNumbers);
+    void markBugLines();
 
 private slots:
     void documentWasModified();    //文件被更改时显示更改窗口状态
@@ -299,6 +304,8 @@ private:
 
     int currentReviewLine = 0;
 
+    //保存开发者发现的bug行号
+    QList<int> bugLineNumbers;
 
 
     //用于保存语法错误，这里主要是类未定义的，还有UNSPECIFIED的语法错误

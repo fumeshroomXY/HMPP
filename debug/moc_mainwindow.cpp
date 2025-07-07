@@ -21,8 +21,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[94];
-    char stringdata0[1541];
+    QByteArrayData data[95];
+    char stringdata0[1575];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -124,7 +124,8 @@ QT_MOC_LITERAL(89, 1462, 30), // "on_copyFixedCodeButton_clicked"
 QT_MOC_LITERAL(90, 1493, 8), // "testSlot"
 QT_MOC_LITERAL(91, 1502, 22), // "projectViewMenuRequest"
 QT_MOC_LITERAL(92, 1525, 3), // "pos"
-QT_MOC_LITERAL(93, 1529, 11) // "showDemoSCM"
+QT_MOC_LITERAL(93, 1529, 11), // "showDemoSCM"
+QT_MOC_LITERAL(94, 1541, 33) // "configureChallengeQuestionMan..."
 
     },
     "MainWindow\0setCursorToIssueLine\0\0"
@@ -168,7 +169,8 @@ QT_MOC_LITERAL(93, 1529, 11) // "showDemoSCM"
     "insertProjectClassInfo\0QList<ClassInfo>\0"
     "insertClassInfos\0on_copyCodeButton_clicked\0"
     "on_copyFixedCodeButton_clicked\0testSlot\0"
-    "projectViewMenuRequest\0pos\0showDemoSCM"
+    "projectViewMenuRequest\0pos\0showDemoSCM\0"
+    "configureChallengeQuestionManager"
 };
 #undef QT_MOC_LITERAL
 
@@ -178,7 +180,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      61,   14, // methods
+      62,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -186,67 +188,68 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    1,  319,    2, 0x0a /* Public */,
-       5,    1,  322,    2, 0x0a /* Public */,
-       8,    0,  325,    2, 0x0a /* Public */,
-       9,    5,  326,    2, 0x0a /* Public */,
-      15,    0,  337,    2, 0x0a /* Public */,
-      16,    2,  338,    2, 0x0a /* Public */,
-      20,    2,  343,    2, 0x0a /* Public */,
-      23,    0,  348,    2, 0x0a /* Public */,
-      24,    0,  349,    2, 0x0a /* Public */,
-      25,    1,  350,    2, 0x0a /* Public */,
-      27,    1,  353,    2, 0x0a /* Public */,
-      28,    2,  356,    2, 0x0a /* Public */,
-      31,    1,  361,    2, 0x0a /* Public */,
-      33,    1,  364,    2, 0x0a /* Public */,
-      35,    1,  367,    2, 0x0a /* Public */,
-      38,    2,  370,    2, 0x0a /* Public */,
-      42,    0,  375,    2, 0x08 /* Private */,
-      43,    1,  376,    2, 0x08 /* Private */,
-      43,    0,  379,    2, 0x28 /* Private | MethodCloned */,
-      46,    0,  380,    2, 0x08 /* Private */,
-      47,    0,  381,    2, 0x08 /* Private */,
-      48,    0,  382,    2, 0x08 /* Private */,
-      49,    0,  383,    2, 0x08 /* Private */,
-      50,    0,  384,    2, 0x08 /* Private */,
-      51,    0,  385,    2, 0x08 /* Private */,
-      52,    0,  386,    2, 0x08 /* Private */,
-      53,    0,  387,    2, 0x08 /* Private */,
-      54,    0,  388,    2, 0x08 /* Private */,
-      55,    0,  389,    2, 0x08 /* Private */,
-      56,    0,  390,    2, 0x08 /* Private */,
-      57,    0,  391,    2, 0x08 /* Private */,
-      58,    0,  392,    2, 0x08 /* Private */,
-      59,    0,  393,    2, 0x08 /* Private */,
-      60,    0,  394,    2, 0x08 /* Private */,
-      61,    0,  395,    2, 0x08 /* Private */,
-      62,    0,  396,    2, 0x08 /* Private */,
-      63,    0,  397,    2, 0x08 /* Private */,
-      64,    1,  398,    2, 0x08 /* Private */,
-      65,    0,  401,    2, 0x08 /* Private */,
-      66,    0,  402,    2, 0x08 /* Private */,
-      67,    0,  403,    2, 0x08 /* Private */,
-      68,    0,  404,    2, 0x08 /* Private */,
-      69,    1,  405,    2, 0x08 /* Private */,
-      70,    0,  408,    2, 0x08 /* Private */,
-      71,    1,  409,    2, 0x08 /* Private */,
-      73,    1,  412,    2, 0x08 /* Private */,
-      74,    1,  415,    2, 0x08 /* Private */,
-      75,    1,  418,    2, 0x08 /* Private */,
-      76,    0,  421,    2, 0x08 /* Private */,
-      77,    0,  422,    2, 0x08 /* Private */,
-      78,    1,  423,    2, 0x08 /* Private */,
-      79,    0,  426,    2, 0x08 /* Private */,
-      80,    0,  427,    2, 0x08 /* Private */,
-      81,    0,  428,    2, 0x08 /* Private */,
-      82,    2,  429,    2, 0x08 /* Private */,
-      85,    1,  434,    2, 0x08 /* Private */,
-      88,    0,  437,    2, 0x08 /* Private */,
-      89,    0,  438,    2, 0x08 /* Private */,
-      90,    0,  439,    2, 0x08 /* Private */,
-      91,    1,  440,    2, 0x08 /* Private */,
-      93,    0,  443,    2, 0x08 /* Private */,
+       1,    1,  324,    2, 0x0a /* Public */,
+       5,    1,  327,    2, 0x0a /* Public */,
+       8,    0,  330,    2, 0x0a /* Public */,
+       9,    5,  331,    2, 0x0a /* Public */,
+      15,    0,  342,    2, 0x0a /* Public */,
+      16,    2,  343,    2, 0x0a /* Public */,
+      20,    2,  348,    2, 0x0a /* Public */,
+      23,    0,  353,    2, 0x0a /* Public */,
+      24,    0,  354,    2, 0x0a /* Public */,
+      25,    1,  355,    2, 0x0a /* Public */,
+      27,    1,  358,    2, 0x0a /* Public */,
+      28,    2,  361,    2, 0x0a /* Public */,
+      31,    1,  366,    2, 0x0a /* Public */,
+      33,    1,  369,    2, 0x0a /* Public */,
+      35,    1,  372,    2, 0x0a /* Public */,
+      38,    2,  375,    2, 0x0a /* Public */,
+      42,    0,  380,    2, 0x08 /* Private */,
+      43,    1,  381,    2, 0x08 /* Private */,
+      43,    0,  384,    2, 0x28 /* Private | MethodCloned */,
+      46,    0,  385,    2, 0x08 /* Private */,
+      47,    0,  386,    2, 0x08 /* Private */,
+      48,    0,  387,    2, 0x08 /* Private */,
+      49,    0,  388,    2, 0x08 /* Private */,
+      50,    0,  389,    2, 0x08 /* Private */,
+      51,    0,  390,    2, 0x08 /* Private */,
+      52,    0,  391,    2, 0x08 /* Private */,
+      53,    0,  392,    2, 0x08 /* Private */,
+      54,    0,  393,    2, 0x08 /* Private */,
+      55,    0,  394,    2, 0x08 /* Private */,
+      56,    0,  395,    2, 0x08 /* Private */,
+      57,    0,  396,    2, 0x08 /* Private */,
+      58,    0,  397,    2, 0x08 /* Private */,
+      59,    0,  398,    2, 0x08 /* Private */,
+      60,    0,  399,    2, 0x08 /* Private */,
+      61,    0,  400,    2, 0x08 /* Private */,
+      62,    0,  401,    2, 0x08 /* Private */,
+      63,    0,  402,    2, 0x08 /* Private */,
+      64,    1,  403,    2, 0x08 /* Private */,
+      65,    0,  406,    2, 0x08 /* Private */,
+      66,    0,  407,    2, 0x08 /* Private */,
+      67,    0,  408,    2, 0x08 /* Private */,
+      68,    0,  409,    2, 0x08 /* Private */,
+      69,    1,  410,    2, 0x08 /* Private */,
+      70,    0,  413,    2, 0x08 /* Private */,
+      71,    1,  414,    2, 0x08 /* Private */,
+      73,    1,  417,    2, 0x08 /* Private */,
+      74,    1,  420,    2, 0x08 /* Private */,
+      75,    1,  423,    2, 0x08 /* Private */,
+      76,    0,  426,    2, 0x08 /* Private */,
+      77,    0,  427,    2, 0x08 /* Private */,
+      78,    1,  428,    2, 0x08 /* Private */,
+      79,    0,  431,    2, 0x08 /* Private */,
+      80,    0,  432,    2, 0x08 /* Private */,
+      81,    0,  433,    2, 0x08 /* Private */,
+      82,    2,  434,    2, 0x08 /* Private */,
+      85,    1,  439,    2, 0x08 /* Private */,
+      88,    0,  442,    2, 0x08 /* Private */,
+      89,    0,  443,    2, 0x08 /* Private */,
+      90,    0,  444,    2, 0x08 /* Private */,
+      91,    1,  445,    2, 0x08 /* Private */,
+      93,    0,  448,    2, 0x08 /* Private */,
+      94,    0,  449,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void, 0x80000000 | 3,    4,
@@ -309,6 +312,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::QPoint,   92,
+    QMetaType::Void,
     QMetaType::Void,
 
        0        // eod
@@ -385,6 +389,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 58: _t->testSlot(); break;
         case 59: _t->projectViewMenuRequest((*reinterpret_cast< const QPoint(*)>(_a[1]))); break;
         case 60: _t->showDemoSCM(); break;
+        case 61: _t->configureChallengeQuestionManager(); break;
         default: ;
         }
     }
@@ -415,13 +420,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 61)
+        if (_id < 62)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 61;
+        _id -= 62;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 61)
+        if (_id < 62)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 61;
+        _id -= 62;
     }
     return _id;
 }

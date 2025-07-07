@@ -81,6 +81,7 @@ public:
     QAction *specBuildAct;
     QAction *actionLoad_Review_Report;
     QAction *actionGenerate_Review_Report;
+    QAction *configureChallengeQuestionAct;
     QWidget *centralwidget;
     QGridLayout *gridLayout_7;
     QStackedWidget *stackedWidgetLeft;
@@ -354,6 +355,8 @@ public:
         actionLoad_Review_Report->setObjectName(QStringLiteral("actionLoad_Review_Report"));
         actionGenerate_Review_Report = new QAction(MainWindow);
         actionGenerate_Review_Report->setObjectName(QStringLiteral("actionGenerate_Review_Report"));
+        configureChallengeQuestionAct = new QAction(MainWindow);
+        configureChallengeQuestionAct->setObjectName(QStringLiteral("configureChallengeQuestionAct"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         gridLayout_7 = new QGridLayout(centralwidget);
@@ -1106,6 +1109,7 @@ public:
 
         label_13 = new QLabel(page_5);
         label_13->setObjectName(QStringLiteral("label_13"));
+        label_13->setEnabled(true);
 
         verticalLayout_9->addWidget(label_13);
 
@@ -1262,6 +1266,7 @@ public:
         menuConfiguration->addAction(allRuleDescriptAct);
         menuConfiguration->addAction(menuChooseTargetLanguage->menuAction());
         menuConfiguration->addAction(importSpecAct);
+        menuConfiguration->addAction(configureChallengeQuestionAct);
         menuChooseTargetLanguage->addAction(actionCplus);
         menuChooseTargetLanguage->addAction(actionJava);
         menuChooseTargetLanguage->addAction(actionCsharp);
@@ -1419,6 +1424,10 @@ public:
         specBuildAct->setText(QApplication::translate("MainWindow", "Build Project From Specification", 0));
         actionLoad_Review_Report->setText(QApplication::translate("MainWindow", "Load Review Report", 0));
         actionGenerate_Review_Report->setText(QApplication::translate("MainWindow", "Generate Review Report", 0));
+        configureChallengeQuestionAct->setText(QApplication::translate("MainWindow", "Configure Challenge Question", 0));
+#ifndef QT_NO_TOOLTIP
+        configureChallengeQuestionAct->setToolTip(QApplication::translate("MainWindow", "Configure Challenge Question", 0));
+#endif // QT_NO_TOOLTIP
         QTreeWidgetItem *___qtreewidgetitem = treeClassView->headerItem();
         ___qtreewidgetitem->setText(0, QApplication::translate("MainWindow", "Class View", 0));
 
@@ -1462,7 +1471,15 @@ public:
 #endif // QT_NO_WHATSTHIS
         waitingChatGPTReplyButton->setText(QApplication::translate("MainWindow", "Select the code and send it to ChatGPT", 0));
         copyFixedCodeButton->setText(QApplication::translate("MainWindow", "Copy the code", 0));
-        label_3->setText(QApplication::translate("MainWindow", "Problem:", 0));
+        label_3->setText(QApplication::translate("MainWindow", "Questions:", 0));
+        fixedCodeProblemBrowser->setHtml(QApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'Arial,sans-serif'; font-size:14px; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:14px; font-weight:600;\">Q1:</span><span style=\" font-size:14px;\"> Is checking </span><span style=\" font-family:'Courier New'; font-size:14px;\">is_open()</span><span style=\" font-size:14px;\"> sufficient to determine that the file stream is ready for writing?</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:14px; font-weight:600;\">Q2:</span><span style=\" font-size:14px;\"> What are the possible reasons why </span"
+                        "><span style=\" font-family:'Courier New'; font-size:14px;\">videoFileStream</span><span style=\" font-size:14px;\"> failed to open? Are they logged or handled?</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:14px; font-weight:600;\">Q3:</span><span style=\" font-size:14px;\"> Is the file path valid, writable, and accessible under current permissions and runtime environment?</span></p></body></html>", 0));
         fixedCodeTextEdit->setHtml(QApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"

@@ -21,8 +21,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MdiChild_t {
-    QByteArrayData data[74];
-    char stringdata0[1274];
+    QByteArrayData data[73];
+    char stringdata0[1259];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -82,29 +82,28 @@ QT_MOC_LITERAL(47, 763, 23), // "moveToNextReviewSegment"
 QT_MOC_LITERAL(48, 787, 21), // "findChallengeQuestion"
 QT_MOC_LITERAL(49, 809, 23), // "changeCurrentReviewLine"
 QT_MOC_LITERAL(50, 833, 12), // "markBugLines"
-QT_MOC_LITERAL(51, 846, 10), // "QList<int>"
-QT_MOC_LITERAL(52, 857, 14), // "bugLineNumbers"
-QT_MOC_LITERAL(53, 872, 19), // "documentWasModified"
-QT_MOC_LITERAL(54, 892, 25), // "updateLineNumberAreaWidth"
-QT_MOC_LITERAL(55, 918, 13), // "newBlockCount"
-QT_MOC_LITERAL(56, 932, 20), // "updateLineNumberArea"
-QT_MOC_LITERAL(57, 953, 21), // "showFaultPromptDialog"
-QT_MOC_LITERAL(58, 975, 16), // "fixButtonHovered"
-QT_MOC_LITERAL(59, 992, 16), // "fixButtonClicked"
-QT_MOC_LITERAL(60, 1009, 12), // "clearPreview"
-QT_MOC_LITERAL(61, 1022, 14), // "highlightMatch"
-QT_MOC_LITERAL(62, 1037, 19), // "askChatGPTTriggered"
-QT_MOC_LITERAL(63, 1057, 16), // "fixCodeTriggered"
-QT_MOC_LITERAL(64, 1074, 15), // "addBugTriggered"
-QT_MOC_LITERAL(65, 1090, 11), // "updateMatch"
-QT_MOC_LITERAL(66, 1102, 27), // "updateInformalSpecPosInFile"
-QT_MOC_LITERAL(67, 1130, 17), // "autoCompleteMatch"
-QT_MOC_LITERAL(68, 1148, 21), // "moveFaultPromptDialog"
-QT_MOC_LITERAL(69, 1170, 26), // "highlightStructureSegments"
-QT_MOC_LITERAL(70, 1197, 8), // "segments"
-QT_MOC_LITERAL(71, 1206, 22), // "highlightReviewSegment"
-QT_MOC_LITERAL(72, 1229, 33), // "QList<QTextEdit::ExtraSelecti..."
-QT_MOC_LITERAL(73, 1263, 10) // "selections"
+QT_MOC_LITERAL(51, 846, 19), // "documentWasModified"
+QT_MOC_LITERAL(52, 866, 25), // "updateLineNumberAreaWidth"
+QT_MOC_LITERAL(53, 892, 13), // "newBlockCount"
+QT_MOC_LITERAL(54, 906, 20), // "updateLineNumberArea"
+QT_MOC_LITERAL(55, 927, 21), // "showFaultPromptDialog"
+QT_MOC_LITERAL(56, 949, 16), // "fixButtonHovered"
+QT_MOC_LITERAL(57, 966, 16), // "fixButtonClicked"
+QT_MOC_LITERAL(58, 983, 12), // "clearPreview"
+QT_MOC_LITERAL(59, 996, 14), // "highlightMatch"
+QT_MOC_LITERAL(60, 1011, 19), // "askChatGPTTriggered"
+QT_MOC_LITERAL(61, 1031, 16), // "fixCodeTriggered"
+QT_MOC_LITERAL(62, 1048, 15), // "addBugTriggered"
+QT_MOC_LITERAL(63, 1064, 11), // "updateMatch"
+QT_MOC_LITERAL(64, 1076, 27), // "updateInformalSpecPosInFile"
+QT_MOC_LITERAL(65, 1104, 17), // "autoCompleteMatch"
+QT_MOC_LITERAL(66, 1122, 21), // "moveFaultPromptDialog"
+QT_MOC_LITERAL(67, 1144, 26), // "highlightStructureSegments"
+QT_MOC_LITERAL(68, 1171, 10), // "QList<int>"
+QT_MOC_LITERAL(69, 1182, 8), // "segments"
+QT_MOC_LITERAL(70, 1191, 22), // "highlightReviewSegment"
+QT_MOC_LITERAL(71, 1214, 33), // "QList<QTextEdit::ExtraSelecti..."
+QT_MOC_LITERAL(72, 1248, 10) // "selections"
 
     },
     "MdiChild\0showSCMFault\0\0hideProblemTab\0"
@@ -130,17 +129,16 @@ QT_MOC_LITERAL(73, 1263, 10) // "selections"
     "scrollToFirstLine\0startReview\0"
     "moveToNextReviewSegment\0findChallengeQuestion\0"
     "changeCurrentReviewLine\0markBugLines\0"
-    "QList<int>\0bugLineNumbers\0documentWasModified\0"
-    "updateLineNumberAreaWidth\0newBlockCount\0"
-    "updateLineNumberArea\0showFaultPromptDialog\0"
-    "fixButtonHovered\0fixButtonClicked\0"
-    "clearPreview\0highlightMatch\0"
-    "askChatGPTTriggered\0fixCodeTriggered\0"
-    "addBugTriggered\0updateMatch\0"
-    "updateInformalSpecPosInFile\0"
+    "documentWasModified\0updateLineNumberAreaWidth\0"
+    "newBlockCount\0updateLineNumberArea\0"
+    "showFaultPromptDialog\0fixButtonHovered\0"
+    "fixButtonClicked\0clearPreview\0"
+    "highlightMatch\0askChatGPTTriggered\0"
+    "fixCodeTriggered\0addBugTriggered\0"
+    "updateMatch\0updateInformalSpecPosInFile\0"
     "autoCompleteMatch\0moveFaultPromptDialog\0"
-    "highlightStructureSegments\0segments\0"
-    "highlightReviewSegment\0"
+    "highlightStructureSegments\0QList<int>\0"
+    "segments\0highlightReviewSegment\0"
     "QList<QTextEdit::ExtraSelection>&\0"
     "selections"
 };
@@ -190,13 +188,15 @@ static const uint qt_meta_data_MdiChild[] = {
       47,    0,  317,    2, 0x0a /* Public */,
       48,    0,  318,    2, 0x0a /* Public */,
       49,    0,  319,    2, 0x0a /* Public */,
-      50,    1,  320,    2, 0x0a /* Public */,
-      53,    0,  323,    2, 0x08 /* Private */,
-      54,    1,  324,    2, 0x08 /* Private */,
-      56,    1,  327,    2, 0x08 /* Private */,
-      56,    1,  330,    2, 0x08 /* Private */,
-      56,    0,  333,    2, 0x08 /* Private */,
-      57,    1,  334,    2, 0x08 /* Private */,
+      50,    0,  320,    2, 0x0a /* Public */,
+      51,    0,  321,    2, 0x08 /* Private */,
+      52,    1,  322,    2, 0x08 /* Private */,
+      54,    1,  325,    2, 0x08 /* Private */,
+      54,    1,  328,    2, 0x08 /* Private */,
+      54,    0,  331,    2, 0x08 /* Private */,
+      55,    1,  332,    2, 0x08 /* Private */,
+      56,    0,  335,    2, 0x08 /* Private */,
+      57,    0,  336,    2, 0x08 /* Private */,
       58,    0,  337,    2, 0x08 /* Private */,
       59,    0,  338,    2, 0x08 /* Private */,
       60,    0,  339,    2, 0x08 /* Private */,
@@ -206,10 +206,8 @@ static const uint qt_meta_data_MdiChild[] = {
       64,    0,  343,    2, 0x08 /* Private */,
       65,    0,  344,    2, 0x08 /* Private */,
       66,    0,  345,    2, 0x08 /* Private */,
-      67,    0,  346,    2, 0x08 /* Private */,
-      68,    0,  347,    2, 0x08 /* Private */,
-      69,    1,  348,    2, 0x08 /* Private */,
-      71,    2,  351,    2, 0x08 /* Private */,
+      67,    1,  346,    2, 0x08 /* Private */,
+      70,    2,  349,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Int,    2,
@@ -242,9 +240,9 @@ static const uint qt_meta_data_MdiChild[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 51,   52,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,   55,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::Int,   53,
     QMetaType::Void, QMetaType::QRectF,    2,
     QMetaType::Void, QMetaType::Int,    2,
     QMetaType::Void,
@@ -260,8 +258,8 @@ static const uint qt_meta_data_MdiChild[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 51,   70,
-    QMetaType::Void, 0x80000000 | 51, 0x80000000 | 72,   70,   73,
+    QMetaType::Void, 0x80000000 | 68,   69,
+    QMetaType::Void, 0x80000000 | 68, 0x80000000 | 71,   69,   72,
 
        0        // eod
 };
@@ -300,7 +298,7 @@ void MdiChild::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
         case 25: _t->moveToNextReviewSegment(); break;
         case 26: _t->findChallengeQuestion(); break;
         case 27: _t->changeCurrentReviewLine(); break;
-        case 28: _t->markBugLines((*reinterpret_cast< const QList<int>(*)>(_a[1]))); break;
+        case 28: _t->markBugLines(); break;
         case 29: _t->documentWasModified(); break;
         case 30: _t->updateLineNumberAreaWidth((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 31: _t->updateLineNumberArea((*reinterpret_cast< QRectF(*)>(_a[1]))); break;
@@ -325,13 +323,6 @@ void MdiChild::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
         switch (_id) {
         default: *reinterpret_cast<int*>(_a[0]) = -1; break;
-        case 28:
-            switch (*reinterpret_cast<int*>(_a[1])) {
-            default: *reinterpret_cast<int*>(_a[0]) = -1; break;
-            case 0:
-                *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< QList<int> >(); break;
-            }
-            break;
         case 46:
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<int*>(_a[0]) = -1; break;

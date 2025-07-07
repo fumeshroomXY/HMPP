@@ -20,6 +20,8 @@ INPUT(
 ./release\chatgptclient.o
 ./release\cscrtoolbugset.o
 ./release\utils.o
+./release\challengequestionmanager.o
+./release\challengequestionmanagerdialog.o
 ./release\qrc_ui_images.o
 ./release\moc_mainwindow.o
 ./release\moc_mdichild.o
@@ -37,4 +39,6 @@ INPUT(
 ./release\moc_issuemanager.o
 ./release\moc_guidewizard.o
 ./release\moc_chatgptclient.o
+./release\moc_challengequestionmanager.o
+./release\moc_challengequestionmanagerdialog.o
 );

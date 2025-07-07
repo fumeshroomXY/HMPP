@@ -292,7 +292,7 @@
            <number>1</number>
           </property>
           <property name="text">
-           <string>Problem:</string>
+           <string>Questions:</string>
           </property>
          </widget>
         </item>
@@ -361,6 +361,15 @@
               </property>
               <property name="sizeAdjustPolicy">
                <enum>QAbstractScrollArea::AdjustIgnored</enum>
+              </property>
+              <property name="html">
+               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Arial,sans-serif'; font-size:14px; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14px; font-weight:600;&quot;&gt;Q1:&lt;/span&gt;&lt;span style=&quot; font-size:14px;&quot;&gt; Is checking &lt;/span&gt;&lt;span style=&quot; font-family:'Courier New'; font-size:14px;&quot;&gt;is_open()&lt;/span&gt;&lt;span style=&quot; font-size:14px;&quot;&gt; sufficient to determine that the file stream is ready for writing?&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14px; font-weight:600;&quot;&gt;Q2:&lt;/span&gt;&lt;span style=&quot; font-size:14px;&quot;&gt; What are the possible reasons why &lt;/span&gt;&lt;span style=&quot; font-family:'Courier New'; font-size:14px;&quot;&gt;videoFileStream&lt;/span&gt;&lt;span style=&quot; font-size:14px;&quot;&gt; failed to open? Are they logged or handled?&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14px; font-weight:600;&quot;&gt;Q3:&lt;/span&gt;&lt;span style=&quot; font-size:14px;&quot;&gt; Is the file path valid, writable, and accessible under current permissions and runtime environment?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
              </widget>
             </item>
@@ -1431,6 +1440,9 @@ p, li { white-space: pre-wrap; }
                   </item>
                   <item>
                    <widget class="QLabel" name="label_13">
+                    <property name="enabled">
+                     <bool>true</bool>
+                    </property>
                     <property name="text">
                      <string>Reviewer Question:</string>
                     </property>
@@ -1591,6 +1603,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="allRuleDescriptAct"/>
     <addaction name="menuChooseTargetLanguage"/>
     <addaction name="importSpecAct"/>
+    <addaction name="configureChallengeQuestionAct"/>
    </widget>
    <widget class="QMenu" name="menuTools_T">
     <property name="title">
@@ -2064,6 +2077,14 @@ p, li { white-space: pre-wrap; }
   <action name="actionGenerate_Review_Report">
    <property name="text">
     <string>Generate Review Report</string>
+   </property>
+  </action>
+  <action name="configureChallengeQuestionAct">
+   <property name="text">
+    <string>Configure Challenge Question</string>
+   </property>
+   <property name="toolTip">
+    <string>Configure Challenge Question</string>
    </property>
   </action>
  </widget>

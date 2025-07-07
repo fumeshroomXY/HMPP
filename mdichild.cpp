@@ -268,6 +268,9 @@ void MdiChild::contextMenuEvent(QContextMenuEvent *event)
     // Connect the action to a custom slot
     connect(askChatGPTAction, &QAction::triggered, this, &MdiChild::askChatGPTTriggered);
 
+    // this action is not used
+    QAction* chatgptChallengeQuestion = menu->addAction("Use ChatGPT to generate challenge questions");
+
     QAction* addBugDescription = menu->addAction("Add a bug description");
 
     connect(addBugDescription, &QAction::triggered, this, &MdiChild::addBugTriggered);
@@ -335,6 +338,16 @@ void MdiChild::setCurrentFile(const QString &fileName)
 QString MdiChild::strippedName(const QString &fullFileName)
 {
     return QFileInfo(fullFileName).fileName();
+}
+
+QList<int> MdiChild::getBugLineNumbers() const
+{
+    return bugLineNumbers;
+}
+
+void MdiChild::setBugLineNumbers(const QList<int> &value)
+{
+    bugLineNumbers = value;
 }
 
 bool MdiChild::getReviewCodeMode() const
@@ -524,12 +537,6 @@ int MdiChild::getFirstVisibleBlockId()
 
 void MdiChild::highlightCurrentLine()
 {
-//    QTextBlock block = document()->findBlockByNumber(12);
-//    block.setUserState(2);
-
-//    QTextBlock currentBlock = textCursor().block();
-//    qDebug() << "currentBlockState: " << currentBlock.userState();
-
     qDebug() << "-15";
     QList<QTextEdit::ExtraSelection> extraSelections = this->extraSelections();
     if (!isReadOnly() && reviewCodeMode) {
@@ -2833,7 +2840,7 @@ void MdiChild::highlightStructureSegments(const QList<int> &segments) {
     setTextCursor(originalCursor);
 }
 
-void MdiChild::markBugLines(const QList<int> &bugLineNumbers)
+void MdiChild::markBugLines()
 {
     QList<QTextEdit::ExtraSelection> selections = this->extraSelections();
 
@@ -2869,6 +2876,21 @@ void MdiChild::markBugLines(const QList<int> &bugLineNumbers)
     setExtraSelections(selections);
 }
 
+
+void MdiChild::addBugLine(int lineNumber){
+    if (!bugLineNumbers.contains(lineNumber)) {
+        bugLineNumbers.append(lineNumber);
+        // You may want to trigger highlight update here if needed
+    }
+}
+
+void MdiChild::removeBugLine(int lineNumber){
+    int index = bugLineNumbers.indexOf(lineNumber);
+    if (index != -1) {
+        bugLineNumbers.removeAt(index);
+        // Optionally update highlighting here
+    }
+}
 
 void MdiChild::highlightReviewSegment(const QList<int> &segments, QList<QTextEdit::ExtraSelection>& selections) {
     //resetBlockColors(0, document()->blockCount(), Qt::transparent, selections);
@@ -2920,6 +2942,7 @@ void MdiChild::changeCurrentReviewLine(){
         QList<QTextEdit::ExtraSelection> emptySelections;
         highlightReviewSegment(structureNumberList, emptySelections);
         highlightCurrentLine();
+        markBugLines();
         qDebug() << "changeCurrentReviewLine: currentReviewLine = " << currentReviewLine;
     }
 }

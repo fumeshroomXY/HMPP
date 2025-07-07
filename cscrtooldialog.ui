@@ -58,7 +58,7 @@
            <item>
             <widget class="QLabel" name="label">
              <property name="text">
-              <string>Choose the method you would like to review in CSCR-Tool:</string>
+              <string>Choose the method you would like to review in CRCI-Tool:</string>
              </property>
             </widget>
            </item>

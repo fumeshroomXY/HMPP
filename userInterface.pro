@@ -32,7 +32,9 @@ SOURCES += main.cpp\
     guidewizard.cpp \
     chatgptclient.cpp \
     cscrtoolbugset.cpp \
-    utils.cpp
+    utils.cpp \
+    challengequestionmanager.cpp \
+    challengequestionmanagerdialog.cpp
 
 HEADERS  += mainwindow.h \
     mdichild.h \
@@ -54,7 +56,9 @@ HEADERS  += mainwindow.h \
     chatgptclient.h \
     cscrtoolbugset.h \
     utils.h \
-    cscrtoolchallengerquestion.h
+    cscrtoolchallengerquestion.h \
+    challengequestionmanager.h \
+    challengequestionmanagerdialog.h
 
 RESOURCES += \
     ui_images.qrc
@@ -67,4 +71,5 @@ FORMS += \
     managepropertysetdialog.ui \
     faultpromptdialog.ui \
     selectnewclassdialog.ui \
-    cscrtooldialog.ui
+    cscrtooldialog.ui \
+    challengequestionmanagerdialog.ui

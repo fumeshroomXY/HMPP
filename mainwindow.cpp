@@ -27,6 +27,7 @@
 #include "requirementtreeview.h"
 #include "utils.h"
 #include "cscrtoolchallengerquestion.h"
+#include "challengequestionmanagerdialog.h"
 
 const QString iconFilePath = "/images/toolbar_images";
 
@@ -89,6 +90,8 @@ MainWindow::MainWindow()
 
     connect(ui->importSpecAct, &QAction::triggered, this, &MainWindow::importSpecificationForCurrentPro);
     connect(ui->specBuildAct, &QAction::triggered, this, &MainWindow::buildFilesFromSpecification);
+
+    connect(ui->configureChallengeQuestionAct, &QAction::triggered, this, &MainWindow::configureChallengeQuestionManager);
 
     screenFactor = getScreenFactor();
 
@@ -1158,7 +1161,8 @@ void MainWindow::loadBugReportFile(QString bugReportFilePath)
     for (const BugObject &bug : bugList) {
         bugLineNumbers.append(bug.bugLine);
     }
-    cscrToolMdiChild->markBugLines(bugLineNumbers);
+    cscrToolMdiChild->setBugLineNumbers(bugLineNumbers);
+    cscrToolMdiChild->markBugLines();
 
     ui->lineEditBugName->setReadOnly(true);
     //ui->comboBoxBugNature->setEnabled(false);
@@ -1330,6 +1334,9 @@ void MainWindow::reviewMethodCode(QString methodName)
             if(bugSet->append(cscrToolMdiChild->userFriendlyCurrentFile(), bugObj)){
                 showReviewBugInfo(bugSet, cscrToolMdiChild);
             }
+            cscrToolMdiChild->addBugLine(lineNumber);
+            cscrToolMdiChild->markBugLines();
+
 
             ui->labelCurrentLine->clear();
             ui->lineEditBugName->clear();
@@ -1539,7 +1546,10 @@ void MainWindow::showChallengeQuestions(QString currentStr, CodeElements element
             font.setBold(true);  // Make the font bold
             item->setFont(font);
             ui->listWidget->addItem(item);
-            for (const QString &item : methodNameQuestions) {
+//            for (const QString &item : methodNameQuestions) {
+//                ui->listWidget->addItem(item);
+//            }
+            for (const QString &item : challengeQuestionManager->getQuestions()["MethodName"]) {
                 ui->listWidget->addItem(item);
             }
         }
@@ -1552,7 +1562,10 @@ void MainWindow::showChallengeQuestions(QString currentStr, CodeElements element
             font.setBold(true);  // Make the font bold
             item->setFont(font);
             ui->listWidget->addItem(item);
-            for (const QString &item : varDeclarationQuestions) {
+//            for (const QString &item : varDeclarationQuestions) {
+//                ui->listWidget->addItem(item);
+//            }
+            for (const QString &item : challengeQuestionManager->getQuestions()["VarDeclaration"]) {
                 ui->listWidget->addItem(item);
             }
         }
@@ -1566,7 +1579,10 @@ void MainWindow::showChallengeQuestions(QString currentStr, CodeElements element
             font.setBold(true);  // Make the font bold
             item->setFont(font);
             ui->listWidget->addItem(item);
-            for (const QString &item : classNameQuestions) {
+//            for (const QString &item : classNameQuestions) {
+//                ui->listWidget->addItem(item);
+//            }
+            for (const QString &item : challengeQuestionManager->getQuestions()["ClassName"]) {
                 ui->listWidget->addItem(item);
             }
         }
@@ -1579,7 +1595,29 @@ void MainWindow::showChallengeQuestions(QString currentStr, CodeElements element
             font.setBold(true);  // Make the font bold
             item->setFont(font);
             ui->listWidget->addItem(item);
-            for (const QString &item : forLoopQuestions) {
+//            for (const QString &item : forLoopQuestions) {
+//                ui->listWidget->addItem(item);
+//            }
+            for (const QString &item : challengeQuestionManager->getQuestions()["ForLoopStatement"]) {
+                ui->listWidget->addItem(item);
+            }
+//            for (const QString &item : challengeQuestionManager->getQuestions()["WhileLoopStatement"]) {
+//                ui->listWidget->addItem(item);
+//            }
+        }
+    }
+    if(!elements.controlKeywords.isEmpty()){
+        for(const QString &func : elements.controlKeywords){
+            QListWidgetItem *item = new QListWidgetItem(func);
+            // Set the font to bold
+            QFont font = item->font();
+            font.setBold(true);  // Make the font bold
+            item->setFont(font);
+            ui->listWidget->addItem(item);
+//            for (const QString &item : controlStatementQuestions) {
+//                ui->listWidget->addItem(item);
+//            }
+            for (const QString &item : challengeQuestionManager->getQuestions()["ControlStatement"]) {
                 ui->listWidget->addItem(item);
             }
         }
@@ -1592,7 +1630,42 @@ void MainWindow::showChallengeQuestions(QString currentStr, CodeElements element
             font.setBold(true);  // Make the font bold
             item->setFont(font);
             ui->listWidget->addItem(item);
-            for (const QString &item : ifElseQuestions) {
+//            for (const QString &item : ifElseStatementQuestions) {
+//                ui->listWidget->addItem(item);
+//            }
+            for (const QString &item : challengeQuestionManager->getQuestions()["IfElseStatement"]) {
+                ui->listWidget->addItem(item);
+            }
+        }
+    }
+    if(!elements.outputKeywords.isEmpty()){
+        for(const QString &func : elements.outputKeywords){
+            QListWidgetItem *item = new QListWidgetItem(func);
+            // Set the font to bold
+            QFont font = item->font();
+            font.setBold(true);  // Make the font bold
+            item->setFont(font);
+            ui->listWidget->addItem(item);
+//            for (const QString &item : OutputStatementQuestions) {
+//                ui->listWidget->addItem(item);
+//            }
+            for (const QString &item : challengeQuestionManager->getQuestions()["OutputStatement"]) {
+                ui->listWidget->addItem(item);
+            }
+        }
+    }
+    if(!elements.inputKeywords.isEmpty()){
+        for(const QString &func : elements.inputKeywords){
+            QListWidgetItem *item = new QListWidgetItem(func);
+            // Set the font to bold
+            QFont font = item->font();
+            font.setBold(true);  // Make the font bold
+            item->setFont(font);
+            ui->listWidget->addItem(item);
+//            for (const QString &item : InputStatementQuestions) {
+//                ui->listWidget->addItem(item);
+//            }
+            for (const QString &item : challengeQuestionManager->getQuestions()["InputStatement"]) {
                 ui->listWidget->addItem(item);
             }
         }
@@ -1605,7 +1678,10 @@ void MainWindow::showChallengeQuestions(QString currentStr, CodeElements element
             font.setBold(true);  // Make the font bold
             item->setFont(font);
             ui->listWidget->addItem(item);
-            for (const QString &item : exceptionHandlingStatementQuestions) {
+//            for (const QString &item : exceptionHandlingStatementQuestions) {
+//                ui->listWidget->addItem(item);
+//            }
+            for (const QString &item : challengeQuestionManager->getQuestions()["ExceptionHandlingBlocks"]) {
                 ui->listWidget->addItem(item);
             }
         }
@@ -1618,7 +1694,10 @@ void MainWindow::showChallengeQuestions(QString currentStr, CodeElements element
             font.setBold(true);  // Make the font bold
             item->setFont(font);
             ui->listWidget->addItem(item);
-            for (const QString &item : constantQuestions) {
+//            for (const QString &item : constantQuestions) {
+//                ui->listWidget->addItem(item);
+//            }
+            for (const QString &item : challengeQuestionManager->getQuestions()["Constant"]) {
                 ui->listWidget->addItem(item);
             }
         }
@@ -1631,7 +1710,26 @@ void MainWindow::showChallengeQuestions(QString currentStr, CodeElements element
             font.setBold(true);  // Make the font bold
             item->setFont(font);
             ui->listWidget->addItem(item);
-            for (const QString &item : assignmentStatementQuestions) {
+//            for (const QString &item : assignmentStatementQuestions) {
+//                ui->listWidget->addItem(item);
+//            }
+            for (const QString &item : challengeQuestionManager->getQuestions()["AssignmentStatement"]) {
+                ui->listWidget->addItem(item);
+            }
+        }
+    }
+    if(!elements.uniqueKeywords.isEmpty()){
+        for(const QString &func : elements.uniqueKeywords){
+            QListWidgetItem *item = new QListWidgetItem(func);
+            // Set the font to bold
+            QFont font = item->font();
+            font.setBold(true);  // Make the font bold
+            item->setFont(font);
+            ui->listWidget->addItem(item);
+//            for (const QString &item : syntacticalExpressionQuestions) {
+//                ui->listWidget->addItem(item);
+//            }
+            for (const QString &item : challengeQuestionManager->getQuestions()["SyntacticalExpression"]) {
                 ui->listWidget->addItem(item);
             }
         }
@@ -3272,6 +3370,8 @@ void MainWindow::init()
     targetLanginCurrentPro = QString();
 
     bugSet = new CscrToolBugSet;
+
+    challengeQuestionManager = new ChallengeQuestionManager();
 }
 
 void MainWindow::setCscrToolMethodNameToCode(const QHash<QString, QString> &value)
@@ -3589,6 +3689,31 @@ void MainWindow::showDemoSCM()
     ui->stackedWidgetRightDown->show();
     ui->tabProgramOutput->show();
 
+}
+
+void MainWindow::configureChallengeQuestionManager()
+{
+    ChallengeQuestionManagerDialog *dialog = new ChallengeQuestionManagerDialog(this, questionListName);
+    dialog->setQuestionManager(*this->challengeQuestionManager);
+
+    ScreenFactor factor;
+    auto screenFactor = factor.getScreenFactor();
+    dialog->resize(dialog->width() * screenFactor, dialog->height() * screenFactor);
+
+    // Pass the current state if needed
+    // dialog->setManager(myQuestionManager);  // optional: if you add such method
+
+    connect(dialog, &ChallengeQuestionManagerDialog::applyRequested, this,
+            [=](const ChallengeQuestionManager &manager, const QString questionListName) {
+            if (this->challengeQuestionManager)
+                delete this->challengeQuestionManager;
+
+            this->challengeQuestionManager = new ChallengeQuestionManager(manager);
+            this->questionListName = questionListName;
+                qDebug() << "Received updated manager from dialog!";
+            });
+
+    dialog->exec();  // modal dialog
 }
 
 ClassInfo MainWindow::getProClassInfo(QString className)
