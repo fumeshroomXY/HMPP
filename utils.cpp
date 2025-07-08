@@ -7,7 +7,7 @@ QString Utils::sanitizeFileName(const QString &fileName)
     QString sanitized = fileName;
 
     // Remove invalid characters for file names
-    sanitized.replace(QRegExp("[<>():\"/\\|?*]"), "_");  // Windows reserved characters
+    sanitized.replace(QRegExp("[<>():\"/\\|?*.]"), "_");  // Windows reserved characters
     sanitized.replace(" ", "_");  // Replace spaces with underscores
 
     return sanitized;

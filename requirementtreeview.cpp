@@ -434,6 +434,7 @@ CscrToolDialog::CscrToolDialog(QWidget *parent, const QList<QString> & methods)
       buttonGroup(new QButtonGroup(this))  // Initialize the QButtonGroup
 {
     ui->setupUi(this);  // Link the UI to the dialog
+    setWindowTitle("CRCI Tool");
     ui->stackedWidget->setCurrentIndex(0);
     // Add radio buttons to the button group
     buttonGroup->addButton(ui->reviewButton, 1);  // ID = 1

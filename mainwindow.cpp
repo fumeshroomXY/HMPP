@@ -170,6 +170,10 @@ MainWindow::MainWindow()
     ui->textEditBugSolution->clear();
     ui->textEditReviewerQuestion->clear();
 
+    // 此字段暂时不需要，就隐藏了
+    ui->textEditReviewerQuestion->hide();
+    ui->label_13->hide();
+
 
     // 获取QHeaderView
     QHeaderView *projectHeader = ui->projectTreeView->header();
@@ -3696,6 +3700,7 @@ void MainWindow::configureChallengeQuestionManager()
     ChallengeQuestionManagerDialog *dialog = new ChallengeQuestionManagerDialog(this, questionListName);
     dialog->setQuestionManager(*this->challengeQuestionManager);
 
+    dialog->adjustSize();  // Adjust based on layout
     ScreenFactor factor;
     auto screenFactor = factor.getScreenFactor();
     dialog->resize(dialog->width() * screenFactor, dialog->height() * screenFactor);

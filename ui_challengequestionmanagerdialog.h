@@ -51,13 +51,14 @@ public:
         if (ChallengeQuestionManagerDialog->objectName().isEmpty())
             ChallengeQuestionManagerDialog->setObjectName(QStringLiteral("ChallengeQuestionManagerDialog"));
         ChallengeQuestionManagerDialog->resize(400, 300);
-        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(ChallengeQuestionManagerDialog->sizePolicy().hasHeightForWidth());
         ChallengeQuestionManagerDialog->setSizePolicy(sizePolicy);
         gridLayout = new QGridLayout(ChallengeQuestionManagerDialog);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setSizeConstraint(QLayout::SetNoConstraint);
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
         label_2 = new QLabel(ChallengeQuestionManagerDialog);
@@ -122,6 +123,8 @@ public:
 
         listWidgetQuestion = new QListWidget(ChallengeQuestionManagerDialog);
         listWidgetQuestion->setObjectName(QStringLiteral("listWidgetQuestion"));
+        listWidgetQuestion->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
+        listWidgetQuestion->setResizeMode(QListView::Fixed);
 
         gridLayout->addWidget(listWidgetQuestion, 2, 0, 1, 1);
 

@@ -1843,6 +1843,9 @@ void MdiChild::updateObjectInfoInSourceFile()
 
     QHash<QString, QString> methodNameToCode;
 
+    // 文件名对应整个文件的代码
+    methodNameToCode.insert(fileName, text);
+
     // 遍历正则表达式列表，并检测文本是否符合
     foreach (const QRegExp &reg, syntaxRuleList) {
         if(reg == classPattern){
@@ -2303,6 +2306,8 @@ void MdiChild::updateObjectInfoInSourceFile()
             }
         }
     }
+
+
 
     qDebug() << "methodNameToCode:";
     for (auto it = methodNameToCode.constBegin(); it != methodNameToCode.constEnd(); ++it) {

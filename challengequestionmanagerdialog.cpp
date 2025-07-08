@@ -10,6 +10,8 @@ ChallengeQuestionManagerDialog::ChallengeQuestionManagerDialog(QWidget *parent, 
     // Optionally load saved questions here
     // m_questionManager.loadFromJson("questions.json");
 
+    setWindowTitle("Challenge Question Manager");  // <- Set name here
+
     // Populate category combo box
     ui.lineEditQuestionList->setText(questionListName);
     ui.comboBoxCategory->addItems(questionManager.categories());
