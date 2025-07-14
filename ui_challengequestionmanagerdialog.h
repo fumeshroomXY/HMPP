@@ -58,7 +58,7 @@ public:
         ChallengeQuestionManagerDialog->setSizePolicy(sizePolicy);
         gridLayout = new QGridLayout(ChallengeQuestionManagerDialog);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        gridLayout->setSizeConstraint(QLayout::SetNoConstraint);
+        gridLayout->setSizeConstraint(QLayout::SetDefaultConstraint);
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
         label_2 = new QLabel(ChallengeQuestionManagerDialog);

@@ -315,8 +315,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>83</width>
-             <height>75</height>
+             <width>251</width>
+             <height>184</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -390,8 +390,8 @@ p, li { white-space: pre-wrap; }
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>83</width>
-             <height>77</height>
+             <width>251</width>
+             <height>185</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -613,8 +613,8 @@ p, li { white-space: pre-wrap; }
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>131</width>
-             <height>659</height>
+             <width>249</width>
+             <height>446</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -894,7 +894,7 @@ p, li { white-space: pre-wrap; }
       <item>
        <widget class="QStackedWidget" name="stackedWidgetRightDown">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="page">
          <layout class="QGridLayout" name="gridLayout_6">
@@ -1046,7 +1046,7 @@ p, li { white-space: pre-wrap; }
                 </column>
                 <item row="0" column="0">
                  <property name="text">
-                  <string>codeeditor.cpp</string>
+                  <string>test.cpp</string>
                  </property>
                  <property name="textAlignment">
                   <set>AlignCenter</set>
@@ -1066,7 +1066,7 @@ p, li { white-space: pre-wrap; }
                 </item>
                 <item row="0" column="2">
                  <property name="text">
-                  <string>The exception that is thrown when there is an attempt to divide an integral or Decimal value by zero.</string>
+                  <string>This is just an example. This is just an example. The exception that is thrown when there is an attempt to divide an integral or Decimal value by zero.</string>
                  </property>
                 </item>
                </widget>

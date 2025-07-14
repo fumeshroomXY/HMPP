@@ -63,6 +63,11 @@ MainWindow::MainWindow()
     setWindowTitle(tr("HMPP supporting tool demo"));
     setUnifiedTitleAndToolBarOnMac(true);
 
+    ui->stackedWidgetLeft->setCurrentIndex(0);
+    ui->stackedWidgetRightDown->setCurrentIndex(0);
+    ui->verticalLayout->setStretch(3, 1);
+    ui->stackedWidgetRightDown->hide();
+
     ui->comboBoxBugNature->addItems(bugNatureList);
 
     //setToolBarLayout();
@@ -2794,8 +2799,11 @@ void MainWindow::openRecentFile()
 void MainWindow::save()
 {
     qDebug() << "26";
-    if (activeMdiChild() && activeMdiChild()->save())
+    if (activeMdiChild() && activeMdiChild()->save()){
         ui->statusbar->showMessage(tr("File saved"), 2000);
+        ui->stackedWidgetRightDown->show();
+    }
+
     qDebug() << "26";
 }
 
@@ -2805,6 +2813,7 @@ void MainWindow::saveAs()
     MdiChild *child = activeMdiChild();
     if (child && child->saveAs()) {
         ui->statusbar->showMessage(tr("File saved"), 2000);
+        ui->stackedWidgetRightDown->show();
         MainWindow::prependToRecentFiles(child->currentFile());
     }
     qDebug() << "27";

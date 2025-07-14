@@ -47,13 +47,13 @@ void ChatgptClient::sendUserMessage(const QString &value)
     QString configFilePath = currentDir.path() + "/config/OpenAIkey.json";
     QFile file(configFilePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qDebug() << "Failed to open openai key config file";
+        qWarning() << "Failed to open openai key config file";
         return;
     }
     QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
     QString apiKey = doc.object().value("api_key").toString();
     if (apiKey.isEmpty()) {
-        qDebug() << "API key not found in the config file";
+        qWarning() << "API key not found in the config file";
         return;
     }
 

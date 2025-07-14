@@ -1,3 +1,5 @@
 # OpenAI key configuration
 config/*
 !config/.gitkeep
+release/*
+!release/.gitkeep

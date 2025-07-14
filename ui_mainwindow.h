@@ -510,7 +510,7 @@ public:
         scrollArea_3->setWidgetResizable(true);
         scrollAreaWidgetContents_3 = new QWidget();
         scrollAreaWidgetContents_3->setObjectName(QStringLiteral("scrollAreaWidgetContents_3"));
-        scrollAreaWidgetContents_3->setGeometry(QRect(0, 0, 83, 75));
+        scrollAreaWidgetContents_3->setGeometry(QRect(0, 0, 251, 184));
         verticalLayout_6 = new QVBoxLayout(scrollAreaWidgetContents_3);
         verticalLayout_6->setObjectName(QStringLiteral("verticalLayout_6"));
         verticalLayout_6->setContentsMargins(0, 0, 0, 0);
@@ -546,7 +546,7 @@ public:
         scrollArea_2->setWidgetResizable(true);
         scrollAreaWidgetContents_4 = new QWidget();
         scrollAreaWidgetContents_4->setObjectName(QStringLiteral("scrollAreaWidgetContents_4"));
-        scrollAreaWidgetContents_4->setGeometry(QRect(0, 0, 83, 77));
+        scrollAreaWidgetContents_4->setGeometry(QRect(0, 0, 251, 185));
         verticalLayout_7 = new QVBoxLayout(scrollAreaWidgetContents_4);
         verticalLayout_7->setObjectName(QStringLiteral("verticalLayout_7"));
         verticalLayout_7->setContentsMargins(0, 0, 0, 0);
@@ -667,7 +667,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QStringLiteral("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 131, 659));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 249, 446));
         verticalLayout_8 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_8->setObjectName(QStringLiteral("verticalLayout_8"));
         horizontalLayout_3 = new QHBoxLayout();
@@ -1291,7 +1291,7 @@ public:
         retranslateUi(MainWindow);
 
         stackedWidgetLeft->setCurrentIndex(2);
-        stackedWidgetRightDown->setCurrentIndex(1);
+        stackedWidgetRightDown->setCurrentIndex(0);
         tabProgramOutput->setCurrentIndex(0);
         stackedWidgetCscrButtons->setCurrentIndex(0);
         stackedWidgetBugDescript->setCurrentIndex(0);
@@ -1553,11 +1553,11 @@ public:
         const bool __sortingEnabled1 = tableWidgetReport->isSortingEnabled();
         tableWidgetReport->setSortingEnabled(false);
         QTableWidgetItem *___qtablewidgetitem4 = tableWidgetReport->item(0, 0);
-        ___qtablewidgetitem4->setText(QApplication::translate("MainWindow", "codeeditor.cpp", 0));
+        ___qtablewidgetitem4->setText(QApplication::translate("MainWindow", "test.cpp", 0));
         QTableWidgetItem *___qtablewidgetitem5 = tableWidgetReport->item(0, 1);
         ___qtablewidgetitem5->setText(QApplication::translate("MainWindow", "line 13", 0));
         QTableWidgetItem *___qtablewidgetitem6 = tableWidgetReport->item(0, 2);
-        ___qtablewidgetitem6->setText(QApplication::translate("MainWindow", "The exception that is thrown when there is an attempt to divide an integral or Decimal value by zero.", 0));
+        ___qtablewidgetitem6->setText(QApplication::translate("MainWindow", "This is just an example. This is just an example. The exception that is thrown when there is an attempt to divide an integral or Decimal value by zero.", 0));
         tableWidgetReport->setSortingEnabled(__sortingEnabled1);
 
         tabProgramOutput->setTabText(tabProgramOutput->indexOf(tabFaultReport), QApplication::translate("MainWindow", "Fault Report", 0));
